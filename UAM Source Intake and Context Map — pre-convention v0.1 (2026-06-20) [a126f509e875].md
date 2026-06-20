@@ -4,27 +4,17 @@
 **Artifact ID:** `UAM-FRAMEWORK`  
 **Working name:** User Agent Model Framework  
 **Status:** candidate canonical framework; not yet adopted as active runtime authority  
+**Last updated:** 2026-06-20  
 **Evidence ceiling:** design-time architectural synthesis  
 **Primary audience:** UAM sub-architects, implementers, evaluators, and runtime integrators  
-**Canonical filename:** `UAM_Model_Framework.md`  
-**Artifact index:** `UAM_Artifact_Index.yaml`  
+**Active filename:** `UAM_Model_Framework.md`  
+**Archive lineage:** prior snapshots are immutable under `archive/`; the immediately preceding source snapshot is `archive/UAM_Model_Framework/UAM_Model_Framework__legacy-v0.21__superseded-20260620T001210Z__sha256-0e0065ed485d.md`.  
 **Naming authority:** `UAM_Artifact_Naming_and_Archive_Convention.md`  
 **Preservation rule:** existing Agent Builder and OMR contracts remain authoritative within their current scopes until an explicit migration or supersession decision is made
 
-<!-- UAM:DOCUMENT-STAMP-BEGIN -->
-**Artifact stamp**
+**Active-artifact rule:** the living framework uses the stable ID and versionless filename above. Exact commitment is established by snapshot hash and adoption record; only superseded snapshots receive archive labels.
 
-```yaml
-artifact_revision: 1
-updated_at: 2026-06-20T00:30:20Z
-payload_sha256: 5dc3bd2318333f662af22375ab861e7d5b28ef81d51bd4ce4a6cb9ed8ace83ab
-hash_scope: full UTF-8 document with this stamp block removed; UTF-8 without BOM; LF line endings
-```
-<!-- UAM:DOCUMENT-STAMP-END -->
-
-**Active-artifact rule:** use the bare stable name in explanatory prose. Any assignment, contract, handoff, build, or evidence record MUST pin the complete artifact stamp, complete-file snapshot SHA-256, and loadable snapshot under §6.11.
-
-### Archived lineage: v0.2 → v0.21
+### Changelog v0.2 → v0.21
 
 This revision adds the two controls that govern *how the buildout proceeds*, found in disconfirming review (steelman-premortem + break-it-tester) of v0.2. v0.2 closed the dispatch-contract holes; v0.21 closes the parallel-divergence hole the contract fixes did not address. Architecture, dimensional map, and frozen thesis are unchanged.
 
@@ -33,7 +23,16 @@ This revision adds the two controls that govern *how the buildout proceeds*, fou
 3. **Integration reconciliation gate (new §15.7).** Codifies the end-pass as a *consistency-review* run with *variant-reconciliation* for leftover naming drift, owned by the D8 contract ring. It is an eval that runs, not a standing agent that governs — explicitly not a ninth competing domain (§4.2).
 4. **Supporting updates.** §19 Phase 1 now names the shared-vocabulary freeze; Phase 3 is marked the validation gate; a new Phase 6.5 runs reconciliation. §16.1 adds a cross-component vocabulary-consistency test class. §20 reclassifies the shared-infrastructure items from open to Spine-owned-freeze-first.
 
-### Archived lineage: v0.1 → v0.2
+### Changelog v0.1 → v0.2
+
+This revision closes four gaps found in design-time review of v0.1. The architecture, dimensional map, work-object model, and frozen thesis are unchanged; only the dispatch contract, adoption-authority wording, reading discipline, and lens-map completeness are revised.
+
+1. **Source-content guarantee (blocking fix).** v0.1 required the assignment packet to carry "inherited sources and exact versions," which a strict reading satisfied with a *citation*. Because §1.1 forbids a sub-architect from accessing the originating conversation, a citation-only dispatch could hand a context-isolated agent a reference it cannot read, forcing a block. v0.2 makes attached source *content* (or a guaranteed-loadable reference) mandatory, and adds a dimension→source provisioning map (new §12.0).
+2. **Adoption authority made explicit.** §20.1 "frozen" decisions are the framework's proposed thesis, not user-ratified decisions. v0.2 relabels them as *frozen pending Phase-0 adoption* and lifts the hard "no dispatch before adoption" gate out of the Terminal Record into the assignment contract (new §12.0.1) where a dispatcher reads it.
+3. **Reading discipline.** v0.1 was a single document every sub-architect had to consume whole, in tension with its own progressive-loading principle. v0.2 marks which sections are universal-mandatory and which are dimension-local (new §4.3).
+4. **Lens-map completeness.** `prediction-log` (runtime/post-hoc uplift measurement) and `prompt-refiner` (intent normalization) were unmapped; v0.2 names them in D8 and D1 respectively. The lens inventory remains an open question (§20.2).
+
+---
 
 This revision closes four gaps found in design-time review of v0.1. The architecture, dimensional map, work-object model, and frozen thesis are unchanged; only the dispatch contract, adoption-authority wording, reading discipline, and lens-map completeness are revised.
 
@@ -477,15 +476,16 @@ A handoff is required only when another materially different operation is necess
 
 Every component must declare:
 
-- stable artifact ID, stable display name, and versionless active filename;
-- compatibility conditions for the Spine and every load-bearing upstream dependency;
-- the complete artifact stamps and loadable snapshots used in its most recent validation;
+- stable artifact ID and versionless active filename;
+- exact frozen snapshot hash for any committed dependency;
+- compatible Spine contract or snapshot range, when compatibility is not universal;
+- upstream dependency IDs and snapshot hashes;
 - downstream consumers;
-- invalidation triggers when a pinned stamp differs from the current active stamp;
+- invalidation triggers;
 - migration requirements;
-- archive, deprecation, and rollback path.
+- archive, deprecation, or rollback path.
 
-Compatibility MAY be expressed as stable contract conditions rather than a manually maintained list of every acceptable revision. Exact tested stamps remain mandatory evidence. Active artifacts MUST NOT carry version tokens in their title, filename, or stable ID; they carry an internal artifact stamp under §6.11.
+Active artifacts MUST NOT carry a version token in their title, filename, or stable artifact ID. When an active artifact is replaced, the outgoing snapshot is assigned its archive label retrospectively and moved to immutable history. Version labels are therefore historical locators, never the identity of the living artifact.
 
 ### 6.10 Shared-vocabulary ownership contract
 
@@ -520,22 +520,6 @@ Vocabulary that no other dimension consumes is owned and created within its dime
 #### 6.10.4 Distinguishing shared from local
 
 A vocabulary item is **shared** (Spine-owned) if any of the following hold: it appears in a cross-component interface (§15.2); it is emitted by one dimension and consumed by another; or it is part of the precedence/authority chain. Otherwise it is **local** (dimension-owned). When a sub-architect is unsure, the item is treated as shared and escalated to the Spine owner, because the cost of a false-local (interface divergence) far exceeds the cost of a false-shared (one extra frozen entry).
-
-### 6.11 Document identity, stamp, and archive contract
-
-Every governed UAM artifact MUST implement `UAM_Artifact_Naming_and_Archive_Convention.md`.
-
-1. **Stable active identity.** The living artifact uses one versionless title, stable artifact ID, and canonical filename. Human-facing prose uses that bare identity.
-2. **Self-description plus shared index.** The active artifact carries its own stamp; `UAM_Artifact_Index.yaml` maps the stable identity to the current stamp, complete-file snapshot hash, status, parents, and archive pointers.
-3. **Immutable content identity.** The stamp contains monotonic `artifact_revision`, ISO-8601 `updated_at`, and canonical `payload_sha256`. The updater-recorded complete-file `snapshot_sha256` is the authoritative serialized identity.
-4. **Actionable references pin.** Contracts, packets, handoffs, build inputs, compatibility records, adoption records, and evidence MUST include the complete stamp, complete-file snapshot hash, and attached content or an immutable loadable snapshot. A bare active name or mutable active path is insufficient.
-5. **Single writer.** Active replacement is one serialized operation owned by the designated Artifact Custodian or deterministic service. Concurrent writers branch for reconciliation; they do not overwrite the active slot.
-6. **Freshness is flag-and-block.** Before material action and result commitment, compare pinned dependencies with the governing index. A mismatch blocks unless an explicit compatibility rule is evaluated and passes. The consumer may neither silently proceed on the old parent nor silently adopt the new one.
-7. **Archive before replacement.** The outgoing complete file is copied unchanged to immutable archive storage and verified before the active file is atomically replaced. The archive is part of evidence and rollback and MUST NOT be deleted or rewritten.
-8. **Hash authority.** The designated updater computes and records hashes once under the canonical procedure. Validators may verify that record; consumers do not create alternate identities through local reserialization. The payload hash excludes the stamp block, and the shared index/checksum set records the complete-file hash.
-9. **Schema exception.** Machine-required schema/API versions may remain inside protocols, but they do not alter the active artifact name. Whole-document stamps are the default; internal section anchors remain unchanged.
-
-The decision threshold is: **bare stable name for explanation; pinned recorded stamp and immutable snapshot for action.**
 
 ---
 
@@ -1236,7 +1220,7 @@ Every reasoning lens must be independently describable and testable.
 
 A lens specification MUST include:
 
-- stable identity and active filename for prose, plus complete pinned artifact stamp and loadable snapshot for execution;
+- stable identity, active filename, and frozen snapshot hash;
 - problem solved;
 - applicable operations;
 - activation conditions;
@@ -1340,11 +1324,11 @@ These two rules govern *whether* and *with what* a sub-architect may be dispatch
 
 #### 12.0.1 Dispatch gate — adoption required
 
-This framework is a candidate (see Status and §20). **No sub-architect may be dispatched against it until the user adopts or revises it in Phase 0 (§19).** A sub-architect dispatched on an unadopted framework would treat the framework's proposed thesis (§20.1) as committed authority that the user has not granted. Until adoption, the only valid next step is user review (see Terminal Record). After adoption, every brief cites the stable `parent_framework` identity plus the exact adopted artifact stamp, complete-file snapshot SHA-256, adoption record, and attached or immutable loadable snapshot.
+This framework is a candidate (see Status and §20). **No sub-architect may be dispatched against it until the user adopts or revises it in Phase 0 (§19).** A sub-architect dispatched on an unadopted framework would treat the framework's proposed thesis (§20.1) as committed authority that the user has not granted. Until adoption, the only valid next step is user review (see Terminal Record). After adoption, every brief cites the stable `parent_framework` ID plus the exact adopted snapshot hash and adoption record.
 
 #### 12.0.2 Source-provisioning rule — content, not citation
 
-§1.1 forbids a sub-architect from relying on the originating conversation. Therefore the assignment packet MUST carry the **content** of every inherited source the assigned dimension depends on — either the full source text embedded in the packet, or a reference the sub-architect is **guaranteed to be able to load in its own execution context**. A bare citation, active filename, revision number, or hash without loadable content does **not** satisfy this rule: a context-isolated agent cannot read a file it was only told the name of, and must block. The dimension→source provisioning map below is the minimum attachment set per dimension; a specific assignment may require more.
+§1.1 forbids a sub-architect from relying on the originating conversation. Therefore the assignment packet MUST carry the **content** of every inherited source the assigned dimension depends on — either the full source text embedded in the packet, or a reference the sub-architect is **guaranteed to be able to load in its own execution context**. A bare citation (filename + version or archive label) does **not** satisfy this rule: a context-isolated agent cannot read a file it was only told the name of, and must block. The dimension→source provisioning map below is the minimum attachment set per dimension; a specific assignment may require more.
 
 | Assigned dimension | Minimum source content the packet MUST attach |
 |---|---|
@@ -1379,14 +1363,14 @@ Dimension-local-only work (a component that emits no Spine-owned shared encoding
 Every material sub-architect assignment MUST include:
 
 1. component identity and class;
-2. parent UAM Framework stable identity, complete adopted artifact stamp, complete-file snapshot SHA-256, adoption record, and loadable snapshot (per §12.0.1);
+2. parent UAM Framework stable ID, exact adopted snapshot hash, and adoption record (per §12.0.1);
 3. current committed goal and success conditions;
 4. explicit and entailed requirements;
 5. optional and speculative opportunities;
 6. owned design decisions;
 7. prohibited decisions and writes;
 8. applicable dimensions and neighboring components;
-9. inherited source **content** (attached or guaranteed-loadable, per §12.0.2 — not citations), stable identities, complete artifact stamps, complete-file snapshot SHA-256 values, and exact snapshot refs;
+9. inherited source **content** (attached or guaranteed-loadable, per §12.0.2 — not citations), stable IDs/paths, and exact snapshot hashes or archive refs;
 10. current state and artifact references;
 11. evidence ceiling;
 12. material constraints;
@@ -1459,30 +1443,19 @@ Every material UAM component must be documented with the following contract. A m
 
 ```yaml
 component:
-  id: <stable-versionless-id>
-  name: <stable-human-readable-name>
+  id: <stable-id>
+  name: <human-readable-name>
   class: <spine | dimension-module | skill-family | mode | lens | recipe |
           domain-module | state-component | runtime-adapter | evaluation-package>
-  canonical_filename: <versionless-active-filename>
-  artifact_stamp:
-    artifact_revision: <monotonic-integer>
-    updated_at: <ISO-8601-UTC>
-    payload_sha256: <payload-sha256>
-  snapshot_sha256: <complete-file-sha256>
-  snapshot_ref: <attached-content-or-immutable-ref>
+  active_filename: <versionless-canonical-filename>
+  snapshot_hash: <sha256-of-frozen-input-or-candidate>
+  archive_ref: <null-while-active-or-immutable-archive-ref>
   status: <proposed | candidate | implemented | validated | adopted | deprecated>
   evidence_ceiling: <design-time | simulated | live-runtime |
                      post-implementation | production-observed>
-  parent_framework:
-    artifact_id: UAM-FRAMEWORK
-    canonical_filename: UAM_Model_Framework.md
-    artifact_stamp:
-      artifact_revision: <exact-adopted-integer>
-      updated_at: <exact-adopted-ISO-8601-UTC>
-      payload_sha256: <exact-adopted-payload-sha256>
-    snapshot_sha256: <exact-complete-file-sha256>
-    snapshot_ref: <attached-content-or-immutable-ref>
-    adoption_ref: <record-ref>
+  parent_framework: UAM-FRAMEWORK
+  parent_framework_hash: <exact-adopted-snapshot-sha256>
+  parent_framework_adoption_ref: <record-ref>
 
 purpose:
   problem_solved: <statement>
@@ -1515,7 +1488,7 @@ interfaces:
   upstream_dependencies: []
   downstream_consumers: []
   neighboring_components: []
-  compatibility_conditions: []
+  compatibility_range: []
 
 activation:
   select_when: []
@@ -1642,7 +1615,7 @@ Every material decision and governed write must have one primary owner. Supporti
 Every cross-component handoff must identify:
 
 - exact object or artifact consumed;
-- stable identity, complete artifact stamp, state revision, branch, and freshness where relevant;
+- snapshot hash, revision, branch, and freshness where relevant;
 - permitted and forbidden reads;
 - expected output;
 - evidence ceiling;
@@ -1738,7 +1711,7 @@ This detects both missing uplift and overactivation harm.
 
 Material evaluations should preserve:
 
-- frozen input content, complete source artifact stamps, and attached or immutable snapshot references;
+- frozen input and source versions;
 - exact prompts or execution contracts;
 - runtime/model configuration when applicable;
 - state and packet snapshots;
@@ -2046,14 +2019,8 @@ If any answer is materially missing, the sub-architect must return a precise blo
 - Component name:
 - Component class:
 - Assigned dimension(s):
-- Parent framework: UAM Model Framework (`UAM-FRAMEWORK`)
-- Parent framework canonical filename: `UAM_Model_Framework.md`
-- Parent framework artifact stamp:
-  - Artifact revision:
-  - Updated at:
-  - Payload SHA-256:
-- Parent framework snapshot SHA-256:
-- Parent framework snapshot ref (attached or immutable):
+- Parent framework: UAM-FRAMEWORK
+- Parent framework snapshot hash:
 - Parent framework adoption record:
 - Authorized role:
 - Evidence ceiling:
@@ -2080,7 +2047,7 @@ If any answer is materially missing, the sub-architect must return a precise blo
 - Prohibited writes:
 
 ## Existing foundations
-- Attached source content (full text or guaranteed-loadable ref, per §12.0.2 — NOT citations), stable identities, complete artifact stamps, complete-file snapshot SHA-256 values, and snapshot refs:
+- Attached source content (full text or guaranteed-loadable ref, per §12.0.2 — NOT citations), stable refs, and snapshot hashes/archive refs:
 - Preserve:
 - Refactor candidates:
 - Absorb candidates:

@@ -1,0 +1,11 @@
+# UAM Canonical Active Set
+
+This directory is the reconciled canonical active set as of 2026-06-20.
+
+- Resolve current artifacts through `UAM_Artifact_Index.yaml`.
+- `AGENTS.md` is the sole active Architect-instruction file.
+- Files under `archive/` are immutable displaced history.
+- The framework remains a candidate.
+- The bootstrap brief is indexed but not dispatch-ready.
+
+The outer `/mnt/data` directory remains an attachment/source-intake area and is not an active-set root.

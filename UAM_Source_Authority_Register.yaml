@@ -1,0 +1,62 @@
+# UAM Bootstrap Pair Brief — Readiness Assessment
+
+**Artifact ID:** `UAM-BRIEF-BOOTSTRAP-ASSESSMENT`  
+**Status:** design-time assessment  
+**Assessed source:** legacy draft `UAM_Bootstrap_Pair_Brief_v0_1.md`  
+**Patched artifact:** `UAM_Bootstrap_Pair_Brief.md`  
+**Assessment date:** 2026-06-20
+
+## Verdict
+
+**Patch required and completed.** The original brief had the correct bootstrap concept, operation pair, evidence ceiling, and no-local-shared-encoding rule, but it was not safe to dispatch.
+
+## Critical findings and applied corrections
+
+| Finding | Severity | Correction |
+|---|---:|---|
+| Versioned active ID, filename, and parent reference | Critical | Replaced with stable `UAM-BRIEF-BOOTSTRAP`, versionless filename, and stable `UAM-FRAMEWORK` reference. Added a self-describing stamp. |
+| Claimed “dispatch-ready” while only checking Phase 0 | Critical | Status changed to **not dispatch-ready**. Added mandatory Phase 1, Phase 2, source, test, role/context, packet, and freshness gates. |
+| Terminal record jumped from framework adoption directly to dispatch | Critical | Correct sequence is adoption → Phase-1 shared contracts → Phase-2 six-operation shells → source/test/role freeze → immutable dispatch packet → bootstrap execution. |
+| Missing actual shared-contract artifacts | Critical | Explicitly requires frozen error-code, state-metadata, source-authority, and packet/manifest artifacts before dispatch. A gap blocks before build; a novel gap discovered during build returns to the Spine owner. |
+| D3 was granted ownership of “lenses and recipes” | Critical | D3 now owns operation surfaces and composition hooks only. D4 retains lens internals/canonical recipes; D8 retains global evaluation policy; D6 retains canonical state/evidence; Spine retains shared encodings. |
+| Claimed all donor sources were present and guaranteed loadable | Critical | Claim withdrawn. Replaced with a source-provisioning matrix requiring content/loadability, authority scope, and exact hashes per context. |
+| Omitted required D3 consolidation donors and evidence sources | High | Added broad-skill analysis, current AB wrappers, Evidence Capture Protocol content, and relevant adversarial fixtures. |
+| Test target was described only as “one real candidate component” | High | Added a frozen test-target contract, predeclared rubric, exclusions, and two-pass architecture/evaluation procedure. |
+| Independence was underspecified | High | Added primary architect, execution, independent evaluator, and gate-assessor roles with separate contexts and forbidden reads. Distinguished context isolation from author/model independence. |
+| Candidate outputs could be mistaken for canonical writes | High | Candidate specs remain workspace/branch artifacts until a separate single-writer promotion transaction. Direct canonical state/evidence writes are prohibited. |
+| Gate claim was broader than the evidence | High | Clearance is limited to simulated bootstrap-contract sufficiency for the tested scope; it does not adopt operations or establish production readiness. |
+| Freshness response implied restart but lacked exact action pins | Medium | Added stamp/hash checks before start and commit, with flag-and-block pending bounded revalidation. |
+
+## Outstanding blockers before dispatch
+
+1. Adopt or revise the exact parent framework snapshot and create the adoption record.
+2. Produce and freeze the four Phase-1 Spine contract artifacts.
+3. Produce and freeze thin shells for all six operations.
+4. Assemble and hash the complete source package.
+5. Freeze the test target and evaluation rubric.
+6. Assign roles, contexts, forbidden reads, runtime/model identity requirements, and packet identity.
+7. Reconcile the active artifact working set before creating acting references.
+
+## Artifact-identity warning
+
+The current `/mnt/data` root is a mixed set: `UAM_Artifact_Index.yaml` reflects the stamped identity-migration package, while several root active documents are older unstamped copies with different complete-file hashes. Under the adopted freshness rule, this is a **flag-and-block** condition for material dispatch. The patched brief therefore records the stamped migration-package snapshot as its design basis but deliberately does not claim an adopted acting parent.
+
+## Patch identities
+
+```yaml
+patched_brief:
+  stable_artifact_id: UAM-BRIEF-BOOTSTRAP
+  canonical_filename: UAM_Bootstrap_Pair_Brief.md
+  artifact_revision: 1
+  updated_at: 2026-06-20T01:06:13Z
+  payload_sha256: d2cb081e427e2ffb1b7cbccf52326aab508d5456eaf6e9864ddae95a96515e54
+  snapshot_sha256: 5830caaf4ec61a3e616bfc5a1c6233e2d2e85a3efc132091aa404b7c6b974979
+legacy_snapshot:
+  source_filename: UAM_Bootstrap_Pair_Brief_v0_1.md
+  archive_ref: archive/UAM_Bootstrap_Pair_Brief/UAM_Bootstrap_Pair_Brief__legacy-v0.1__2026-06-19__9e8cc60e0360.md
+  snapshot_sha256: 9e8cc60e0360bc0eca0f8338920d889d6249e35d182f1ad33c45e9a5ee4d658b
+```
+
+## Recommendation
+
+Use the patched brief as the **candidate assignment family**. Do not dispatch it until the prerequisite freeze record is complete and an immutable packet pins the adopted framework and every load-bearing contract/source.
