@@ -1,0 +1,63 @@
+record_type: "UAM active-set identity repair"
+status: "candidate repair evidence; pending PR review and merge"
+repair_date: '2026-06-20'
+baseline_commit: 'dca7802ad516a858e17625797001503d41f4e880'
+branch: 'repair/uam-active-set-identity-20260620'
+evidence_stage: design-time
+semantic_change: false
+adoption_change: false
+authority_change: false
+canonical_active_set_resolution: "repo root, matching UAM Artifact Index r2 canonical_active_set_root and filenames"
+archived_displaced_files:
+  - source_path: 'active/uam/UAM_Model_Framework.md'
+    archive_path: 'archive/uam/identity-repair-2026-06-20/from-active-uam/UAM_Model_Framework — displaced path snapshot (2026-06-20) [84f4c59cf857].md'
+    file_sha256: '84f4c59cf85727e5b44e697d36dd0fa5557ecceed48eec8f5dc546eecad85f9d'
+  - source_path: 'active/uam/UAM_Model_Participation_and_Assurance_Plan.md'
+    archive_path: 'archive/uam/identity-repair-2026-06-20/from-active-uam/UAM_Model_Participation_and_Assurance_Plan — displaced path snapshot (2026-06-20) [508076687c13].md'
+    file_sha256: '508076687c13b87518f8d61d1e859154e8879d7394c8605e97750f850aa2ed75'
+  - source_path: 'active/uam/UAM_Source_Intake_and_Context_Map.md'
+    archive_path: 'archive/uam/identity-repair-2026-06-20/from-active-uam/UAM_Source_Intake_and_Context_Map — displaced path snapshot (2026-06-20) [b805cd745f8f].md'
+    file_sha256: 'b805cd745f8f769ce3d5441b2b1c9ddd79d759481d64000f1f3c4109c6ee5402'
+  - source_path: 'active/uam/UAM_Bootstrap_Pair_Brief.md'
+    archive_path: 'archive/uam/identity-repair-2026-06-20/from-active-uam/UAM_Bootstrap_Pair_Brief — displaced path snapshot (2026-06-20) [b4b11a61c85f].md'
+    file_sha256: 'b4b11a61c85fc0da3fce8dd2626e5675c1aaaa637e83b3d0bfc62dd91927eff7'
+restored_artifacts:
+  - canonical_path: 'AGENTS.md'
+    artifact_id: 'UAM-ARCHITECT-INSTRUCTIONS'
+    content_sha256: '76bebac70d542e29f82454c427b414235894e0b5892ccdaf71308fb19130b585'
+    file_sha256: 'fc995e3fb6e0168c8f26da9e9e11c9818d8bd8414ad09194664503aab17b2bc4'
+    result: pass
+  - canonical_path: 'UAM_Artifact_Index.yaml'
+    artifact_id: 'UAM-ARTIFACT-INDEX'
+    content_sha256: 'c764d25a9abc5f2a9188dbc04590a9301933cf99023857f6d3b736bd9f35fe5c'
+    file_sha256: '8e9019e9998632fb91e0dbf1aadd78071a35874ca0794d6aac5551e3892b00d0'
+    result: pass
+  - canonical_path: 'UAM_Artifact_Naming_and_Archive_Convention.md'
+    artifact_id: 'UAM-ARTIFACT-NAMING'
+    content_sha256: '01a6ea18021702339c406f65cc71b6d86eadc1df8f01194b0b12bdfb6a091403'
+    file_sha256: '3114c77f64426996c0a693c2db250e09bede3989c98383cfd6c67876836d1fdd'
+    result: pass
+  - canonical_path: 'UAM_Model_Framework.md'
+    artifact_id: 'UAM-FRAMEWORK'
+    content_sha256: 'c5d3f5ce9d2259f8c04db769b63ccda2d4b55acd8f5b50e72d9b8528daf3017d'
+    file_sha256: 'a8ffb6c07cacea4ca8d863533359cc6b52dedb3e702adfad4b05a7880558f89d'
+    result: pass
+  - canonical_path: 'UAM_Model_Participation_and_Assurance_Plan.md'
+    artifact_id: 'UAM-MODEL-PARTICIPATION'
+    content_sha256: '6d579196285b1be3beb1258fe2e8d3dd820aac39d8d9ccaadf305b6b11a8bb7d'
+    file_sha256: '87dea04af79323efe93372881f93f9617addb9b914594ad3f90b27a4b5ad56d0'
+    result: pass
+  - canonical_path: 'UAM_Source_Intake_and_Context_Map.md'
+    artifact_id: 'UAM-SOURCE-CONTEXT-MAP'
+    content_sha256: '6a296c658cc5f27a0262a7e6e86ebb906d9f218281dbd7bb96394a09f0127c39'
+    file_sha256: 'a1b79bf685f5d581dfd022a3ac07351b67551af268674643be2fa060c0982a86'
+    result: pass
+  - canonical_path: 'UAM_Bootstrap_Pair_Brief.md'
+    artifact_id: 'UAM-BRIEF-BOOTSTRAP'
+    content_sha256: '351a029d46a508bb5dcead5f0cb8f2c9f333b934200098634878dc3fa6595f93'
+    file_sha256: '2fbffd2b351c074d04bf9751a41ce53d4ec959645813fe9bb29aca40d9074465'
+    result: pass
+limitations:
+  - "This transaction repairs UAM path-to-payload identity only."
+  - "It does not migrate the UAM active set into active/uam; that requires a separately authorized index/path revision."
+  - "It does not adopt the framework or participation plan and does not modify AB or OMR authority."
