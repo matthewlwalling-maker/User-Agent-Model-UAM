@@ -1,0 +1,53 @@
+artifact: Minimum Composition Current-Authority Smoke Test Configuration
+version: '0.3-current'
+status: current-authority-smoke
+run_series_id: api-smoke-current-20260619-C01-C08
+paths:
+  authority_dir: ../authorities_current
+  fixture_view: ../authorities_current/P5_Executor_View_v0.1.yaml
+  output_root: ../runs
+provider:
+  type: codex_cli
+  binary: codex
+  auth_mode: auto
+  ephemeral: false
+  ignore_user_config: false
+  ignore_rules: true
+  history_persistence: none
+  model: gpt-5.5
+  reasoning_effort: high
+  model_verbosity: low
+  max_tokens_operator: 64000
+  max_tokens_legacy: 64000
+  timeout_seconds: 1800
+  prompt_cache_ttl: none
+  extra_args: []
+execution:
+  replicates_per_cell: 1
+  cases:
+  - C01
+  - C08A
+  - C08B
+  conditions:
+    standard: true
+    packet_boundary: true
+    separate_context: true
+  dual_condition_cells:
+  - C01
+  first_pass_recovery_allowed: false
+  resume_completed: true
+holdouts:
+  required: false
+blinding:
+  seed: 20260619
+  fixture_custodian: smoke-test-current
+  independent_evaluator: smoke-test-current
+  reveal_key_after_first_pass_scoring_locked: false
+capture:
+  retain_thinking_blocks: false
+  retain_raw_requests: true
+  retain_raw_responses: true
+  retain_all_state_revisions: true
+  retain_selector_logs: true
+  retain_context_proofs: true
+  preflight_token_count: false

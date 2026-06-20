@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "minimum-composition-harness"
+version = "0.2.0"
+description = "Codex CLI harness for the Minimum Composition A/B experiment"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "PyYAML>=6.0,<7",
+  "jsonschema>=4.23,<5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+mch = "mcp_harness.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,31 @@
+artifact: Minimum Composition Holdout Selection Record
+version: "0.1"
+selection_id: "SET-UNIQUE-ID"
+profile: "material|trivial"
+selected_by: "SET-CUSTODIAN"
+selected_at: "YYYY-MM-DDTHH:MM:SSZ"
+selection_timing:
+  prototype_frozen_before_selection: true
+  harness_frozen_before_selection: true
+  selected_before_authoritative_run: true
+unseen_status:
+  not_used_to_design_prototype: true
+  not_used_to_build_harness: true
+  not_visible_to_independent_evaluator_before_scoring: true
+asset_version: "SET-VERSION"
+evidence_stage: design-time
+user_request: "SET-USER-REQUEST"
+goal_constraints:
+  - "SET-CONSTRAINT"
+selection_basis:
+  coupling_or_boundedness: "SET"
+  omission_risk: "SET"
+  why_profile_fits: "SET"
+exclusions_checked:
+  duplicates_fixed_fixtures: false
+  contains_evaluator_hidden_annotations: false
+  requires_live_external_data: false
+source_record:
+  asset_filename: "SET-FILENAME"
+  asset_sha256: "SET-AFTER-SELECTION"
+notes: []

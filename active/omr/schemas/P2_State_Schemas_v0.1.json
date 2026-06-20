@@ -1,0 +1,2674 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-builder:minimum-composition:p2-state-schemas:mcp-0.1",
+  "title": "P2 — Minimum Composition State Schemas",
+  "description": "One schema registry for the five allowed state objects. MetadataEnvelope is embedded and is not a sixth state object.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/GoalContract"
+    },
+    {
+      "$ref": "#/$defs/CapabilityModel"
+    },
+    {
+      "$ref": "#/$defs/EvidenceLedger"
+    },
+    {
+      "$ref": "#/$defs/CoverageMap"
+    },
+    {
+      "$ref": "#/$defs/ChangeDecision"
+    }
+  ],
+  "$defs": {
+    "ObjectRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "object_id",
+        "object_kind",
+        "revision",
+        "branch_id",
+        "content_hash"
+      ],
+      "properties": {
+        "object_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object_kind": {
+          "enum": [
+            "GoalContract",
+            "CapabilityModel",
+            "EvidenceLedger",
+            "CoverageMap",
+            "ChangeDecision"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "branch_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "MetadataEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "object_id",
+        "object_kind",
+        "schema_version",
+        "revision",
+        "status",
+        "freshness",
+        "branch_id",
+        "parent_refs",
+        "producer",
+        "evidence_refs",
+        "conflict_refs",
+        "projection",
+        "content_hash"
+      ],
+      "properties": {
+        "object_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object_kind": {
+          "enum": [
+            "GoalContract",
+            "CapabilityModel",
+            "EvidenceLedger",
+            "CoverageMap",
+            "ChangeDecision"
+          ]
+        },
+        "schema_version": {
+          "const": "mcp-0.1"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "committed",
+            "contested",
+            "invalid",
+            "superseded"
+          ]
+        },
+        "freshness": {
+          "enum": [
+            "current",
+            "stale",
+            "unknown"
+          ]
+        },
+        "branch_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "object_id",
+              "object_kind",
+              "revision",
+              "branch_id",
+              "content_hash"
+            ],
+            "properties": {
+              "object_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "object_kind": {
+                "enum": [
+                  "GoalContract",
+                  "CapabilityModel",
+                  "EvidenceLedger",
+                  "CoverageMap",
+                  "ChangeDecision"
+                ]
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "branch_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "content_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "producer": {
+          "enum": [
+            "external-intake",
+            "O1",
+            "O2",
+            "O3",
+            "O4",
+            "selector",
+            "import"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conflict_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "object_id",
+              "object_kind",
+              "revision",
+              "branch_id",
+              "content_hash"
+            ],
+            "properties": {
+              "object_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "object_kind": {
+                "enum": [
+                  "GoalContract",
+                  "CapabilityModel",
+                  "EvidenceLedger",
+                  "CoverageMap",
+                  "ChangeDecision"
+                ]
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "branch_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "content_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "projection": {
+          "enum": [
+            "material",
+            "compact"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "resolution_basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "minimum": 2
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parent_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "contested"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "conflict_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "GoalContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meta",
+        "target_ref",
+        "outcome_statement",
+        "obligations",
+        "constraints",
+        "assessment_profile",
+        "profile_basis",
+        "unresolved_ambiguities",
+        "freeze_state"
+      ],
+      "properties": {
+        "meta": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MetadataEnvelope"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "object_kind": {
+                  "const": "GoalContract"
+                },
+                "producer": {
+                  "enum": [
+                    "O1",
+                    "external-intake",
+                    "import"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "target_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome_statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "obligations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "statement",
+              "class",
+              "basis",
+              "source_refs",
+              "confidence"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^OB-[A-Za-z0-9_-]+$"
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "class": {
+                "enum": [
+                  "explicit-required",
+                  "entailed-required",
+                  "optional",
+                  "speculative"
+                ]
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_refs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "confidence": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              }
+            }
+          },
+          "contains": {
+            "properties": {
+              "class": {
+                "enum": [
+                  "explicit-required",
+                  "entailed-required"
+                ]
+              }
+            },
+            "required": [
+              "class"
+            ]
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "statement",
+              "basis",
+              "source_refs"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^CT-[A-Za-z0-9_-]+$"
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_refs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "assessment_profile": {
+          "enum": [
+            "compact",
+            "material"
+          ]
+        },
+        "profile_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unresolved_ambiguities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "statement",
+              "materiality",
+              "handling"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "materiality": {
+                "enum": [
+                  "nonmaterial",
+                  "material"
+                ]
+              },
+              "handling": {
+                "enum": [
+                  "bounded-assumption",
+                  "branch",
+                  "clarification-required"
+                ]
+              }
+            }
+          }
+        },
+        "freeze_state": {
+          "enum": [
+            "open",
+            "committed",
+            "blocked"
+          ]
+        },
+        "requested_claim": {
+          "enum": [
+            "design-time",
+            "simulated",
+            "live-runtime",
+            "post-implementation",
+            "production-observed"
+          ]
+        },
+        "authorized_decision_scope": {
+          "enum": [
+            "assess",
+            "recommend",
+            "decide"
+          ]
+        },
+        "alternative_interpretations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "freeze_state": {
+                "const": "committed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "meta": {
+                "properties": {
+                  "status": {
+                    "const": "committed"
+                  },
+                  "freshness": {
+                    "const": "current"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CapabilityModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meta",
+        "goal_contract_ref",
+        "capabilities",
+        "obligation_coverage",
+        "derivation_boundary",
+        "model_completeness",
+        "open_questions",
+        "alternative_model_refs"
+      ],
+      "properties": {
+        "meta": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MetadataEnvelope"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "object_kind": {
+                  "const": "CapabilityModel"
+                },
+                "producer": {
+                  "enum": [
+                    "O2",
+                    "import"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "goal_contract_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_id",
+            "object_kind",
+            "revision",
+            "branch_id",
+            "content_hash"
+          ],
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_kind": {
+              "enum": [
+                "GoalContract",
+                "CapabilityModel",
+                "EvidenceLedger",
+                "CoverageMap",
+                "ChangeDecision"
+              ]
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "branch_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "behavior",
+              "obligation_refs",
+              "success_condition",
+              "scope_boundary",
+              "confidence",
+              "requiredness"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^CAP-[A-Za-z0-9_-]+$"
+              },
+              "behavior": {
+                "type": "string",
+                "minLength": 1
+              },
+              "obligation_refs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^OB-"
+                }
+              },
+              "success_condition": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope_boundary": {
+                "type": "string",
+                "minLength": 1
+              },
+              "confidence": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "requiredness": {
+                "const": "required"
+              }
+            }
+          }
+        },
+        "obligation_coverage": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "obligation_ref",
+              "capability_refs"
+            ],
+            "properties": {
+              "obligation_ref": {
+                "type": "string",
+                "pattern": "^OB-"
+              },
+              "capability_refs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^CAP-"
+                }
+              }
+            }
+          }
+        },
+        "derivation_boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "condition",
+            "input_packet_hash",
+            "permitted_input_types",
+            "forbidden_input_types",
+            "asset_seen_in_current_context",
+            "asset_component_terms_used"
+          ],
+          "properties": {
+            "condition": {
+              "enum": [
+                "packet-boundary",
+                "separate-context"
+              ]
+            },
+            "input_packet_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "permitted_input_types": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "enum": [
+                  "goal-contract",
+                  "goal-evidence",
+                  "constraint-evidence",
+                  "prior-model-for-adjudication"
+                ]
+              }
+            },
+            "forbidden_input_types": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "enum": [
+                  "asset-decomposition",
+                  "asset-section-labels",
+                  "coverage-judgments",
+                  "proposed-edits"
+                ]
+              }
+            },
+            "asset_seen_in_current_context": {
+              "type": "boolean"
+            },
+            "asset_component_terms_used": {
+              "type": "array",
+              "maxItems": 0
+            }
+          }
+        },
+        "model_completeness": {
+          "enum": [
+            "candidate-complete",
+            "incomplete",
+            "contested"
+          ]
+        },
+        "open_questions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "capability_relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "to",
+              "relation"
+            ],
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^CAP-"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^CAP-"
+              },
+              "relation": {
+                "enum": [
+                  "requires",
+                  "precedes",
+                  "constrains",
+                  "reinforces"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "alternative_model_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "object_id",
+              "object_kind",
+              "revision",
+              "branch_id",
+              "content_hash"
+            ],
+            "properties": {
+              "object_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "object_kind": {
+                "enum": [
+                  "GoalContract",
+                  "CapabilityModel",
+                  "EvidenceLedger",
+                  "CoverageMap",
+                  "ChangeDecision"
+                ]
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "branch_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "content_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "nonrequired_opportunities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sufficiency_rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "EvidenceLedger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meta",
+        "ledger_id",
+        "entries",
+        "stage_vocabulary",
+        "append_only_from_revision"
+      ],
+      "properties": {
+        "meta": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MetadataEnvelope"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "object_kind": {
+                  "const": "EvidenceLedger"
+                },
+                "producer": {
+                  "enum": [
+                    "external-intake",
+                    "O1",
+                    "O2",
+                    "O3",
+                    "import"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "ledger_id": {
+          "type": "string",
+          "pattern": "^EL-"
+        },
+        "entries": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidence_id",
+              "source_ref",
+              "source_type",
+              "stage",
+              "statement",
+              "claim_refs",
+              "polarity",
+              "scope",
+              "limitations",
+              "recorded_by"
+            ],
+            "properties": {
+              "evidence_id": {
+                "type": "string",
+                "pattern": "^EV-[A-Za-z0-9_-]+$"
+              },
+              "source_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_type": {
+                "enum": [
+                  "user-request",
+                  "governing-source",
+                  "asset-text",
+                  "dependency-map",
+                  "controlled-test",
+                  "runtime-observation",
+                  "implementation-record",
+                  "production-observation",
+                  "model-inference"
+                ]
+              },
+              "stage": {
+                "enum": [
+                  "design-time",
+                  "simulated",
+                  "live-runtime",
+                  "post-implementation",
+                  "production-observed"
+                ]
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "claim_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "polarity": {
+                "enum": [
+                  "supports",
+                  "contradicts",
+                  "context-only"
+                ]
+              },
+              "scope": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "asset_or_target_ref",
+                  "branch_id"
+                ],
+                "properties": {
+                  "asset_or_target_ref": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "asset_version": {
+                    "type": "string"
+                  },
+                  "branch_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "capability_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "limitations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "recorded_by": {
+                "enum": [
+                  "external-intake",
+                  "O1",
+                  "O2",
+                  "O3"
+                ]
+              },
+              "collection_method": {
+                "type": "string"
+              },
+              "supersedes_evidence_id": {
+                "type": "string",
+                "pattern": "^EV-"
+              },
+              "reliability_note": {
+                "type": "string"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "source_type": {
+                      "const": "model-inference"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "stage": {
+                      "const": "design-time"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "stage": {
+                      "const": "production-observed"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "source_type": {
+                      "const": "production-observation"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "stage_vocabulary": {
+          "const": [
+            "design-time",
+            "simulated",
+            "live-runtime",
+            "post-implementation",
+            "production-observed"
+          ]
+        },
+        "append_only_from_revision": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    },
+    "CoverageMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meta",
+        "capability_model_ref",
+        "goal_contract_ref",
+        "asset_ref",
+        "evidence_ledger_ref",
+        "coverage_entries",
+        "gap_entries",
+        "impact_assessments",
+        "assessment_stage",
+        "overall_o4_readiness",
+        "strengths_to_preserve"
+      ],
+      "properties": {
+        "meta": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MetadataEnvelope"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "object_kind": {
+                  "const": "CoverageMap"
+                },
+                "producer": {
+                  "enum": [
+                    "O3",
+                    "import"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "capability_model_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_id",
+            "object_kind",
+            "revision",
+            "branch_id",
+            "content_hash"
+          ],
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_kind": {
+              "enum": [
+                "GoalContract",
+                "CapabilityModel",
+                "EvidenceLedger",
+                "CoverageMap",
+                "ChangeDecision"
+              ]
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "branch_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "goal_contract_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_id",
+            "object_kind",
+            "revision",
+            "branch_id",
+            "content_hash"
+          ],
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_kind": {
+              "enum": [
+                "GoalContract",
+                "CapabilityModel",
+                "EvidenceLedger",
+                "CoverageMap",
+                "ChangeDecision"
+              ]
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "branch_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "asset_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "asset_id",
+            "version",
+            "content_hash"
+          ],
+          "properties": {
+            "asset_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "evidence_ledger_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_id",
+            "object_kind",
+            "revision",
+            "branch_id",
+            "content_hash"
+          ],
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_kind": {
+              "enum": [
+                "GoalContract",
+                "CapabilityModel",
+                "EvidenceLedger",
+                "CoverageMap",
+                "ChangeDecision"
+              ]
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "branch_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "coverage_entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "capability_ref",
+              "classification",
+              "asset_behavior_refs",
+              "evidence_refs",
+              "rationale",
+              "confidence",
+              "unresolved_evidence"
+            ],
+            "properties": {
+              "capability_ref": {
+                "type": "string",
+                "pattern": "^CAP-"
+              },
+              "classification": {
+                "enum": [
+                  "full-at-stage",
+                  "partial",
+                  "nominal-but-ineffective",
+                  "absent",
+                  "duplicated",
+                  "misplaced",
+                  "unknown-insufficient-evidence"
+                ]
+              },
+              "asset_behavior_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^EV-"
+                }
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1
+              },
+              "confidence": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "unresolved_evidence": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "gap_entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gap_id",
+              "capability_ref",
+              "gap_type",
+              "consequence",
+              "obligation_refs",
+              "origin_layer_candidates",
+              "severity",
+              "confidence"
+            ],
+            "properties": {
+              "gap_id": {
+                "type": "string",
+                "pattern": "^GAP-"
+              },
+              "capability_ref": {
+                "type": "string",
+                "pattern": "^CAP-"
+              },
+              "gap_type": {
+                "enum": [
+                  "local-defect",
+                  "missing-capability",
+                  "ineffective-behavior",
+                  "misplaced-capability",
+                  "duplicated-capability",
+                  "evidence-only-unknown"
+                ]
+              },
+              "consequence": {
+                "type": "string",
+                "minLength": 1
+              },
+              "obligation_refs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^OB-"
+                }
+              },
+              "origin_layer_candidates": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "enum": [
+                    "core-instruction",
+                    "procedure-registry",
+                    "resource-source-map",
+                    "schema-deterministic-logic",
+                    "runtime-tool-integration",
+                    "eval-harness",
+                    "interface-output-compiler",
+                    "deployment-governance",
+                    "unknown"
+                  ]
+                }
+              },
+              "severity": {
+                "enum": [
+                  "low",
+                  "moderate",
+                  "high",
+                  "critical"
+                ]
+              },
+              "confidence": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              }
+            }
+          }
+        },
+        "impact_assessments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gap_ref",
+              "fact_source_mode",
+              "touched_element_refs",
+              "first_degree_dependency_refs",
+              "second_degree_or_broader_refs",
+              "semantic_centrality",
+              "propagation_facts",
+              "change_reach",
+              "dependency_facts_complete",
+              "preservation_feasibility",
+              "material_unknowns",
+              "impact_job_required",
+              "o4_readiness",
+              "decision_ready_basis"
+            ],
+            "properties": {
+              "gap_ref": {
+                "type": "string",
+                "pattern": "^GAP-"
+              },
+              "fact_source_mode": {
+                "enum": [
+                  "asset-explicit",
+                  "supplied-dependency-map",
+                  "bounded-interface-trace",
+                  "mixed",
+                  "insufficient"
+                ]
+              },
+              "touched_element_refs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "first_degree_dependency_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "second_degree_or_broader_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "semantic_centrality": {
+                "enum": [
+                  "peripheral",
+                  "local-interface",
+                  "shared-interface",
+                  "control-plane",
+                  "system-invariant",
+                  "unknown"
+                ]
+              },
+              "propagation_facts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "from_ref",
+                    "to_ref",
+                    "relation",
+                    "basis",
+                    "evidence_refs"
+                  ],
+                  "properties": {
+                    "from_ref": {
+                      "type": "string"
+                    },
+                    "to_ref": {
+                      "type": "string"
+                    },
+                    "relation": {
+                      "enum": [
+                        "calls",
+                        "reads",
+                        "writes",
+                        "validates",
+                        "authorizes",
+                        "inherits",
+                        "publishes",
+                        "retries",
+                        "rolls-back",
+                        "governs"
+                      ]
+                    },
+                    "basis": {
+                      "enum": [
+                        "observed",
+                        "explicitly-documented",
+                        "bounded-inference"
+                      ]
+                    },
+                    "evidence_refs": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "pattern": "^EV-"
+                      }
+                    }
+                  }
+                }
+              },
+              "change_reach": {
+                "enum": [
+                  "named-elements-only",
+                  "n-plus-1",
+                  "broader-than-n-plus-1",
+                  "unknown"
+                ]
+              },
+              "dependency_facts_complete": {
+                "type": "boolean"
+              },
+              "preservation_feasibility": {
+                "enum": [
+                  "established",
+                  "plausible",
+                  "ruled-out",
+                  "unknown"
+                ]
+              },
+              "material_unknowns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "impact_job_required": {
+                "type": "boolean"
+              },
+              "o4_readiness": {
+                "enum": [
+                  "intervention-ready",
+                  "block-only",
+                  "not-ready"
+                ]
+              },
+              "decision_ready_basis": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "assessment_stage": {
+          "enum": [
+            "design-time",
+            "simulated",
+            "live-runtime",
+            "post-implementation",
+            "production-observed"
+          ]
+        },
+        "overall_o4_readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "blocking_gap_refs",
+            "basis"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "intervention-ready",
+                "block-only",
+                "not-ready"
+              ]
+            },
+            "blocking_gap_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^GAP-"
+              }
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "strengths_to_preserve": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failure_scenarios": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "branch_comparison": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ChangeDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meta",
+        "coverage_map_ref",
+        "decision",
+        "target_gap_refs",
+        "selected_fix_layer",
+        "change_boundary",
+        "decision_basis",
+        "evidence_ceiling",
+        "verification_required",
+        "stop_reason",
+        "confidence",
+        "next_consumer_contract"
+      ],
+      "properties": {
+        "meta": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MetadataEnvelope"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "object_kind": {
+                  "const": "ChangeDecision"
+                },
+                "producer": {
+                  "enum": [
+                    "O4",
+                    "import"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "coverage_map_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "object_id",
+            "object_kind",
+            "revision",
+            "branch_id",
+            "content_hash"
+          ],
+          "properties": {
+            "object_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "object_kind": {
+              "enum": [
+                "GoalContract",
+                "CapabilityModel",
+                "EvidenceLedger",
+                "CoverageMap",
+                "ChangeDecision"
+              ]
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "branch_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "decision": {
+          "enum": [
+            "no-material-change",
+            "local-correction",
+            "bounded-capability-addition",
+            "system-restructure",
+            "verification-required",
+            "blocked-by-insufficient-impact-knowledge",
+            "blocked-by-material-disagreement",
+            "stop-unowned-operation"
+          ]
+        },
+        "target_gap_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^GAP-"
+          }
+        },
+        "selected_fix_layer": {
+          "enum": [
+            "core-instruction",
+            "procedure-registry",
+            "resource-source-map",
+            "schema-deterministic-logic",
+            "runtime-tool-integration",
+            "eval-harness",
+            "interface-output-compiler",
+            "deployment-governance",
+            "multiple",
+            "unknown",
+            "not-applicable"
+          ]
+        },
+        "change_boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "touched_element_refs",
+            "preserved_element_refs",
+            "allowed_neighbor_changes",
+            "prohibited_propagation",
+            "change_reach",
+            "uncertainty"
+          ],
+          "properties": {
+            "touched_element_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "preserved_element_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowed_neighbor_changes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "prohibited_propagation": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "change_reach": {
+              "enum": [
+                "none",
+                "named-elements-only",
+                "n-plus-1",
+                "broader-than-n-plus-1",
+                "unknown"
+              ]
+            },
+            "uncertainty": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "decision_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ceiling": {
+          "enum": [
+            "design-time",
+            "simulated",
+            "live-runtime",
+            "post-implementation",
+            "production-observed"
+          ]
+        },
+        "verification_required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stop_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "next_consumer_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "consumer_type",
+            "required_inputs"
+          ],
+          "properties": {
+            "consumer_type": {
+              "enum": [
+                "none",
+                "external-implementer",
+                "external-tester",
+                "external-dependency-impact-job",
+                "independent-evaluator",
+                "platform-packager"
+              ]
+            },
+            "required_inputs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "alternatives_rejected": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "moderate",
+            "high",
+            "critical"
+          ]
+        },
+        "residual_risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional_opportunities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "revisit_trigger": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "no-material-change"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "target_gap_refs": {
+                "maxItems": 0
+              },
+              "selected_fix_layer": {
+                "const": "not-applicable"
+              },
+              "change_boundary": {
+                "properties": {
+                  "change_reach": {
+                    "const": "none"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "enum": [
+                  "local-correction",
+                  "bounded-capability-addition",
+                  "system-restructure"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "target_gap_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "x-field-write-authority": {
+    "GoalContract": {
+      "meta.object_id/schema_version/branch_id/projection": "O1 on creation; selector validates but does not alter.",
+      "meta.revision/status/freshness/parent_refs/conflict_refs/resolution_basis/content_hash": "O1 on a superseding revision; selector may mark an existing snapshot stale without changing its substantive fields.",
+      "target_ref/outcome_statement/obligations/constraints/assessment_profile/profile_basis/unresolved_ambiguities/freeze_state/requested_claim/authorized_decision_scope/alternative_interpretations/excluded_methods": "O1 only; external-intake may seed source text but cannot commit normalized requiredness."
+    },
+    "CapabilityModel": {
+      "meta": "O2 on creation or superseding revision; selector validates freshness.",
+      "goal_contract_ref/capabilities/obligation_coverage/derivation_boundary/model_completeness/open_questions/capability_relations/alternative_model_refs/nonrequired_opportunities/sufficiency_rationale": "O2 only."
+    },
+    "EvidenceLedger": {
+      "meta.revision/parent_refs/content_hash/append_only_from_revision": "ledger append coordinator applying authorized deltas from external-intake/O1/O2/O3.",
+      "entries": "append only by external-intake, O1, O2, or O3 according to source type; no operator may modify/delete prior entries; O4 is read-only.",
+      "ledger_id/stage_vocabulary": "fixed at ledger creation; never rewritten by an operator."
+    },
+    "CoverageMap": {
+      "meta": "O3 on creation or superseding revision; selector validates freshness.",
+      "capability_model_ref/goal_contract_ref/asset_ref/evidence_ledger_ref/coverage_entries/gap_entries/impact_assessments/assessment_stage/overall_o4_readiness/strengths_to_preserve/failure_scenarios/branch_comparison": "O3 only; no intervention or target-architecture field is legal."
+    },
+    "ChangeDecision": {
+      "meta": "O4 on creation or superseding revision; selector validates freshness.",
+      "coverage_map_ref/decision/target_gap_refs/selected_fix_layer/change_boundary/decision_basis/evidence_ceiling/verification_required/stop_reason/confidence/next_consumer_contract/alternatives_rejected/severity/residual_risks/optional_opportunities/revisit_trigger": "O4 only; O4 cannot write upstream facts."
+    }
+  },
+  "x-revision-branch-stale-rules": [
+    "Revision numbers are monotonic per object_id and branch_id; revision >1 requires exact parent refs.",
+    "A branch fork preserves the last common parent and changes branch_id; a merge is a new owner-produced revision with every live parent and resolution_basis.",
+    "Contested status requires conflict_refs; conflicts are never silently erased.",
+    "Exact parent ID/revision/branch/hash mismatch marks the downstream snapshot stale (MCP-E600).",
+    "Stale, invalid, or superseded objects remain auditable but are ineligible as current inputs.",
+    "A downstream object may consume contested branches only when its contract explicitly performs branch-specific assessment; universal decisions require invariance across branches."
+  ],
+  "x-error-codes": {
+    "MCP-E001_METADATA_MISSING": "Required metadata envelope missing or malformed.",
+    "MCP-E010_REVISION_PARENT_MISSING": "Revision >1 lacks exact parent reference.",
+    "MCP-E020_ILLEGAL_WRITE_AUTHORITY": "Producer attempted to write a field/object it does not own.",
+    "MCP-E100_REQUIRED_OBLIGATION_MISSING": "GoalContract has no explicit-required or entailed-required obligation.",
+    "MCP-E110_ENTAILED_BASIS_MISSING": "Entailed obligation lacks necessity basis and source.",
+    "MCP-E120_COMPACT_REQUIREDNESS_LOST": "Compact projection omits obligation class or basis.",
+    "MCP-E200_GOAL_NOT_COMMITTED": "CapabilityModel references a noncommitted, stale, or contested goal without branch handling.",
+    "MCP-E210_TRACE_INCOMPLETE": "Capability/obligation trace is empty or not bidirectional.",
+    "MCP-E220_INDEPENDENCE_CONTAMINATION": "O2 packet or output contains forbidden asset decomposition or component terms.",
+    "MCP-E230_SILENT_MODEL_UNION": "Materially disagreeing model branches were merged without owned re-derivation and resolution basis.",
+    "MCP-E300_EVIDENCE_SCOPE_MISMATCH": "Claim cites evidence outside its asset/version/branch/capability scope.",
+    "MCP-E310_LEDGER_NONAPPEND_MUTATION": "Evidence entry was deleted or modified rather than superseded.",
+    "MCP-E320_CLAIM_EXCEEDS_STAGE": "Claim stage exceeds cited evidence stage.",
+    "MCP-E330_INFERENCE_STAGE_LAUNDERING": "Model inference is represented above design-time or as observed evidence.",
+    "MCP-E400_O3_BEFORE_O2": "Coverage assessment lacks a committed current CapabilityModel.",
+    "MCP-E410_COVERAGE_MISSING": "A required capability lacks a coverage entry or explicit unknown classification.",
+    "MCP-E420_IMPACT_FACTS_NOT_DECISION_READY": "CoverageMap claims intervention readiness without complete reach, preservation, and unknown fields.",
+    "MCP-E421_HIDDEN_IMPACT_JOB": "O3 performed or implied a separate dependency-impact job rather than declaring it required.",
+    "MCP-E430_O3_INTERVENTION_DECISION": "CoverageMap contains an intervention selection or target architecture.",
+    "MCP-E500_O4_WITHOUT_CURRENT_COVERAGE": "ChangeDecision lacks a current committed CoverageMap.",
+    "MCP-E510_O4_WITHOUT_IMPACT_KNOWLEDGE": "O4 selects an intervention when CoverageMap is block-only or not-ready.",
+    "MCP-E520_ACTION_EXCEEDS_IMPACT": "Decision reach exceeds supplied impact facts or lacks target gaps.",
+    "MCP-E530_O4_REANALYZED_COVERAGE": "O4 rewrote coverage/impact facts instead of consuming them.",
+    "MCP-E600_STALE_PARENT": "Exact parent revision/hash no longer matches current state.",
+    "MCP-E610_UNRESOLVED_BRANCH": "Decision-material conflict was ignored or silently collapsed.",
+    "MCP-E620_COMPACT_PROVENANCE_LOST": "Compact projection cannot resolve parent, evidence, branch, or stop basis."
+  },
+  "x-semantic-validation-rules": [
+    "Required obligation IDs and capability IDs must be unique within an object.",
+    "Every required GoalContract obligation must appear in CapabilityModel.obligation_coverage; every capability obligation_ref must resolve.",
+    "A downstream ObjectRef must match exact object_id, revision, branch_id, and content_hash and the parent must be committed/current unless contested branches are explicitly allowed.",
+    "EvidenceLedger revisions are append-only: prior entries are byte-identical and new entries are appended; corrections use supersedes_evidence_id.",
+    "Every required capability has exactly one CoverageMap coverage entry per branch or explicit unknown; full-at-stage requires behavior refs and in-scope evidence.",
+    "CoverageMap contains no decision field. For each material gap, impact assessment must include gap type, origin-layer candidates, reach, first/second-degree dependencies, semantic centrality, preservation feasibility, completeness, unknowns, and O4 readiness.",
+    "If change_reach is broader-than-n-plus-1, second_degree_or_broader_refs or explicit systemic propagation facts must be nonempty.",
+    "If impact_job_required is true, o4_readiness must be block-only and O4 may only block; if o4_readiness is not-ready, selector must rerun/reject O3 rather than invoke O4.",
+    "O4 maps immutable O3 facts: local-defect + named-elements-only may support local-correction; missing-capability + n-plus-1 may support bounded-capability-addition; broader-than-n-plus-1 may support system-restructure; unknown/block-only requires blocked-by-insufficient-impact-knowledge.",
+    "A no-material-change decision requires no material gap and adequate coverage at the stated stage; optional items cannot populate target_gap_refs.",
+    "Compact projection retains obligation class+basis, capability traces, exact parent/evidence refs, evidence ceiling, branch/conflict status, O4 readiness, decision/stop basis, and ledger identity/digest."
+  ],
+  "x-invalidation-matrix": {
+    "GoalContract outcome/requiredness/constraint revision": "CapabilityModel, CoverageMap, ChangeDecision stale; EvidenceLedger append-only remains current as history.",
+    "CapabilityModel revision": "CoverageMap and ChangeDecision stale.",
+    "Asset version/content revision": "CoverageMap and ChangeDecision stale.",
+    "New same-scope evidence": "CoverageMap requires revalidation; ChangeDecision stale if any material conclusion changes or stage can be promoted.",
+    "New higher-stage evidence": "Only eligible CoverageMap claims and dependent ChangeDecision are reassessed; goals/capabilities remain current unless evidence changes their basis.",
+    "CoverageMap revision": "ChangeDecision stale.",
+    "Branch conflict introduced": "Dependent objects become contested or branch-specific; universal decision prohibited unless invariant across branches."
+  },
+  "x-projection-rules": {
+    "material": "Serialize all required fields and decision-useful optional fields.",
+    "compact": "May omit optional narrative arrays and co-serialize objects in one packet, but may not omit requiredness basis, bidirectional traces, provenance/evidence ceiling, exact refs/hashes, branch/conflict/freshness, O4 readiness, decision and stop logic.",
+    "ledger-handoff": "Carry either full ledger or a referenced-subset projection containing ledger_id, exact revision/digest, every evidence entry cited by the packet, omitted-entry count, and append delta. A subset cannot authorize a claim that depends on an omitted entry."
+  },
+  "x-examples": {
+    "GoalContract": {
+      "valid": {
+        "meta": {
+          "object_id": "GC-case1",
+          "object_kind": "GoalContract",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O1",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "target_ref": "asset-1",
+        "outcome_statement": "Safely write an authorized value and make the result observable.",
+        "obligations": [
+          {
+            "id": "OB-safe-write",
+            "statement": "Perform only authorized writes.",
+            "class": "explicit-required",
+            "basis": "Direct user requirement.",
+            "source_refs": [
+              "EV-request"
+            ],
+            "confidence": "high"
+          },
+          {
+            "id": "OB-confirm",
+            "statement": "Confirm the committed result before reporting success.",
+            "class": "entailed-required",
+            "basis": "Without confirmation, safe completion cannot be established.",
+            "source_refs": [
+              "EV-request"
+            ],
+            "confidence": "high"
+          }
+        ],
+        "constraints": [],
+        "assessment_profile": "material",
+        "profile_basis": "Write authority and confirmation are coupled across tool and output behavior.",
+        "unresolved_ambiguities": [],
+        "freeze_state": "committed",
+        "requested_claim": "design-time",
+        "authorized_decision_scope": "recommend"
+      },
+      "invalid": {
+        "meta": {
+          "object_id": "GC-case1",
+          "object_kind": "GoalContract",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O1",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "target_ref": "asset-1",
+        "outcome_statement": "Safely write an authorized value and make the result observable.",
+        "obligations": [
+          {
+            "id": "OB-confirm",
+            "statement": "Confirm result.",
+            "class": "entailed-required",
+            "source_refs": [
+              "EV-request"
+            ],
+            "confidence": "high"
+          }
+        ],
+        "constraints": [],
+        "assessment_profile": "material",
+        "profile_basis": "Write authority and confirmation are coupled across tool and output behavior.",
+        "unresolved_ambiguities": [],
+        "freeze_state": "committed",
+        "requested_claim": "design-time",
+        "authorized_decision_scope": "recommend"
+      },
+      "expected_error": "MCP-E110_ENTAILED_BASIS_MISSING"
+    },
+    "CapabilityModel": {
+      "valid": {
+        "meta": {
+          "object_id": "CM-case1",
+          "object_kind": "CapabilityModel",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O2",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "goal_contract_ref": {
+          "object_id": "GC-case1",
+          "object_kind": "GoalContract",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "capabilities": [
+          {
+            "id": "CAP-authorize",
+            "behavior": "Determine whether the requested write is authorized before execution.",
+            "obligation_refs": [
+              "OB-safe-write"
+            ],
+            "success_condition": "Unauthorized writes are rejected before tool execution.",
+            "scope_boundary": "Does not execute the write.",
+            "confidence": "high",
+            "requiredness": "required"
+          },
+          {
+            "id": "CAP-confirm",
+            "behavior": "Verify the committed write result before reporting success.",
+            "obligation_refs": [
+              "OB-confirm"
+            ],
+            "success_condition": "Success is reported only from a matching committed result.",
+            "scope_boundary": "Does not define authorization policy.",
+            "confidence": "high",
+            "requiredness": "required"
+          }
+        ],
+        "obligation_coverage": [
+          {
+            "obligation_ref": "OB-safe-write",
+            "capability_refs": [
+              "CAP-authorize"
+            ]
+          },
+          {
+            "obligation_ref": "OB-confirm",
+            "capability_refs": [
+              "CAP-confirm"
+            ]
+          }
+        ],
+        "derivation_boundary": {
+          "condition": "separate-context",
+          "input_packet_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+          "permitted_input_types": [
+            "goal-contract",
+            "goal-evidence"
+          ],
+          "forbidden_input_types": [
+            "asset-decomposition",
+            "asset-section-labels",
+            "coverage-judgments",
+            "proposed-edits"
+          ],
+          "asset_seen_in_current_context": false,
+          "asset_component_terms_used": []
+        },
+        "model_completeness": "candidate-complete",
+        "open_questions": [],
+        "alternative_model_refs": [],
+        "capability_relations": [
+          {
+            "from": "CAP-authorize",
+            "to": "CAP-confirm",
+            "relation": "precedes"
+          }
+        ]
+      },
+      "invalid": {
+        "meta": {
+          "object_id": "CM-case1",
+          "object_kind": "CapabilityModel",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O2",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "goal_contract_ref": {
+          "object_id": "GC-case1",
+          "object_kind": "GoalContract",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "capabilities": [
+          {
+            "id": "CAP-authorize",
+            "behavior": "Determine whether the requested write is authorized before execution.",
+            "obligation_refs": [],
+            "success_condition": "Unauthorized writes are rejected before tool execution.",
+            "scope_boundary": "Does not execute the write.",
+            "confidence": "high",
+            "requiredness": "required"
+          }
+        ],
+        "obligation_coverage": [
+          {
+            "obligation_ref": "OB-safe-write",
+            "capability_refs": [
+              "CAP-authorize"
+            ]
+          },
+          {
+            "obligation_ref": "OB-confirm",
+            "capability_refs": [
+              "CAP-confirm"
+            ]
+          }
+        ],
+        "derivation_boundary": {
+          "condition": "separate-context",
+          "input_packet_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+          "permitted_input_types": [
+            "goal-contract",
+            "goal-evidence"
+          ],
+          "forbidden_input_types": [
+            "asset-decomposition",
+            "asset-section-labels",
+            "coverage-judgments",
+            "proposed-edits"
+          ],
+          "asset_seen_in_current_context": false,
+          "asset_component_terms_used": []
+        },
+        "model_completeness": "candidate-complete",
+        "open_questions": [],
+        "alternative_model_refs": [],
+        "capability_relations": [
+          {
+            "from": "CAP-authorize",
+            "to": "CAP-confirm",
+            "relation": "precedes"
+          }
+        ]
+      },
+      "expected_error": "MCP-E210_TRACE_INCOMPLETE"
+    },
+    "EvidenceLedger": {
+      "valid": {
+        "meta": {
+          "object_id": "EL-run1",
+          "object_kind": "EvidenceLedger",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "external-intake",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "ledger_id": "EL-run1",
+        "stage_vocabulary": [
+          "design-time",
+          "simulated",
+          "live-runtime",
+          "post-implementation",
+          "production-observed"
+        ],
+        "append_only_from_revision": null,
+        "entries": [
+          {
+            "evidence_id": "EV-request",
+            "source_ref": "fixture:case1:user-request",
+            "source_type": "user-request",
+            "stage": "design-time",
+            "statement": "The user requires safe writeback.",
+            "claim_refs": [
+              "OB-safe-write"
+            ],
+            "polarity": "supports",
+            "scope": {
+              "asset_or_target_ref": "asset-1",
+              "branch_id": "main"
+            },
+            "limitations": [
+              "No runtime observation."
+            ],
+            "recorded_by": "external-intake"
+          }
+        ]
+      },
+      "invalid": {
+        "meta": {
+          "object_id": "EL-run1",
+          "object_kind": "EvidenceLedger",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "external-intake",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "ledger_id": "EL-run1",
+        "stage_vocabulary": [
+          "design-time",
+          "simulated",
+          "live-runtime",
+          "post-implementation",
+          "production-observed"
+        ],
+        "append_only_from_revision": null,
+        "entries": [
+          {
+            "evidence_id": "EV-bad",
+            "source_ref": "model",
+            "source_type": "model-inference",
+            "stage": "production-observed",
+            "statement": "It works in production.",
+            "claim_refs": [],
+            "polarity": "supports",
+            "scope": {
+              "asset_or_target_ref": "asset-1",
+              "branch_id": "main"
+            },
+            "limitations": [],
+            "recorded_by": "O2"
+          }
+        ]
+      },
+      "expected_error": "MCP-E330_INFERENCE_STAGE_LAUNDERING"
+    },
+    "CoverageMap": {
+      "valid": {
+        "meta": {
+          "object_id": "CV-case1",
+          "object_kind": "CoverageMap",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O3",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "capability_model_ref": {
+          "object_id": "CM-case1",
+          "object_kind": "CapabilityModel",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "goal_contract_ref": {
+          "object_id": "GC-case1",
+          "object_kind": "GoalContract",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "asset_ref": {
+          "asset_id": "asset-1",
+          "version": "v1",
+          "content_hash": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "evidence_ledger_ref": {
+          "object_id": "EL-run1",
+          "object_kind": "EvidenceLedger",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "coverage_entries": [
+          {
+            "capability_ref": "CAP-authorize",
+            "classification": "full-at-stage",
+            "asset_behavior_refs": [
+              "asset:auth-rule"
+            ],
+            "evidence_refs": [
+              "EV-request"
+            ],
+            "rationale": "The asset explicitly rejects unauthorized requests.",
+            "confidence": "high",
+            "unresolved_evidence": []
+          },
+          {
+            "capability_ref": "CAP-confirm",
+            "classification": "absent",
+            "asset_behavior_refs": [],
+            "evidence_refs": [],
+            "rationale": "No post-write confirmation behavior is defined.",
+            "confidence": "high",
+            "unresolved_evidence": []
+          }
+        ],
+        "gap_entries": [
+          {
+            "gap_id": "GAP-confirm",
+            "capability_ref": "CAP-confirm",
+            "gap_type": "missing-capability",
+            "consequence": "Success may be reported for an uncommitted or mismatched write.",
+            "obligation_refs": [
+              "OB-confirm"
+            ],
+            "origin_layer_candidates": [
+              "runtime-tool-integration",
+              "interface-output-compiler"
+            ],
+            "severity": "high",
+            "confidence": "high"
+          }
+        ],
+        "impact_assessments": [
+          {
+            "gap_ref": "GAP-confirm",
+            "fact_source_mode": "supplied-dependency-map",
+            "touched_element_refs": [
+              "write-adapter"
+            ],
+            "first_degree_dependency_refs": [
+              "result-compiler"
+            ],
+            "second_degree_or_broader_refs": [],
+            "semantic_centrality": "local-interface",
+            "propagation_facts": [
+              {
+                "from_ref": "write-adapter",
+                "to_ref": "result-compiler",
+                "relation": "publishes",
+                "basis": "explicitly-documented",
+                "evidence_refs": [
+                  "EV-request"
+                ]
+              }
+            ],
+            "change_reach": "n-plus-1",
+            "dependency_facts_complete": true,
+            "preservation_feasibility": "established",
+            "material_unknowns": [],
+            "impact_job_required": false,
+            "o4_readiness": "intervention-ready",
+            "decision_ready_basis": "The missing capability and all directly affected interfaces are enumerated; no N+2 propagation is documented."
+          }
+        ],
+        "assessment_stage": "design-time",
+        "overall_o4_readiness": {
+          "status": "intervention-ready",
+          "blocking_gap_refs": [],
+          "basis": "All material gaps have decision-ready reach facts."
+        },
+        "strengths_to_preserve": [
+          "authorization rule"
+        ]
+      },
+      "invalid": {
+        "meta": {
+          "object_id": "CV-case1",
+          "object_kind": "CoverageMap",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O3",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "capability_model_ref": {
+          "object_id": "CM-case1",
+          "object_kind": "CapabilityModel",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "goal_contract_ref": {
+          "object_id": "GC-case1",
+          "object_kind": "GoalContract",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "asset_ref": {
+          "asset_id": "asset-1",
+          "version": "v1",
+          "content_hash": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "evidence_ledger_ref": {
+          "object_id": "EL-run1",
+          "object_kind": "EvidenceLedger",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "coverage_entries": [],
+        "gap_entries": [
+          {
+            "gap_id": "GAP-confirm",
+            "capability_ref": "CAP-confirm",
+            "gap_type": "missing-capability",
+            "consequence": "Success may be reported for an uncommitted or mismatched write.",
+            "obligation_refs": [
+              "OB-confirm"
+            ],
+            "origin_layer_candidates": [
+              "runtime-tool-integration",
+              "interface-output-compiler"
+            ],
+            "severity": "high",
+            "confidence": "high"
+          }
+        ],
+        "impact_assessments": [
+          {
+            "gap_ref": "GAP-confirm",
+            "fact_source_mode": "supplied-dependency-map",
+            "touched_element_refs": [
+              "write-adapter"
+            ],
+            "first_degree_dependency_refs": [
+              "result-compiler"
+            ],
+            "second_degree_or_broader_refs": [],
+            "semantic_centrality": "local-interface",
+            "propagation_facts": [
+              {
+                "from_ref": "write-adapter",
+                "to_ref": "result-compiler",
+                "relation": "publishes",
+                "basis": "explicitly-documented",
+                "evidence_refs": [
+                  "EV-request"
+                ]
+              }
+            ],
+            "change_reach": "n-plus-1",
+            "dependency_facts_complete": true,
+            "preservation_feasibility": "established",
+            "material_unknowns": [],
+            "impact_job_required": false,
+            "o4_readiness": "intervention-ready",
+            "decision_ready_basis": "The missing capability and all directly affected interfaces are enumerated; no N+2 propagation is documented."
+          }
+        ],
+        "assessment_stage": "design-time",
+        "overall_o4_readiness": {
+          "status": "intervention-ready",
+          "blocking_gap_refs": [],
+          "basis": "All material gaps have decision-ready reach facts."
+        },
+        "strengths_to_preserve": [
+          "authorization rule"
+        ]
+      },
+      "expected_error": "MCP-E410_COVERAGE_MISSING"
+    },
+    "ChangeDecision": {
+      "valid": {
+        "meta": {
+          "object_id": "CD-case1",
+          "object_kind": "ChangeDecision",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O4",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "coverage_map_ref": {
+          "object_id": "CV-case1",
+          "object_kind": "CoverageMap",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "decision": "bounded-capability-addition",
+        "target_gap_refs": [
+          "GAP-confirm"
+        ],
+        "selected_fix_layer": "runtime-tool-integration",
+        "change_boundary": {
+          "touched_element_refs": [
+            "write-adapter"
+          ],
+          "preserved_element_refs": [
+            "authorization rule"
+          ],
+          "allowed_neighbor_changes": [
+            "result-compiler interface"
+          ],
+          "prohibited_propagation": [
+            "goal contract",
+            "unrelated resources"
+          ],
+          "change_reach": "n-plus-1",
+          "uncertainty": []
+        },
+        "decision_basis": "A missing required capability is integrable within known first-degree interfaces.",
+        "evidence_ceiling": "design-time",
+        "verification_required": [
+          "Run controlled write success, failure, and mismatch fixtures after implementation."
+        ],
+        "stop_reason": "Assessment decision complete; implementation is outside prototype scope.",
+        "confidence": "high",
+        "next_consumer_contract": {
+          "consumer_type": "external-implementer",
+          "required_inputs": [
+            "GC-case1@1",
+            "CM-case1@1",
+            "CV-case1@1",
+            "GAP-confirm"
+          ]
+        }
+      },
+      "invalid": {
+        "meta": {
+          "object_id": "CD-case1",
+          "object_kind": "ChangeDecision",
+          "schema_version": "mcp-0.1",
+          "revision": 1,
+          "status": "committed",
+          "freshness": "current",
+          "branch_id": "main",
+          "parent_refs": [],
+          "producer": "O4",
+          "evidence_refs": [],
+          "conflict_refs": [],
+          "projection": "material",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "coverage_map_ref": {
+          "object_id": "CV-case1",
+          "object_kind": "CoverageMap",
+          "revision": 1,
+          "branch_id": "main",
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "decision": "bounded-capability-addition",
+        "target_gap_refs": [],
+        "selected_fix_layer": "runtime-tool-integration",
+        "change_boundary": {
+          "touched_element_refs": [
+            "write-adapter"
+          ],
+          "preserved_element_refs": [
+            "authorization rule"
+          ],
+          "allowed_neighbor_changes": [
+            "result-compiler interface"
+          ],
+          "prohibited_propagation": [
+            "goal contract",
+            "unrelated resources"
+          ],
+          "change_reach": "unknown",
+          "uncertainty": []
+        },
+        "decision_basis": "A missing required capability is integrable within known first-degree interfaces.",
+        "evidence_ceiling": "design-time",
+        "verification_required": [
+          "Run controlled write success, failure, and mismatch fixtures after implementation."
+        ],
+        "stop_reason": "Assessment decision complete; implementation is outside prototype scope.",
+        "confidence": "high",
+        "next_consumer_contract": {
+          "consumer_type": "external-implementer",
+          "required_inputs": [
+            "GC-case1@1",
+            "CM-case1@1",
+            "CV-case1@1",
+            "GAP-confirm"
+          ]
+        }
+      },
+      "expected_error": "MCP-E520_ACTION_EXCEEDS_IMPACT"
+    }
+  }
+}

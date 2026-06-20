@@ -1,0 +1,118 @@
+{
+  "artifact": "Harness Build Test Results",
+  "version": "0.3-current",
+  "generated_at": "2026-06-19",
+  "disposition": "R2 CURRENT-AUTHORITY SMOKE COMPLETE; C08B O2 PATCH HELD; C01 TARGETED RECOVERIES PASSED; FIRST-PASS FAILURES RETAINED",
+  "source_profile": "current adopted compressed runtime source set",
+  "source_freeze": {
+    "ok": true,
+    "records": 7,
+    "errors": []
+  },
+  "fixture_view": {
+    "fixture_cells": 3,
+    "condition_replicate_cells": 4,
+    "system_attempts": 8,
+    "remaining_attempts": 0,
+    "run_series_id": "api-smoke-current-20260619-C01-C08"
+  },
+  "tests": {
+    "compileall": "pass",
+    "pytest": {
+      "passed": 16,
+      "failed": 0
+    },
+    "mch_doctor": "pass",
+    "mch_doctor_require_provider_auth": "pass",
+    "mch_plan": "pass",
+    "mch_run": {
+      "complete": true,
+      "expected_attempts": 8,
+      "present_attempts": 8,
+      "failed_attempts": 1,
+      "invalid_cells": 0,
+      "run_folder": "scripts/executor/runs/api-smoke-current-20260619-C01-C08"
+    },
+    "mch_validate_run": {
+      "complete": true,
+      "expected_attempts": 8,
+      "present_attempts": 8,
+      "failed_attempts": 1,
+      "invalid_cells": 0
+    },
+    "mch_recover_c08b_operator": {
+      "attempt_id": "api-smoke-current-20260619-C01-C08__C08B__standard__r1__operator__recovery01",
+      "status": "completed",
+      "recovered_success": true,
+      "recovery_of": "api-smoke-current-20260619-C01-C08__C08B__standard__r1__operator",
+      "trace_completeness": 1.0,
+      "o2_local_validation": "valid",
+      "note": "Original first-pass failure retained; recovery verifies O2 prompt/reference patch."
+    },
+    "mch_r2_clean_smoke": {
+      "config": "configs/api_smoke_r2.yaml",
+      "run_series_id": "api-smoke-current-20260619-r2-C01-C08",
+      "complete": true,
+      "expected_attempts": 8,
+      "present_attempts": 8,
+      "failed_attempts": 2,
+      "invalid_cells": 0,
+      "run_folder": "scripts/executor/runs/api-smoke-current-20260619-r2-C01-C08",
+      "c08b_operator_first_pass_success": true,
+      "failed_operator_attempts": [
+        {
+          "attempt_id": "api-smoke-current-20260619-r2-C01-C08__C01__PB__r1__operator",
+          "failure_source": "operator-O3-coverage",
+          "local_validation_error": "MCP-E330_COVERAGE_WITHOUT_BEHAVIOR_REF: CAP-4"
+        },
+        {
+          "attempt_id": "api-smoke-current-20260619-r2-C01-C08__C01__SC__r1__operator",
+          "failure_source": "state-schema-or-reference",
+          "local_validation_error": "stop_reason: '' should be non-empty"
+        }
+      ]
+    },
+    "mch_recover_c01_operator_failures": {
+      "config": "configs/api_smoke_r2.yaml",
+      "run_series_id": "api-smoke-current-20260619-r2-C01-C08",
+      "recoveries": [
+        {
+          "attempt_id": "api-smoke-current-20260619-r2-C01-C08__C01__PB__r1__operator__recovery01",
+          "status": "completed",
+          "recovered_success": true,
+          "recovery_of": "api-smoke-current-20260619-r2-C01-C08__C01__PB__r1__operator",
+          "trace_completeness": 1.0,
+          "o3_local_validation": "valid",
+          "note": "Original first-pass O3 coverage failure retained; recovery verifies O3 prompt/schema-facing patch."
+        },
+        {
+          "attempt_id": "api-smoke-current-20260619-r2-C01-C08__C01__SC__r1__operator__recovery01",
+          "status": "completed",
+          "recovered_success": true,
+          "recovery_of": "api-smoke-current-20260619-r2-C01-C08__C01__SC__r1__operator",
+          "trace_completeness": 1.0,
+          "o4_local_validation": "valid",
+          "note": "Original first-pass O4 stop-field failure retained; recovery verifies O4 prompt/schema-facing patch."
+        }
+      ]
+    },
+    "live_codex_generation_executed": true
+  },
+  "codex_cli": {
+    "binary_resolved": "C:\\Users\\Matthew\\AppData\\Local\\Programs\\OpenAI\\Codex\\bin\\codex.EXE",
+    "version": "codex-cli 0.140.0",
+    "auth_mode": "auto",
+    "ignore_user_config": false,
+    "ephemeral": false,
+    "authenticated": true,
+    "auth_status": "Logged in using ChatGPT"
+  },
+  "limitations": [
+    "Direct sandboxed codex login status checks can fail because durable CLI login state is outside the restricted shell; escalated provider auth passed.",
+    "C08B / standard / operator first-pass failure remains retained evidence: CT-* constraint IDs were used where the CapabilityModel schema accepts OB-* obligation_refs.",
+    "Targeted recovery after the O2 prompt/reference patch completed successfully and produced valid O2 references.",
+    "Fresh r2 smoke confirmed C08B operator first-pass success, but retained two C01 operator failures.",
+    "Targeted retained recoveries for both C01 operator failures completed successfully after O3/O4 prompt/schema-facing patches; original r2 first-pass failures remain retained evidence.",
+    "No holdouts were selected and no comparative verdict was produced."
+  ]
+}

@@ -1,0 +1,348 @@
+{
+    "artifact":  "Harness Checksums",
+    "version":  "0.3-current",
+    "generated_at":  "2026-06-19",
+    "scope":  "scripts/executor active files, excluding archive, runs, virtualenv, pytest cache, and bytecode artifacts",
+    "records":  [
+                    {
+                        "file":  ".gitignore",
+                        "bytes":  52,
+                        "sha256":  "498a5ff75c23274591039dab0582a267480284e1bb0192f2be5b7e09f206d76b"
+                    },
+                    {
+                        "file":  "authorities_current\\AB_GoalCompleteness_Procedure_and_Evals_v1.1.md",
+                        "bytes":  9287,
+                        "sha256":  "d1cbbd4c145cc673ae29da56a5504b49fc7d8ac5d87f9c2c9d44e1fe976e4728"
+                    },
+                    {
+                        "file":  "authorities_current\\AB_Runtime_Authority_Reference_v1.1.md",
+                        "bytes":  10076,
+                        "sha256":  "80f69d80585f12928b1d416d1895258d7aa5c86a72e2ed5f1e6251ef67ff4251"
+                    },
+                    {
+                        "file":  "authorities_current\\AGENTS.md",
+                        "bytes":  10919,
+                        "sha256":  "b824b4ba8b36ef10bbbd265f5f9e66c6da9c3f5a3371ad5cb188f6ed296ca252"
+                    },
+                    {
+                        "file":  "authorities_current\\HARNESS_SOURCE_LOCK.json",
+                        "bytes":  3551,
+                        "sha256":  "2af0f51890f71f0fbbc67aed30503f8e7f0df9e866e32ab05c020e8ce49651a2"
+                    },
+                    {
+                        "file":  "authorities_current\\OMR_Evidence_Capture_Protocol_v0.1.md",
+                        "bytes":  7313,
+                        "sha256":  "a31eefd263d2bc37815225d653db7a9232d7e98cffb09a54e280f39ec3025747"
+                    },
+                    {
+                        "file":  "authorities_current\\OMR_Operator_Prototype_Runtime_v0.2.md",
+                        "bytes":  12421,
+                        "sha256":  "a3bdaf73d633c63afa62b9e22ae2996ee7acb19a4d9691954d7630b987e0df2b"
+                    },
+                    {
+                        "file":  "authorities_current\\P2_State_Schemas_v0.1.json",
+                        "bytes":  82258,
+                        "sha256":  "05d19c0e372070caa87ef30e3d57466d2bfbb5631b372c894f9dedab8c6f14e3"
+                    },
+                    {
+                        "file":  "authorities_current\\P5_Executor_View_v0.1.yaml",
+                        "bytes":  8153,
+                        "sha256":  "ad689ece75ffb6d4da72a41e23e7cf1e354292b9b5f69460aabf99c36c3a8c66"
+                    },
+                    {
+                        "file":  "BUILD_TEST_RESULTS.json",
+                        "bytes":  4947,
+                        "sha256":  "6b51858ebb96b8259c13896f530e9d9e7e0d0e85034c59992f763790b57ccb86"
+                    },
+                    {
+                        "file":  "CLAUDE_CODE_FUTURE_ADAPTER.md",
+                        "bytes":  1732,
+                        "sha256":  "665b5be659cb697fe109ed91c7ba3fb16ba38aabf81106711990a3b90c7df699"
+                    },
+                    {
+                        "file":  "CODEX_QUICKSTART.md",
+                        "bytes":  2700,
+                        "sha256":  "abeef9a6c74e1c6af65fae45739ae8a9482961326df244582231e7655543310d"
+                    },
+                    {
+                        "file":  "configs\\api_smoke.example.yaml",
+                        "bytes":  1324,
+                        "sha256":  "2268b40a1f0ff6cf47aaade6c7c7117f438768d4da5c8d91ff9ad4517b269b78"
+                    },
+                    {
+                        "file":  "configs\\api_smoke.yaml",
+                        "bytes":  1324,
+                        "sha256":  "2268b40a1f0ff6cf47aaade6c7c7117f438768d4da5c8d91ff9ad4517b269b78"
+                    },
+                    {
+                        "file":  "configs\\api_smoke_r2.yaml",
+                        "bytes":  1336,
+                        "sha256":  "c5f1d5010c54109a540f99547c310d7c65312116c2ec47da466026ef7c89330a"
+                    },
+                    {
+                        "file":  "configs\\manual_pilot.example.yaml",
+                        "bytes":  1282,
+                        "sha256":  "f5e5d5266d2fee2a48dfa6c46ae4da540e720f1ce141e78a91e471774862c8d8"
+                    },
+                    {
+                        "file":  "configs\\run_series.example.yaml",
+                        "bytes":  1302,
+                        "sha256":  "18048d04a2491977b17158d0985785b70db6aedca40400243680449b6e8955c8"
+                    },
+                    {
+                        "file":  "CUSTODIAN_RUNBOOK.md",
+                        "bytes":  2867,
+                        "sha256":  "acc79104732c036c9fde37230d22d7bd70470b35139ae585fb1a57e167e67fcf"
+                    },
+                    {
+                        "file":  "EVALUATOR_HANDOFF_GUIDE.md",
+                        "bytes":  2258,
+                        "sha256":  "339febe5a8e41aa2bbe4f741a809e1c52af5d0378ddf5b01899a8e8e477f2d18"
+                    },
+                    {
+                        "file":  "HARNESS_BUILD_VALIDATION.md",
+                        "bytes":  6510,
+                        "sha256":  "7fbce7fa43d09b049e27500ac3f533b263129c4db05ca6bd01270b02ca8d9a1b"
+                    },
+                    {
+                        "file":  "HARNESS_CHECKSUMS.json",
+                        "bytes":  18092,
+                        "sha256":  "438f9007852ada68f72dfc5cf1d5197ac13e87be2d04a93a05e82bdefce9fb56"
+                    },
+                    {
+                        "file":  "HARNESS_O2_REFERENCE_PATCH_RECORD_2026-06-19.md",
+                        "bytes":  1866,
+                        "sha256":  "376216deace694342b0e7f6ff9245c54b6905b580325f67834f739d31188dee5"
+                    },
+                    {
+                        "file":  "HARNESS_O3_O4_PROMPT_PATCH_RECORD_2026-06-19.md",
+                        "bytes":  2116,
+                        "sha256":  "2afd4fc3a0bf09028a6ba9a5b830784754e12c88725b70bf8594b42cc7e37583"
+                    },
+                    {
+                        "file":  "HARNESS_R2_CLEAN_SMOKE_RECORD_2026-06-19.md",
+                        "bytes":  4321,
+                        "sha256":  "3c06e2064a3197065787410110f809d461e48f5ffc129eda204d56ad5777d685"
+                    },
+                    {
+                        "file":  "HARNESS_REFRESH_RECORD_2026-06-19.md",
+                        "bytes":  3046,
+                        "sha256":  "e28a3efbd42a5e0b87a3ade985151be18706eab0aed762da61e5b7d5a4a726b2"
+                    },
+                    {
+                        "file":  "MIGRATION_NOTES_v0.1_to_v0.2.md",
+                        "bytes":  1209,
+                        "sha256":  "9509864dc6eb6b2549e25a9a1f9374044a6f91af4058de7cb09372eec587d021"
+                    },
+                    {
+                        "file":  "PACKAGE_MANIFEST.md",
+                        "bytes":  1018,
+                        "sha256":  "4ca90177a09586247f86c433a02c5a142fbc148c90727b498a8e8cb39b60dcc6"
+                    },
+                    {
+                        "file":  "pyproject.toml",
+                        "bytes":  503,
+                        "sha256":  "ee4a13a721659f8121de2f8aab932efe373db4644127d4ec8ebef5ef96096bbf"
+                    },
+                    {
+                        "file":  "README.md",
+                        "bytes":  1950,
+                        "sha256":  "b8bddf4f5d488a2dee1e6dd623c3d5ec67f9958595c6154b2b9f7fb8d7ba17c7"
+                    },
+                    {
+                        "file":  "requirements.lock",
+                        "bytes":  199,
+                        "sha256":  "050903edadd2d0daa807c49e05bbc45319ea12a977128468be0441d98037af28"
+                    },
+                    {
+                        "file":  "scripts\\run_authoritative.ps1",
+                        "bytes":  226,
+                        "sha256":  "857621e48a632b0b03f29e82475400a33f3e0e9c76276a49d63ad0fb6d19701f"
+                    },
+                    {
+                        "file":  "scripts\\run_authoritative.sh",
+                        "bytes":  198,
+                        "sha256":  "6ca2b8fb729b5b0d05f152b1d4bde43a5cb9342b7cc3a3ca25c725beaf49d8e2"
+                    },
+                    {
+                        "file":  "scripts\\run_batch.ps1",
+                        "bytes":  779,
+                        "sha256":  "e870c4c40da216eef100c14eff031c0121674111d2ce93f60219564789470255"
+                    },
+                    {
+                        "file":  "scripts\\run_batch.sh",
+                        "bytes":  613,
+                        "sha256":  "a8e58003944aeb4ed755a47b3a9ae93d3c81fe83621e2459358fb7a80113c6fc"
+                    },
+                    {
+                        "file":  "scripts\\run_build_validation.ps1",
+                        "bytes":  342,
+                        "sha256":  "ce3009f26d3cdcbfdfd02e14d177a36413880315853cc2716f3555c032498ce4"
+                    },
+                    {
+                        "file":  "scripts\\run_build_validation.sh",
+                        "bytes":  315,
+                        "sha256":  "c8df3267b12e550bf70c2e57fdb5206c793c4f3db421d8b3679b1a8a4f513a8b"
+                    },
+                    {
+                        "file":  "scripts\\setup_unix.sh",
+                        "bytes":  249,
+                        "sha256":  "947cace5f173984c90cce295bad9ac381dde5f177f1d5090181a9dfc561b27b5"
+                    },
+                    {
+                        "file":  "scripts\\setup_windows.ps1",
+                        "bytes":  253,
+                        "sha256":  "2348c816911f5cb7ecbe0697986576cfb911a93f5e2f6d36c42ed875df9037c2"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\__init__.py",
+                        "bytes":  83,
+                        "sha256":  "f9e6944e4c2c5acb2e046ef259794cdb9b171d422c72082617e09bfd8314c5b7"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\blinding.py",
+                        "bytes":  1069,
+                        "sha256":  "ad8408898d8de9430756a44a965625606a74ad65cea425630807bdb8881c09d4"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\cli.py",
+                        "bytes":  4758,
+                        "sha256":  "55cd0c9471082d32b1f8567d1d8911a15d0034637aba4c8a049cab55f2ea999b"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\config.py",
+                        "bytes":  3485,
+                        "sha256":  "107ea0634aa570e82087b905d51a70c98193832db03facb3de6a90005ba05737"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\exporter.py",
+                        "bytes":  6997,
+                        "sha256":  "527bb3b814c71fe403d5dd9226d71ef8f9f453703cc100072cf9c97255bd6141"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\fixtures.py",
+                        "bytes":  4407,
+                        "sha256":  "afa2e4b9a74011a62f633cabbfc464826b49254a909f44c60fe6d8c93bf76d6b"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\legacy_runner.py",
+                        "bytes":  12005,
+                        "sha256":  "9a53c99e66e30d67fb3003e16f1a3e9f92a042b7db3741ad66fc64dce68ac45e"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\operator_runner.py",
+                        "bytes":  21679,
+                        "sha256":  "ab16d9ab50b6d8b8c70d3652444d44b4d9803a1878a700f2692428476ec7d401"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\orchestrator.py",
+                        "bytes":  18989,
+                        "sha256":  "db7fb14a1ac4528658e2f0b86786beb7255b1b4e4e4e50441af980ed6a9e731c"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\packets.py",
+                        "bytes":  5545,
+                        "sha256":  "b97519b29e93369b6dc8807a4f74cfe0f932cbb799f7bc10e9985445515246b3"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\prompts.py",
+                        "bytes":  5483,
+                        "sha256":  "f6791f74fedb9a4a8ecad23d20c1924cabe9aaa22f098ca0bf88e1f302a50968"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\provider.py",
+                        "bytes":  14789,
+                        "sha256":  "2d140707c7c782597ae81154696b14e8fe7d7907bb53b0b043a8c93453e651d3"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\schemas.py",
+                        "bytes":  10473,
+                        "sha256":  "ad73e7ce409480f037ef8e4425a4cac69213bfd185ad93da304853f88b100288"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\seeding.py",
+                        "bytes":  9657,
+                        "sha256":  "ed52b23363df32ac5dc17f6fae7527b6c71e068a45454579f09cbccfd0e20d12"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\selector.py",
+                        "bytes":  4043,
+                        "sha256":  "0d1f7ad79e06e2573add534fc872f0536e737d49ff396a697c2683bddb1f4ac1"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\sources.py",
+                        "bytes":  2509,
+                        "sha256":  "b1ec6c28b4cb3d09577036aeb2f99474f4449e4c2503f55afbed83985baa4d9c"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\state.py",
+                        "bytes":  7684,
+                        "sha256":  "bc8429a3e99b54fcc8cc1c3d61b3cf8e485e6bbfb6bc4423658ce29b8f17f8c5"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\storage.py",
+                        "bytes":  3905,
+                        "sha256":  "8cc4d95c12980dbd050934a4f9143c7e766b74a4c4976f3ad1ba15b499c50680"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\util.py",
+                        "bytes":  2069,
+                        "sha256":  "57d7781e1fb80d4544cf9014cbf100a11401258f68fb55461ecbd209505ca659"
+                    },
+                    {
+                        "file":  "src\\mcp_harness\\validation.py",
+                        "bytes":  7638,
+                        "sha256":  "de3cca327151a0cb573b565d56e1fac122db1a46f6ac35fca0707306ec4fed1d"
+                    },
+                    {
+                        "file":  "src\\minimum_composition_harness.egg-info\\dependency_links.txt",
+                        "bytes":  1,
+                        "sha256":  "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+                    },
+                    {
+                        "file":  "src\\minimum_composition_harness.egg-info\\entry_points.txt",
+                        "bytes":  45,
+                        "sha256":  "f6886affe44f4ad94780377eefc9b647c339e5ab366b334b790fbbfda93feabf"
+                    },
+                    {
+                        "file":  "src\\minimum_composition_harness.egg-info\\PKG-INFO",
+                        "bytes":  2259,
+                        "sha256":  "034d241543e3b5b213919b32a2c9a3ff70f630045a691c1814a43d7db130a027"
+                    },
+                    {
+                        "file":  "src\\minimum_composition_harness.egg-info\\requires.txt",
+                        "bytes":  56,
+                        "sha256":  "5f25687f01cc674d6f544d292619a95b5d84fc915262785d1ea7868acbc74814"
+                    },
+                    {
+                        "file":  "src\\minimum_composition_harness.egg-info\\SOURCES.txt",
+                        "bytes":  965,
+                        "sha256":  "f2c9f53d28a96e87f770c2eede1cf4b9b834617f95f144df9b44608e61734f00"
+                    },
+                    {
+                        "file":  "src\\minimum_composition_harness.egg-info\\top_level.txt",
+                        "bytes":  12,
+                        "sha256":  "3460a49eb2b4c76deb7061e985309e815cafc51083d703cf885c3145709ac5c5"
+                    },
+                    {
+                        "file":  "templates\\holdout_selection_record_TEMPLATE.yaml",
+                        "bytes":  944,
+                        "sha256":  "c4bec914ae8bdde3db0557ea1a5c933eda16f8fa664489f2aa61427943d38478"
+                    },
+                    {
+                        "file":  "tests\\test_codex_provider.py",
+                        "bytes":  4847,
+                        "sha256":  "06fea264cf0bd24c92ad9f02874cbb35f38de2141cf506bc93c61f3e936ad5f9"
+                    },
+                    {
+                        "file":  "tests\\test_harness.py",
+                        "bytes":  22380,
+                        "sha256":  "cce2c73b9c25c5016e0eacf77c78ce0845e55e0d9064dc5c4416a50e05eb4a34"
+                    },
+                    {
+                        "file":  "USAGE_WINDOWS_AND_CREDITS.md",
+                        "bytes":  4354,
+                        "sha256":  "3d4bb5590b29a3d4a691a86c9e82a76c26e3c190bef2733e54e68a700ffb6bf9"
+                    }
+                ]
+}

@@ -1,0 +1,43 @@
+{
+    "artifact":  "Harness Source Lock",
+    "version":  "current-adopted-2026-06-19",
+    "generated_at":  "2026-06-19",
+    "source_profile":  "current adopted compressed runtime source set",
+    "records":  {
+                    "AGENTS.md":  {
+                                      "bytes":  10919,
+                                      "sha256":  "b824b4ba8b36ef10bbbd265f5f9e66c6da9c3f5a3371ad5cb188f6ed296ca252",
+                                      "source_path":  "AGENTS.md"
+                                  },
+                    "AB_Runtime_Authority_Reference_v1.1.md":  {
+                                                                   "bytes":  10076,
+                                                                   "sha256":  "80f69d80585f12928b1d416d1895258d7aa5c86a72e2ed5f1e6251ef67ff4251",
+                                                                   "source_path":  "Context Resources/Runtime/AB_Runtime_Authority_Reference_v1.1.md"
+                                                               },
+                    "AB_GoalCompleteness_Procedure_and_Evals_v1.1.md":  {
+                                                                            "bytes":  9287,
+                                                                            "sha256":  "d1cbbd4c145cc673ae29da56a5504b49fc7d8ac5d87f9c2c9d44e1fe976e4728",
+                                                                            "source_path":  "Context Resources/Runtime/AB_GoalCompleteness_Procedure_and_Evals_v1.1.md"
+                                                                        },
+                    "OMR_Evidence_Capture_Protocol_v0.1.md":  {
+                                                                  "bytes":  7313,
+                                                                  "sha256":  "a31eefd263d2bc37815225d653db7a9232d7e98cffb09a54e280f39ec3025747",
+                                                                  "source_path":  "Context Resources/Runtime/OMR_Evidence_Capture_Protocol_v0.1.md"
+                                                              },
+                    "OMR_Operator_Prototype_Runtime_v0.2.md":  {
+                                                                   "bytes":  12421,
+                                                                   "sha256":  "a3bdaf73d633c63afa62b9e22ae2996ee7acb19a4d9691954d7630b987e0df2b",
+                                                                   "source_path":  "Context Resources/Runtime/OMR_Operator_Prototype_Runtime_v0.2.md"
+                                                               },
+                    "P2_State_Schemas_v0.1.json":  {
+                                                       "bytes":  82258,
+                                                       "sha256":  "05d19c0e372070caa87ef30e3d57466d2bfbb5631b372c894f9dedab8c6f14e3",
+                                                       "source_path":  "Context Resources/Runtime/P2_State_Schemas_v0.1.json"
+                                                   },
+                    "P5_Executor_View_v0.1.yaml":  {
+                                                       "bytes":  8153,
+                                                       "sha256":  "ad689ece75ffb6d4da72a41e23e7cf1e354292b9b5f69460aabf99c36c3a8c66",
+                                                       "source_path":  "Context Resources/Runtime/P5_Executor_View_v0.1.yaml"
+                                                   }
+                }
+}
