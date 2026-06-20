@@ -1,0 +1,15 @@
+﻿# OS/editor noise
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+~$*
+
+# Python / local tooling
+__pycache__/
+.venv/
+.env
+
+# Large local-only scratch
+scratch/
+local-only/
