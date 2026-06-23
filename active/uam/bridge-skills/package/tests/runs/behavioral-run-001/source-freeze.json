@@ -1,0 +1,64 @@
+{
+  "run_id": "behavioral-run-001",
+  "created_local_date": "2026-06-20",
+  "target_package": {
+    "package_id": "uam-bridge-skills",
+    "version": "0.1.0",
+    "status": "rollout-lab-candidate",
+    "evidence_ceiling": "design-time"
+  },
+  "source_hashes_sha256": [
+    {
+      "path": "uam-bridge-skills/MANIFEST.yaml",
+      "sha256": "1289AF26F34738BFBA6E6C0B8DC3215D8FEAF3B12656E2DCABBAC9EA85CAB21A"
+    },
+    {
+      "path": "uam-bridge-skills/KERNEL.md",
+      "sha256": "B82B92B391CE34747A1C313C605F662EA4B36178F4B9123F1763935B314CEB67"
+    },
+    {
+      "path": "uam-bridge-skills/skills/align-work/SKILL.md",
+      "sha256": "F8FD0250604B1B37B2E1275E39B97C93E349C917DC1EB8FE2C1810AF3D4C3B1A"
+    },
+    {
+      "path": "uam-bridge-skills/skills/design-solution/SKILL.md",
+      "sha256": "CDFB9DAB75C27AACF57FABA72F5D36F7B3E950D3BBE87B41E03918CBAF2C00A7"
+    },
+    {
+      "path": "uam-bridge-skills/skills/build-artifact/SKILL.md",
+      "sha256": "DAD76FF2B2F76EC8ED6B8FA7B04B0D6DB34968642D068032EBC389F20B3BBA07"
+    },
+    {
+      "path": "uam-bridge-skills/skills/review-work/SKILL.md",
+      "sha256": "F3A56811AA900733C75686987E18DB37255EA84F3DA0FC05B20590389FA69BFB"
+    },
+    {
+      "path": "uam-bridge-skills/skills/compare-decide/SKILL.md",
+      "sha256": "8F7D83E995ADC86B6B13A52158E787B54D0497FBD65DDD9D425B56323E3C3F7A"
+    },
+    {
+      "path": "uam-bridge-skills/skills/diagnose-problem/SKILL.md",
+      "sha256": "745217A64B7B7E2960B3E574F7767DC0FAD22CA490EC88B051CECCCDCE7AB82F"
+    },
+    {
+      "path": "uam-bridge-skills/skills/research-evidence/SKILL.md",
+      "sha256": "995F9F7F330A96ADE92FD4C1A2FB30396C5C61C2B0EA7FDB81E00020C6FD2D25"
+    },
+    {
+      "path": "uam-bridge-skills/skills/handoff-state/SKILL.md",
+      "sha256": "F4F58AECE779FBE09B9396F2357C96BC468099A8BAE7DEAE8CCCC5C714909E57"
+    }
+  ],
+  "suite_records": {
+    "source_suite_id": "uam_bridge_behavioral",
+    "source_suite_version": "0.1.0",
+    "source_suite_file": "uam-bridge-skills/evals/uam-bridge-behavioral-suite.yaml",
+    "source_suite_hash_sha256": "not_recorded_prohibited_read_for_executor_role",
+    "executor_only_fixture_id": "uam_bridge_behavioral_executor_only",
+    "executor_only_fixture_version": "0.1.0",
+    "executor_only_fixture_file": "uam-bridge-skills/evals/uam-bridge-behavioral-executor-only-cases.yaml",
+    "executor_only_fixture_hash_sha256": "6F2F7A250C2F2A060A24EC6546A9D63D751DE40A85521B0AA78C729604C3833B",
+    "runner_packet_file": "uam-bridge-skills/evals/claude-high-pressure-test-suite/runner-packet.md",
+    "runner_packet_hash_sha256": "92F8C1C29311D3C737A058197093AD8FE8AF053032A1A068C36927D1D0287CE0"
+  }
+}

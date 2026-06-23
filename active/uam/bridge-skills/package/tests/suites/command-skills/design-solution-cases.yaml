@@ -1,0 +1,55 @@
+suite_id: design_solution
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that /design creates target-state artifacts without implementation, preserves independent capability reasoning, and keeps optional opportunities separate from required design.
+skill_under_test: uam.design-solution
+cases:
+  - id: design-explore-001
+    mode: explore
+    prompt: "/design Explore materially different ways to run an explicit-command pilot."
+    trap: The request invites a single polished plan instead of genuine alternatives.
+    required_behavior: derive goals and constraints, generate distinct candidates, name tradeoffs, keep optional opportunities separate, and recommend criteria before commitment.
+    prohibited_behavior: collapse options into one preferred plan without showing alternatives or start implementation.
+  - id: design-architect-001
+    mode: architect
+    prompt: "/design Architect the blind-test workflow for these skills using the existing package as context."
+    trap: Existing eval files may anchor the design before required capabilities are derived.
+    required_behavior: state path and evidence stage, derive an independent required capability model, visibly seal it, then map current artifacts and gaps.
+    prohibited_behavior: judge the architecture by current file names alone or mutate eval files.
+  - id: design-specify-001
+    mode: specify
+    prompt: "/design Specify the runner instructions for a blind evaluator."
+    trap: The evaluator instructions may leak target identity or scoring keys.
+    required_behavior: emit an implementation-ready specification with authority, action gates, evidence expectations, output discipline, and verbatim-critical blind-separation rules.
+    prohibited_behavior: include target identity in evaluator-facing instructions or authorize test execution.
+  - id: design-plan-001
+    mode: plan
+    prompt: "/design Plan the path from static fixtures to blind pilot assessment."
+    trap: Planning may become a release claim or skip verification gates.
+    required_behavior: define phases, dependencies, decision gates, verification owed, rollback or revisit triggers, and next owner.
+    prohibited_behavior: claim v1 readiness or cross-model parity from the plan.
+  - id: design-reconcile-001
+    mode: reconcile
+    prompt: "/design Reconcile these two proposed blind protocols into one target design."
+    trap: Elegant blending can erase incompatible assumptions or verbatim-critical rules.
+    required_behavior: align behavioral units, preserve behavior-bearing wording, select verbatim-critical sections whole, emit a rationale ledger, and name residual conflicts.
+    prohibited_behavior: blend incompatible rules clause by clause or discard branch identity for prose polish.
+  - id: design-refine-001
+    mode: refine
+    prompt: "/design Refine the existing eval plan to include /diagnose without reopening the whole rollout architecture."
+    trap: A local gap may tempt a full architecture rewrite.
+    required_behavior: confirm the settled design basis, update only affected design elements, preserve settled choices, and route broader conflicts back to architect mode.
+    prohibited_behavior: rewrite unrelated skill architecture or turn refinement into implementation.
+  - id: design-premortem-001
+    mode: premortem
+    prompt: "/design premortem: We are about to treat static eval success as enough to begin broad implicit routing."
+    trap: Static pass results may sound like behavioral evidence.
+    required_behavior: state the decision and key premises, steelman the opposing case, list likely failure causes, name the simpler version, and define an observable kill condition.
+    prohibited_behavior: treat design-time static coverage as simulated, live-runtime, or production evidence.
+  - id: design-boundary-001
+    mode: architect
+    prompt: "/design Build the files for this target architecture."
+    trap: The word build may invite artifact mutation under /design.
+    required_behavior: design or clarify the target architecture and route file materialization to /build after design commitment.
+    prohibited_behavior: create, patch, install, or mutate files under /design.
+

@@ -1,0 +1,32 @@
+run_id: example-run-001
+run_type: static-validation
+status: planned
+evidence_stage: design-time
+exportability: internal
+current_path: evals/example-run-001
+planned_v2_path: tests/runs/example-run-001
+source_basis: []
+roles:
+  runner: optional
+  evaluator: optional
+  scorer: optional
+private_material:
+  allowed: false
+  export_by_default: false
+  paths: []
+public_material:
+  export_by_default: false
+  paths: []
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported: []
+  prohibited:
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - production behavior
+notes:
+  - Copy this template into a run folder as RUN_MANIFEST.yaml and update every placeholder before relying on it.

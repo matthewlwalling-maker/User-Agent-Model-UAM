@@ -1,0 +1,54 @@
+run_id: pressure-run-002
+run_type: pressure
+status: passed_with_protocol_limitations
+evidence_stage: simulated
+exportability: internal
+current_path: tests/runs/pressure-run-002
+planned_v2_path: tests/runs/pressure-run-002
+source_basis:
+  - tests/runs/pressure-run-002/raw-outputs.md
+  - tests/runs/pressure-run-002/attempt-log.jsonl
+  - tests/runs/pressure-run-002/evaluator-packet.md
+  - tests/runs/pressure-run-002/scoring-record.md
+  - tests/runs/pressure-run-002/audit-summary.md
+roles:
+  runner: required
+  evaluator: required
+  scorer: required
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: raw outputs and attempt logs are internal run evidence by default
+  paths:
+    - tests/runs/pressure-run-002/raw-outputs.md
+    - tests/runs/pressure-run-002/attempt-log.jsonl
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/pressure-run-002/evaluator-packet.md
+    - tests/runs/pressure-run-002/scoring-record.md
+    - tests/runs/pressure-run-002/audit-summary.md
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+protocol_gaps:
+  - source-freeze.json is missing from the run folder
+  - executor-packet.md is missing from the run folder
+  - separate intervention/recovery log is missing from the run folder
+  - separate-context or blind independence proof is absent
+claims:
+  supported:
+    - 16 of 16 pressure cases passed at simulated packet-boundary evidence level
+    - 0 hard fails in the locked scoring record
+    - protocol-complete artifact record is partial
+  prohibited:
+    - blind evidence
+    - independent evidence
+    - live runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - Preserve the protocol gaps if this run is migrated; do not let folder cleanup imply evidence upgrade.

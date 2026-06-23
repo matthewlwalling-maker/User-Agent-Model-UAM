@@ -1,0 +1,46 @@
+run_id: lifecycle-run-001
+run_type: lifecycle
+status: scored_non_blind
+evidence_stage: simulated
+exportability: internal
+current_path: tests/runs/lifecycle-run-001
+planned_v2_path: tests/runs/lifecycle-run-001
+source_basis:
+  - tests/runs/lifecycle-run-001/prompts
+  - tests/runs/lifecycle-run-001/run-packets
+  - tests/runs/lifecycle-run-001/Test Responses/ANONYMIZED_TRANSCRIPTS_FOR_EVALUATOR.md
+  - tests/runs/lifecycle-run-001/Test Responses/LIFECYCLE_SCORING_RECORD.txt
+roles:
+  runner: required
+  evaluator: required
+  scorer: required
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: keep test responses and arm mapping material internal unless a curated packet explicitly permits them
+  paths:
+    - tests/runs/lifecycle-run-001/Test Responses
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/lifecycle-run-001/prompts/README.md
+    - tests/runs/lifecycle-run-001/run-packets/README.md
+    - tests/runs/lifecycle-run-001/Test Responses/LIFECYCLE_SCORING_RECORD.txt
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported:
+    - simulated transcript evidence for four lifecycle transcripts
+    - no hard fails in the locked lifecycle scoring record
+  prohibited:
+    - blind scoring
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - The scoring record states blind status was compromised by key-like mapping exposure.
+  - This manifest records the limitation; it does not upgrade the run to blind evidence.

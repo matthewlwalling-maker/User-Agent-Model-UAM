@@ -1,0 +1,2163 @@
+# UAM Model Framework
+
+**Subtitle:** Common Architecture and Sub-Architect Design Contract  
+**Artifact ID:** `UAM-FRAMEWORK`  
+**Working name:** User Agent Model Framework  
+**Status:** candidate canonical framework; not yet adopted as active runtime authority  
+**Evidence ceiling:** design-time architectural synthesis  
+**Primary audience:** UAM sub-architects, implementers, evaluators, and runtime integrators  
+**Canonical filename:** `UAM_Model_Framework.md`  
+**Artifact index:** `UAM_Artifact_Index.yaml`  
+**Naming authority:** `UAM_Artifact_Naming_and_Archive_Convention.md`  
+**Preservation rule:** existing Agent Builder and OMR contracts remain authoritative within their current scopes until an explicit migration or supersession decision is made
+
+<!-- UAM:ARTIFACT-STAMP-BEGIN -->
+**Artifact stamp**
+
+```yaml
+artifact_revision: 2
+revision_date: 2026-06-20
+content_sha256: c5d3f5ce9d2259f8c04db769b63ccda2d4b55acd8f5b50e72d9b8528daf3017d
+hash_profile: UAM-CANONICAL-TEXT-SHA256-1
+```
+<!-- UAM:ARTIFACT-STAMP-END -->
+
+**Active-artifact rule:** use the bare stable name in explanatory prose. Contracts, packets, handoffs, builds, adoptions, and evidence MUST pin the artifact stamp and a loadable immutable content reference under §6.11.
+
+### Archived lineage: v0.2 → v0.21
+
+This revision adds the two controls that govern *how the buildout proceeds*, found in disconfirming review (steelman-premortem + break-it-tester) of v0.2. v0.2 closed the dispatch-contract holes; v0.21 closes the parallel-divergence hole the contract fixes did not address. Architecture, dimensional map, and frozen thesis are unchanged.
+
+1. **Shared-vocabulary ownership contract (new §6.10).** v0.2 left the genuinely cross-cutting encodings — error-code scheme, state-object metadata convention, source-authority order, packet/manifest format — in §20.2 as open questions, which let each dimension resolve them locally and diverge (the break-it B3 failure, by construction). v0.21 establishes the governing rule: **the Spine owns vocabulary that crosses dimension boundaries; each dimension owns vocabulary that stays inside it.** The shared set is frozen in Phase 1 before any consuming dimension is built. This separates *interface divergence* (prevented at the boundary) from *naming drift* (reconciled cheaply at integration).
+2. **Bootstrap-pair validation gate (new §12.0.3).** v0.2's §19 *supported* a sequenced build but did not *require* it; adoption-as-written invited dispatching all eight dimensions in parallel — the one path that triggers the divergence. v0.21 makes the bootstrap pair (`architect-solution` + `evaluate-artifact`) a go/no-go gate: it is built on the already-frozen contracts, and parallel dispatch of schema-bearing dimensions is prohibited until it clears and the shared-vocabulary contracts it surfaces are frozen.
+3. **Integration reconciliation gate (new §15.7).** Codifies the end-pass as a *consistency-review* run with *variant-reconciliation* for leftover naming drift, owned by the D8 contract ring. It is an eval that runs, not a standing agent that governs — explicitly not a ninth competing domain (§4.2).
+4. **Supporting updates.** §19 Phase 1 now names the shared-vocabulary freeze; Phase 3 is marked the validation gate; a new Phase 6.5 runs reconciliation. §16.1 adds a cross-component vocabulary-consistency test class. §20 reclassifies the shared-infrastructure items from open to Spine-owned-freeze-first.
+
+### Archived lineage: v0.1 → v0.2
+
+This revision closes four gaps found in design-time review of v0.1. The architecture, dimensional map, work-object model, and frozen thesis are unchanged; only the dispatch contract, adoption-authority wording, reading discipline, and lens-map completeness are revised.
+
+1. **Source-content guarantee (blocking fix).** v0.1 required the assignment packet to carry "inherited sources and exact versions," which a strict reading satisfied with a *citation*. Because §1.1 forbids a sub-architect from accessing the originating conversation, a citation-only dispatch could hand a context-isolated agent a reference it cannot read, forcing a block. v0.2 makes attached source *content* (or a guaranteed-loadable reference) mandatory, and adds a dimension→source provisioning map (new §12.0).
+2. **Adoption authority made explicit.** §20.1 "frozen" decisions are the framework's proposed thesis, not user-ratified decisions. v0.2 relabels them as *frozen pending Phase-0 adoption* and lifts the hard "no dispatch before adoption" gate out of the Terminal Record into the assignment contract (new §12.0.1) where a dispatcher reads it.
+3. **Reading discipline.** v0.1 was a single document every sub-architect had to consume whole, in tension with its own progressive-loading principle. v0.2 marks which sections are universal-mandatory and which are dimension-local (new §4.3).
+4. **Lens-map completeness.** `prediction-log` (runtime/post-hoc uplift measurement) and `prompt-refiner` (intent normalization) were unmapped; v0.2 names them in D8 and D1 respectively. The lens inventory remains an open question (§20.2).
+
+---
+
+## 1. Purpose
+
+This document defines the shared architecture that every UAM sub-architect must receive before designing or building a UAM component.
+
+Its purpose is to let individual dimensions, skills, reasoning methods, domain brains, state mechanisms, runtime adapters, and evaluation systems evolve independently **without losing the connective tissue that makes them one coherent agent brain**.
+
+This document therefore owns the proposed UAM-level:
+
+- architectural thesis and dimensional map;
+- shared vocabulary and work-object model;
+- cross-component invariants;
+- operation and authority boundaries;
+- composition rules;
+- sub-architect input and output contracts;
+- integration and evaluation requirements;
+- change, snapshot, archive, and adoption discipline.
+
+It does **not** fully specify every component. A component-specific architect may choose its internal structure, procedures, schemas, and implementation patterns so long as those choices satisfy this framework and do not modify state or authority owned elsewhere.
+
+### 1.1 Intended use
+
+Each sub-architect should use this document to answer four questions before doing substantive design work:
+
+1. **What part of the UAM do I own?**
+2. **What shared contracts must my component preserve?**
+3. **What may my component read, write, claim, invoke, or pass forward?**
+4. **How will local improvement be shown without causing system-level regression?**
+
+A sub-architect must not rely on access to the conversation that produced this document. Its assignment packet and this framework must be sufficient to reconstruct the relevant committed intent.
+
+### 1.2 Normative language
+
+Within this document:
+
+- **MUST** indicates a shared UAM invariant or required compatibility condition.
+- **MUST NOT** indicates a prohibited behavior that would break authority, traceability, evidence, or composition.
+- **SHOULD** indicates the default design posture unless the component records a justified exception.
+- **MAY** indicates an optional design choice.
+
+---
+
+## 2. UAM Definition and Architectural Thesis
+
+### 2.1 Working definition
+
+> **The User Agent Model Framework is a user-specific cognitive operating architecture that converts recurring collaboration patterns, reasoning methods, governance rules, state discipline, domain expertise, execution preferences, and evaluation evidence into a composable agent system.**
+
+The UAM is not merely:
+
+- one prompt;
+- one agent;
+- one model of the user;
+- one skill registry;
+- one workflow router;
+- one state machine;
+- one evaluation harness;
+- or one runtime package.
+
+It is the architecture that makes those elements cooperate while allowing each to improve without silently redefining the rest.
+
+### 2.2 Core thesis
+
+The UAM is built on one central principle:
+
+> **Each dimension must be independently refinable, while shared contracts preserve the intent, authority, state, evidence, and interfaces of the complete agent brain.**
+
+This means the architecture must support both:
+
+- **generative freedom** for interpretation, candidate creation, architectural imagination, synthesis, and domain-specific judgment; and
+- **deterministic control** for eligibility, authority, work-object ownership, state transitions, evidence ceilings, schema validity, preservation, and stopping.
+
+Neither side is sufficient alone. Governance without generative intelligence produces safe but shallow systems. Generative intelligence without governance produces impressive but unstable systems that silently change goals, authority, or evidence.
+
+### 2.3 Primary objectives
+
+The UAM Framework is intended to:
+
+1. expose a small, legible set of broad operations rather than an unbounded list of narrow skills;
+2. preserve rich reasoning methods as composable lenses rather than forcing every method into the global invocation namespace;
+3. make domain expertise reusable without hard-coding one domain into the entire architecture;
+4. preserve authoritative work state across conversations, agents, runtimes, and time;
+5. distinguish design, artifact production, evaluation, comparison, diagnosis, and handoff;
+6. permit lightweight fused execution for simple work and explicit staged execution for material work;
+7. improve components continuously through local, contract, and end-to-end evaluation;
+8. prevent optional ideas, attractive features, or model preferences from becoming required architecture without traceable promotion;
+9. retain existing strengths unless a validated replacement is superior for the relevant goal;
+10. stop when the required outcome is sufficiently supported and additional complexity has lower expected value than burden or regression risk.
+
+### 2.4 Non-goals
+
+This framework does not, by itself:
+
+- install or activate profile-wide skills;
+- replace AB1-AB9;
+- merge AB1-AB9 with O1-O4;
+- redefine the exact OMR P2 schemas;
+- claim runtime or production superiority;
+- require every task to use every dimension or every operation;
+- force exploratory collaboration into rigid machine schemas;
+- authorize implementation, deployment, or mutation beyond the assigned component boundary;
+- make every useful reasoning lens a globally invocable skill;
+- or freeze the UAM brand name permanently.
+
+---
+
+## 3. Foundational Design Commitments
+
+Every UAM component MUST preserve the following commitments.
+
+### 3.1 Collaborate early; commit deliberately; control execution
+
+Before commitment, the system may interpret, challenge, compare, branch, and surface alternatives. After commitment, downstream components must treat the committed contract and current state as authoritative until a valid reopen condition occurs.
+
+### 3.2 Generate permissively; promote cautiously
+
+The UAM may create frontier possibilities, alternate architectures, unconventional designs, and speculative opportunities during exploration. A possibility becomes required architecture only when it traces to:
+
+- an explicit requirement;
+- a necessarily entailed requirement;
+- or an explicitly promoted user decision.
+
+Optional and speculative possibilities must remain labeled as such.
+
+### 3.3 Derive capabilities before anchoring on assets
+
+For material work, required behavior should be derived from committed goals and constraints before the current artifact is treated as the solution-space boundary. Existing assets are evidence and candidates, not automatic architecture.
+
+### 3.4 Separate logical operations even when execution is fused
+
+A simple task may combine a lightweight design pass, authoring, and self-check in one response. The logical responsibilities remain distinct. Material work must preserve explicit stage boundaries whenever silent fusion would permit unauthorized design decisions, hide evidence gaps, or make state unreconstructable.
+
+### 3.5 Keep work objects distinct
+
+State, artifacts, evidence, and packets have different semantics and authority. Compression, packaging, or summarization must not silently convert one object type into another.
+
+### 3.6 Place remedies where failures originate
+
+A failure in routing should be fixed in routing. A shallow result caused by a weak reasoning recipe should be fixed in the reasoning layer. A missing domain concept should be fixed in the domain brain. A file-operation failure should be fixed in the runtime layer. A correct conclusion with inadequate evidence should be fixed in evaluation or evidence capture.
+
+### 3.7 Preserve sound components and use the smallest sufficient reach
+
+Local defects should not trigger systemic rewrites. Missing capabilities should not be hidden inside nominal patches. Semantic dependency reach, not textual proximity, determines whether change is local, bounded, or systemic.
+
+### 3.8 Treat evidence stages as claim ceilings
+
+The shared evidence vocabulary is:
+
+1. `design-time`
+2. `simulated`
+3. `live-runtime`
+4. `post-implementation`
+5. `production-observed`
+
+Agreement, rewriting, implementation prose, handoff prose, or model confidence cannot promote evidence. Promotion requires new in-scope evidence.
+
+### 3.9 Preserve branch identity and contradictory evidence
+
+Materially different valid branches must not be silently unioned, averaged, or blended. A universal decision is permitted only when it is valid across all live branches or an authorized owner resolves the disagreement.
+
+### 3.10 Permit successful stopping
+
+`No material change needed` is a valid successful outcome. The UAM must not invent gaps, skills, state objects, or downstream work merely to demonstrate activity.
+
+---
+
+## 4. UAM Architecture Overview
+
+The UAM has a shared cross-cutting spine and eight independently refinable dimensions.
+
+```text
+                              USER / PRINCIPAL
+                  goals · preferences · constraints · decisions
+                                      │
+                 ┌────────────────────▼────────────────────┐
+                 │              UAM SPINE                  │
+                 │ intent · work objects · authority       │
+                 │ evidence · composition · preservation   │
+                 │ provenance · compatibility · stopping   │
+                 └────────────────────┬────────────────────┘
+                                      │
+      ┌───────────────────────────────┼───────────────────────────────┐
+      │                               │                               │
+┌─────▼─────┐                  ┌──────▼──────┐                 ┌──────▼──────┐
+│ D1 Intent │                  │D2 Governance│                 │D3 Skill     │
+│ & Collab  │                  │ & Control   │                 │ Fabric      │
+└─────┬─────┘                  └──────┬──────┘                 └──────┬──────┘
+      │                               │                               │
+┌─────▼──────────┐             ┌──────▼────────┐                ┌─────▼──────────┐
+│D4 Reasoning    │             │D5 Domain      │                │D6 State,       │
+│ Intelligence  │             │ Brains        │                │ Evidence &     │
+└─────┬──────────┘             └──────┬────────┘                │ Continuity     │
+      │                               │                         └─────┬──────────┘
+      └───────────────────────┬───────┴───────────────────────────────┘
+                              │
+                    ┌─────────▼──────────┐
+                    │D7 Runtime,         │
+                    │ Transport &        │
+                    │ Delivery           │
+                    └─────────┬──────────┘
+                              │
+                    ┌─────────▼──────────┐
+                    │D8 Evaluation &     │
+                    │ Evolution          │
+                    └────────────────────┘
+```
+
+### 4.1 The eight dimensions
+
+| ID | Dimension | Governing question |
+|---|---|---|
+| D1 | Intent and Collaboration | Does the system understand, challenge, branch, commit, and reopen user intent correctly? |
+| D2 | Governance and Control | Does the system act only with valid authority, evidence, state, and change reach? |
+| D3 | Operational Skill Fabric | Does every recurring operation have one clear owner and valid composition rules? |
+| D4 | Reasoning Intelligence | Does the system generate deep, original, adversarial, and well-specified reasoning when useful? |
+| D5 | Domain Brains | Does it possess the specialized concepts, production grammar, evaluation criteria, and transfer knowledge of the domain? |
+| D6 | State, Evidence, and Continuity | Can authoritative decisions and evidence be reconstructed, revised, branched, and transferred without conversation history? |
+| D7 | Runtime, Transport, and Delivery | Can the design execute, materialize, package, and move reliably across environments? |
+| D8 | Evaluation and Evolution | Can improvement be demonstrated, adopted, monitored, and reversed without hiding regression? |
+
+### 4.2 Cross-cutting UAM Spine
+
+The UAM Spine is not a ninth domain competing with the others. It is the set of shared contracts every dimension must satisfy. It is the primary mechanism for preserving connective tissue while allowing independent refinement.
+
+### 4.3 Reading discipline for sub-architects
+
+This framework preaches progressive context loading (§15.4), and applies that rule to itself. A sub-architect does not need to internalize all of this document before starting. Two tiers exist:
+
+- **Universal-mandatory (every sub-architect, read in full):** §3 Foundational Commitments, §5 Work-Object Model, §6 UAM Spine, §12 Sub-Architect Assignment Contract, §13 Required Component Specification, §15 Connective-Tissue Integration Rules, §20 Frozen and Open Decisions, §21 Completion Gate. These define the shared contracts a component cannot violate without breaking the system.
+- **Dimension-local (read for the assigned dimension(s) only):** the relevant subsection of §7 (Dimension Map), the relevant operation entries in §8, the relevant lens/recipe and Domain Brain material in §10–§11, and the foundation rows in §18 that map to the assigned dimension.
+
+The assignment packet (§12) states which dimension-local sections apply. Reading beyond the assigned dimension is permitted but not required; writing beyond it is prohibited unless the assignment grants cross-dimensional scope (§7).
+
+---
+
+## 5. UAM Work-Object Model
+
+Every component must use the following object distinctions.
+
+### 5.1 State
+
+**State** is the authoritative semantic understanding of the work.
+
+It can include:
+
+- committed goals and required outcomes;
+- material constraints;
+- requirement classes and their bases;
+- selected architecture and decisions;
+- live branches and unresolved disagreements;
+- current artifact references and exact content hashes/archive refs;
+- evidence ceiling and evidence references;
+- authorized next action;
+- preservation obligations;
+- dependencies and material unknowns;
+- stop conditions and revisit triggers;
+- next consumer and required inputs.
+
+State is not a shorter transcript. Conversation may be evidence used to construct state, but authoritative state should be explicit and reconstructable without replaying the conversation.
+
+### 5.2 Artifact
+
+An **artifact** is a substantive output being designed, built, evaluated, transformed, or delivered.
+
+Canonical artifact subtypes are:
+
+| Subtype | Examples |
+|---|---|
+| Design artifact | architecture map, target specification, behavioral contract, implementation contract |
+| Production artifact | prompt, agent instructions, skill, schema, code, documentation, workflow |
+| Evaluation artifact | fixture suite, scorecard, test harness, validation record, comparison report |
+| Delivery artifact | release bundle, package, archive, deployment-ready distribution, user-facing deliverable |
+
+A design artifact is still an artifact. Therefore, `architect-solution` may author architecture specifications within its design authority. The key boundary is not whether text is written; it is **which decisions and artifact subtype the operation owns**.
+
+### 5.3 Evidence
+
+**Evidence** is a record that supports, contradicts, contextualizes, or limits a claim about state or an artifact.
+
+Evidence must retain:
+
+- source and provenance;
+- scope, including relevant artifact snapshot/branch;
+- stage;
+- polarity;
+- limitations;
+- supersession relationship when corrected;
+- and the claims it can legitimately support.
+
+Model inference is not observed evidence and cannot be represented above `design-time` without actual higher-stage evidence.
+
+### 5.4 Packet
+
+A **packet** is a transport envelope for a particular consumer or operation.
+
+A packet may contain:
+
+- a state projection;
+- exact state snapshots or references;
+- artifact snapshots or references;
+- evidence projections;
+- permitted and forbidden reads;
+- execution instructions;
+- expected output contracts;
+- manifests and hashes;
+- runtime metadata.
+
+A packet is not itself the authoritative state merely because it contains state. It contains a **projection** or snapshot of state for a specified purpose.
+
+### 5.5 Object-integrity rules
+
+Every UAM component MUST preserve these rules:
+
+1. A packet must not be treated as a new authoritative decision unless the designated state owner commits that decision.
+2. `handoff-state` may project state but must not silently reinterpret it.
+3. Artifact compression is an artifact transformation, not a state handoff.
+4. Conversation-to-continuation extraction is state projection, not artifact rewriting.
+5. Evaluation may create evaluation artifacts and evidence records but must not silently modify the evaluated artifact.
+6. Physical packaging must not change artifact meaning, state meaning, or evidence stage.
+7. Omitted packet contents may not be inferred unless the governing contract explicitly permits it.
+
+---
+
+## 6. The UAM Spine
+
+The Spine defines common contracts that all dimensions and components consume.
+
+### 6.1 Intent and requirement contract
+
+Every material component assignment must distinguish:
+
+| Requirement class | Meaning | May drive required architecture? |
+|---|---|---:|
+| Explicit required | Directly stated by the user or governing contract | Yes |
+| Entailed required | Necessarily implied by an explicit goal or material constraint | Yes, with necessity basis |
+| Optional | Valuable but not required for current success | No |
+| Speculative | Plausible future opportunity or model-generated possibility | No |
+
+Every required capability or structural addition must trace to an explicit or entailed requirement. Every required goal must receive adequate capability support.
+
+### 6.2 Operation contract
+
+Every operation must declare:
+
+- requested outcome;
+- selected primary operation;
+- supported mode or posture;
+- owned decisions;
+- prohibited neighboring decisions;
+- authorized action boundary;
+- input object types and freshness requirements;
+- output artifact/state/evidence types;
+- applicable reasoning lenses or recipe;
+- stop condition;
+- and downstream consumer, if any.
+
+### 6.3 Authority contract
+
+Authority is object-specific and decision-specific.
+
+| Authority class | Permitted behavior |
+|---|---|
+| Design authority | Select architecture, capabilities, boundaries, and design artifacts within assigned scope |
+| Artifact mutation authority | Create or change a production/evaluation/delivery artifact within the authorized change boundary |
+| Evaluation authority | Assess and record findings without silently changing the goal, state, or evaluated artifact |
+| Comparison authority | Compare candidates and recommend or select only when selection authority is explicit |
+| Diagnostic authority | Identify failure causes, fix layers, and required knowledge without implementing the remedy |
+| State projection authority | Project current authoritative state for a consumer without modifying that state |
+| Transport authority | Assemble files, snapshots, manifests, and archives without changing substantive meaning |
+
+A component may hold more than one authority only when the composition contract explicitly permits it.
+
+### 6.4 Evidence and claim contract
+
+Every material claim must identify its evidence ceiling. Requested claims above the available stage must be returned as:
+
+- the strongest supported conclusion;
+- the missing verification;
+- and the stage required to support the stronger claim.
+
+A correct answer with missing required evidence capture is not a valid evidence package.
+
+### 6.5 State and provenance contract
+
+Governed state must preserve, as applicable:
+
+- identity;
+- schema or contract identity and content hash;
+- revision;
+- branch;
+- parent references;
+- content hash;
+- status;
+- freshness;
+- producer;
+- evidence references;
+- conflict references;
+- projection type;
+- resolution basis.
+
+Exact requirements may vary by component, but omission must never prevent the relevant decision from being reconstructed.
+
+### 6.6 Composition contract
+
+The UAM distinguishes **logical composition** from **execution packaging**.
+
+- Logical operations may be fused for compact execution only when their authorities, inputs, outputs, and stop conditions remain distinguishable.
+- Material operations must be staged when fusion would allow one operation to silently redefine another operation's committed output.
+- Co-serialization does not authorize skipped prerequisites.
+- A downstream operation consumes the committed or explicitly provisional output of its upstream dependency; it does not reconstruct missing state from narrative context.
+
+### 6.7 Preservation and change-boundary contract
+
+Every mutation must state:
+
+- touched elements;
+- preserved elements;
+- permitted first-degree interface changes;
+- prohibited propagation;
+- semantic dependency reach;
+- preservation guarantee;
+- unresolved impact knowledge;
+- verification required after change.
+
+### 6.8 Output, handoff, and stopping contract
+
+A complete operation must produce the requested artifact or valid blocking result, then stop.
+
+A handoff is required only when another materially different operation is necessary and outside the current operation's authority. Optional future work must not be represented as required continuation.
+
+### 6.9 Compatibility, snapshot, and archive contract
+
+Every component must declare:
+
+- stable artifact ID, stable display name, and versionless active filename;
+- compatibility conditions for the Spine and every load-bearing upstream dependency;
+- the pinned artifact stamps and loadable immutable content references used in its most recent validation;
+- downstream consumers;
+- invalidation triggers when a pinned stamp differs from the current active stamp;
+- migration requirements;
+- archive, deprecation, and rollback path.
+
+Compatibility MAY be expressed as stable contract conditions rather than a manually maintained list of every acceptable revision. Exact tested stamps remain mandatory evidence. Active artifacts MUST NOT carry version tokens in their title, filename, or stable ID; they carry an internal artifact stamp under §6.11.
+
+### 6.10 Shared-vocabulary ownership contract
+
+Independent dimensional builds will produce divergent encodings unless ownership of shared vocabulary is fixed before the builds begin. This contract fixes it. The governing rule:
+
+> **The Spine owns vocabulary that crosses dimension boundaries. Each dimension owns vocabulary that stays inside it.**
+
+#### 6.10.1 Two kinds of divergence
+
+| Divergence kind | Example | Cost | Control |
+|---|---|---|---|
+| **Interface divergence** | D2 and D6 each define their own error-code namespace; D3's manifest format is unparseable by D7 | High — components do not connect; surfaces only at integration | **Prevented** by freezing the shared encoding at the Spine *before* any consuming dimension builds |
+| **Naming drift** | D1 calls a concept "intent contract"; D6 calls the same concept "goal state" | Low — a rename | **Reconciled** cheaply at integration (§15.7) |
+
+Only interface divergence requires an up-front freeze. Naming drift is allowed during buildout and cleaned up at the end.
+
+#### 6.10.2 Spine-owned shared vocabulary (frozen in Phase 1, before consumers build)
+
+The following cross-boundary encodings are owned by the Spine, not by any dimension. They MUST be produced and frozen as Phase-1 artifacts (§19) before any dimension that consumes them is dispatched:
+
+1. **Error-code vocabulary** — the namespace and scheme for typed failures/rejections (consumed by D2, D6, D8; donor pattern: OMR `MCP-E###`).
+2. **State-object metadata convention** — the shared shape every governed state object carries: identity, schema/contract version, revision, branch, parent refs, content hash, status, freshness, producer (consumed by D2, D6, D8; donor: OMR P2 / `P2_State_Schemas`).
+3. **Source-authority order** — the precedence ladder every dimension obeys after adoption (consumed by all; this is the governance backbone).
+4. **Packet / manifest format** — the transport-envelope contract. D3 and D7 supply interface requirements and test the contract; the designated Spine Contract Architect authors, freezes, and releases the canonical shared encoding for all consumers.
+
+Ownership means a **produced, frozen artifact**, not a label. "The Spine owns error codes" without an actual frozen error-code scheme prevents nothing: the first dimension that needs a code will invent one. The artifact must exist before consumption.
+
+#### 6.10.3 Dimension-owned local vocabulary (created during buildout)
+
+Vocabulary that no other dimension consumes is owned and created within its dimension during buildout, and may diverge freely: a dimension's private schemas, D5's agent-building failure taxonomy, D4's lens-internal fields, D7's per-platform adapter internals, and similar. A sub-architect MUST NOT define a Spine-owned shared encoding locally; if its dimension needs one that is not yet frozen, it returns a blocking condition naming the missing Spine contract rather than inventing it (§12.0.3).
+
+#### 6.10.4 Distinguishing shared from local
+
+A vocabulary item is **shared** (Spine-owned) if any of the following hold: it appears in a cross-component interface (§15.2); it is emitted by one dimension and consumed by another; or it is part of the precedence/authority chain. Otherwise it is **local** (dimension-owned). When a sub-architect is unsure, the item is treated as shared and escalated to the Spine owner, because the cost of a false-local (interface divergence) far exceeds the cost of a false-shared (one extra frozen entry).
+
+### 6.11 Document identity, stamp, and archive contract
+
+Every governed UAM artifact MUST implement `UAM_Artifact_Naming_and_Archive_Convention.md`.
+
+1. **Stable active identity.** The living artifact uses one versionless title, stable artifact ID, and canonical filename. Prose uses that bare identity.
+2. **Self-describing stamp.** The header carries monotonic `artifact_revision`, ISO `revision_date`, authoritative `content_sha256`, and the canonical hash profile.
+3. **Authoritative hash.** The designated updater computes and records the content hash once under the canonical profile. Consumers reference it; conforming validators may verify it but do not mint alternate identities.
+4. **Current resolution.** The active header is authoritative for its stamp. `UAM_Artifact_Index.yaml` maps the stable identity to the canonical active path, current stamp, status, dependencies, and archive pointers. Mismatch flags and blocks.
+5. **Pin semantics.** Bare identity means track current. A contract, packet, handoff, build input, compatibility record, adoption record, or evidence record MUST carry the stable identity, pinned stamp, and attached or guaranteed-loadable immutable content reference.
+6. **Single writer.** Active replacement is serialized under one designated owner. Concurrent authors branch for reconciliation and MUST NOT overwrite the canonical active file.
+7. **Archive before replacement.** The outgoing file is copied unchanged to immutable history before the new active content commits. Missing historical bytes are recorded, not fabricated.
+8. **Staleness response.** When a pinned stamp differs from current, the consumer flags and blocks material action until compatibility review and revalidation. It neither silently continues nor silently adopts current.
+9. **Scope.** Material artifacts receive whole-document stamps. Scratch output is unstamped. Section anchors and machine-required schema/API identifiers are unaffected.
+
+The decision threshold is: **bare stable name for explanation; pinned stamp and loadable immutable content for action.**
+
+---
+
+## 7. Dimension Map and Sub-Architect Boundaries
+
+Each dimension has a distinct design responsibility. A sub-architect may work across dimensions only when the assignment explicitly grants cross-dimensional scope.
+
+### 7.1 D1 — Intent and Collaboration
+
+#### Purpose
+
+Convert user input, recurring collaboration patterns, and relevant user preferences into a committed, bounded intent that downstream components can execute without silently reinterpreting it.
+
+#### Required subdimensions
+
+1. **Outcome interpretation** — distinguish the desired result from a requested method.
+2. **Requirement classification** — explicit, entailed, optional, speculative.
+3. **User operating profile** — stable preferences, interaction style, autonomy boundaries, recurring choices, and their provenance.
+4. **Task-local overrides** — current instructions override general preferences within their valid scope.
+5. **Ambiguity handling** — ask, assume, branch, or block based on materiality and reversibility.
+6. **Operation-intent classification** — decide whether the user is asking to architect, author, evaluate, compare, diagnose, or hand off.
+7. **Materiality and scaling** — choose compact or material handling based on coupling, consequence, omission risk, and reversibility.
+8. **Commitment** — record the selected goal, constraints, assumptions, exclusions, and branches.
+9. **Reopening** — reopen only when the user changes the goal, a material constraint changes, relevant evidence appears, an upstream dependency changes, or a declared revisit trigger is met.
+10. **Collaboration cadence** — surface assumptions, alternatives, and material risks without imposing unnecessary ceremony.
+
+#### Existing foundations to inherit
+
+- Four-tier or four-class goal discipline from Goal Completeness and OMR GoalContract design.
+- Trivial/Material scaling gate.
+- Bounded assumption posture for reversible, nonmaterial ambiguity.
+- One focused clarification only when unresolved ambiguity materially changes architecture or authorizes hard-to-reverse action.
+- `prompt-refiner` as a candidate intent-normalization lens — cleans an underspecified or messy request into an executable outcome statement before commitment, without inventing requirements. Optional; subject to the open lens-inventory decision (§20.2).
+
+#### Boundary
+
+D1 may normalize and commit intent. It must not derive domain architecture, mutate artifacts, or promote evidence merely because a user preference suggests it.
+
+#### Required sub-architect outputs
+
+- intent contract;
+- preference and override model;
+- ambiguity/materiality decision rules;
+- operation-intent classifier;
+- commitment and reopen rules;
+- adversarial cases for misinterpretation and preference overreach.
+
+### 7.2 D2 — Governance and Control
+
+#### Purpose
+
+Ensure that every operation is eligible, authorized, fresh, evidence-bounded, structurally appropriate, and terminal when complete.
+
+#### Required subdimensions
+
+1. **Authority model** — who may decide, write, evaluate, project, or transport each object.
+2. **Eligibility and sequencing** — prerequisites and legal transitions.
+3. **Evidence ceiling enforcement** — claim limits and promotion conditions.
+4. **Change reach** — local correction, bounded capability addition, systemic restructure, or blocked unknown.
+5. **Preservation** — strengths, interfaces, unrelated changes, and stability guarantees.
+6. **Branch and conflict control** — no silent union or unresolved universal decision.
+7. **Freshness and invalidation** — upstream changes stale dependent state.
+8. **Constraint and safety enforcement** — hard boundaries override generative preference.
+9. **Stopping and terminality** — no momentum-driven continuation.
+10. **Rejection behavior** — name the failed condition and smallest valid next step.
+
+#### Existing foundations to inherit
+
+- AB evidence stages, action boundaries, N+1/N+2 reach, fix-layer discipline, and stop behavior.
+- OMR operator ownership, selector legality, exact parent/freshness discipline, branch preservation, and block-only decisions.
+- Evidence Capture Protocol rules against relabeling, repairing, or pooling flawed evidence.
+
+#### Boundary
+
+D2 governs whether and how work may proceed. It does not supply the domain-specific reasoning or content of the work.
+
+#### Required sub-architect outputs
+
+- authority matrix;
+- eligibility and transition rules;
+- change-reach model;
+- evidence and invalidation rules;
+- rejection/terminal taxonomy;
+- governance test suite.
+
+### 7.3 D3 — Operational Skill Fabric
+
+#### Purpose
+
+Expose a small set of broad, comprehensible operations that cover recurring work without polluting the global skill surface with every reasoning technique.
+
+#### Canonical operation families
+
+1. `architect-solution`
+2. `author-artifact`
+3. `evaluate-artifact`
+4. `compare-options`
+5. `diagnose-failure`
+6. `handoff-state`
+
+`clarify-or-proceed` is a universal D1/Spine policy, not a seventh global skill. `shape-output` is an `author-artifact` posture supported by narrative, style, and compression lenses, not a separate skill. Physical packaging is a D7 runtime capability rather than an automatic semantic operation.
+
+#### Required subdimensions
+
+1. **Operation ownership** — exactly one primary owner for each recurring operation.
+2. **Modes and postures** — internal variation without creating unnecessary global skills.
+3. **Routing** — outcome-based selection, not keyword matching alone.
+4. **Neighbor exclusions** — what each operation must not impersonate.
+5. **Composition** — legal multi-operation workflows.
+6. **Fusion versus staging** — compact simple execution and explicit material boundaries.
+7. **Transitions** — exact input/output contracts between operations.
+8. **Progressive loading** — load relevant lenses and domain resources only when needed.
+9. **Invocation ergonomics** — natural use without global implicit behavior pollution.
+10. **No-owner detection** — stop or route rather than inventing a seventh operation ad hoc.
+
+#### Existing foundations to inherit
+
+- AB1-AB9 lifecycle knowledge as a domain-specific mapping and donor for action boundaries.
+- Broad-skill consolidation insight from the Codex skill-suite analysis.
+- Claude-derived skills as reasoning-method donors rather than one-for-one active profile skills.
+
+#### Boundary
+
+The Skill Fabric owns the global operation surface and composition rules. It does not own the internal content of reasoning lenses, domain knowledge, exact state schemas, or runtime installation.
+
+#### Required sub-architect outputs
+
+- operation registry;
+- routing matrix;
+- mode taxonomy;
+- forbidden-neighbor rules;
+- composition graph;
+- fused/staged criteria;
+- adversarial routing deck;
+- compatibility adapter for existing AB invocations, if retained.
+
+### 7.4 D4 — Reasoning Intelligence
+
+#### Purpose
+
+Supply reusable generative, analytic, adversarial, synthesis, specification, and preservation methods that improve the quality of multiple operations without becoming an unbounded global skill list.
+
+#### Required subdimensions
+
+1. **First-principles derivation** — derive behaviors independent of current assets.
+2. **Design-space generation** — create materially different candidate approaches for material work.
+3. **Frontier pressure** — compare against credible gold-standard behavior without converting benchmarks into requirements automatically.
+4. **Narrative substance** — ensure sections and instructions perform behavioral or reasoning work.
+5. **Adversarial imagination** — premortem, break testing, counterfactuals, weakest-link analysis.
+6. **Specification construction** — turn concepts into executable behavioral contracts.
+7. **Synthesis and reconciliation** — preserve load-bearing differences while selecting or combining variants.
+8. **Independent judgment** — blind grading, model-versus-consensus, donor selection.
+9. **Preservation and compression** — shorten or reshape artifacts without behavioral loss.
+10. **Recipe composition** — define which lens combinations improve which operations.
+11. **Activation restraint** — do not apply every lens to every task.
+12. **Ablation** — test whether a lens or recipe adds value over the operation baseline.
+
+#### Initial lens families
+
+| Family | Candidate lenses |
+|---|---|
+| Generative | first-principles capability derivation, frontier benchmark, alternate-architecture generation |
+| Analytic | completeness mapping, narrative substance, consistency review, dependency reach |
+| Adversarial | steelman-premortem, break-it testing, counterfactual failure analysis |
+| Synthesis | variant reconciliation, option ranking, donor selection, model-versus-consensus |
+| Specification | spec builder, behavioral-contract construction, interface definition |
+| Preservation | artifact-safe transformation, house grammar, safe compression |
+| Evidence | blind grading, verification planning, evidence-ceiling review |
+
+This list is an initial library map, not a frozen final inventory.
+
+#### Boundary
+
+Reasoning lenses may generate conclusions and candidates but may not override failed governance conditions, mutate unauthorized objects, or promote optional ideas into requirements.
+
+#### Required sub-architect outputs
+
+- lens registry;
+- lens contract template;
+- activation and exclusion rules;
+- operation-to-lens recipe matrix;
+- ablation plan;
+- quality-uplift fixtures;
+- failure modes caused by overuse or miscomposition.
+
+### 7.5 D5 — Domain Brains
+
+#### Purpose
+
+Provide the specialized concepts, production grammar, evaluation criteria, source authority, and transfer knowledge needed to perform UAM operations in a particular domain.
+
+#### Required internal faces
+
+Every material Domain Brain SHOULD expose four faces:
+
+1. **Design knowledge** — entities, capabilities, architectures, tradeoffs, invariants, and failure patterns.
+2. **Production grammar** — how valid domain artifacts are structured and materialized.
+3. **Evaluation model** — what quality, completeness, correctness, readiness, and regression mean in the domain.
+4. **Transfer model** — what a downstream consumer must receive to continue domain work safely.
+
+#### Additional subdimensions
+
+- source and resource authority;
+- applicability and domain-boundary detection;
+- domain-specific tools and runtime assumptions;
+- terminology and semantic models;
+- standard artifacts and schemas;
+- domain-specific composition recipes;
+- known anti-patterns;
+- compatibility with generic operations and shared state.
+
+#### First Domain Brain: Agent Builder
+
+Agent Builder becomes the first UAM Domain Brain, not the name of the entire UAM.
+
+Its initial modules should include:
+
+- agent, prompt, skill, router, tool, state, resource, interface, evaluation, and deployment anatomy;
+- AB lifecycle adapter;
+- OMR state and evidence adapter;
+- agent specification grammar;
+- prompt and skill production patterns;
+- Agent Builder quality model;
+- known failure modes;
+- domain-specific eval fixtures;
+- operation-to-lens recipes.
+
+#### Boundary
+
+A Domain Brain supplies specialized knowledge to generic operations. It must not create new global operation families merely because a domain has specialized concepts.
+
+#### Required sub-architect outputs
+
+- domain ontology and capability model;
+- four-face module map;
+- source authority and loading rules;
+- domain artifact grammar;
+- domain evaluation criteria;
+- integration contracts with all six operations;
+- domain-specific tests and failure catalog.
+
+### 7.6 D6 — State, Evidence, and Continuity
+
+#### Purpose
+
+Preserve authoritative work understanding, evidence, provenance, branches, freshness, and continuation across agents, contexts, and time.
+
+#### Required subdimensions
+
+1. **Authoritative work state** — goals, constraints, decisions, branches, artifact refs, action, and stop state.
+2. **Evidence and provenance** — append/supersede behavior, scope, polarity, limitations, and claim support.
+3. **Revision and branch identity** — exact ancestry and conflict preservation.
+4. **Freshness and invalidation** — dependent state becomes stale when relevant parents change.
+5. **Artifact linkage** — exact artifact identity and content hash where material.
+6. **State projection** — compact or material recipient-specific views.
+7. **Continuity sufficiency** — downstream consumer can proceed without reconstructing the conversation.
+8. **Memory boundaries** — distinguish authoritative state from recalled context, inferred preference, or conversational residue.
+9. **Reconstruction minimums** — compact state retains every field necessary to justify the current decision.
+10. **Handoff semantics** — state extraction and projection without artifact mutation.
+
+#### Minimum continuation projection
+
+A material handoff should preserve, as applicable:
+
+- committed outcome;
+- required obligations and material constraints;
+- selected architecture or current decision;
+- live branches and rejected alternatives that remain decision-relevant;
+- current artifact/snapshot/hash;
+- evidence ceiling and key evidence refs;
+- authorized next operation and action boundary;
+- preservation requirements;
+- dependencies and material unknowns;
+- stop/revisit state;
+- next consumer and exact required inputs.
+
+#### Existing foundations to inherit
+
+- OMR state identity, revision, branch, parent, freshness, and exact-ref discipline.
+- OMR separation of governed state objects from ExecutionPackets.
+- Evidence Ledger append-only and supersession behavior.
+- Evidence Capture Protocol reconstruction minimums and context labels.
+- AB8 state-preserving handoff and AB9 portable packaging as donor behaviors.
+
+#### Boundary
+
+This dimension owns state semantics and continuity. It does not own physical archive creation, file copying, or platform-specific transport mechanics.
+
+#### Required sub-architect outputs
+
+- UAM state model proposal;
+- provenance/freshness/invalidation rules;
+- state projection contract;
+- handoff sufficiency schema;
+- memory-authority boundaries;
+- state/packet integrity tests;
+- migration mapping from existing OMR state where applicable.
+
+### 7.7 D7 — Runtime, Transport, and Delivery
+
+#### Purpose
+
+Materialize UAM decisions and artifacts reliably in real tools, files, repositories, services, and platform environments while preserving semantic and evidentiary integrity.
+
+#### Required subdimensions
+
+1. **Runtime realization** — file creation, code execution, tool calls, integration, and deployment when authorized.
+2. **Execution packets** — operation-specific input packages with exact state and contract projections.
+3. **Handoff packets** — continuation envelopes for another consumer.
+4. **Delivery bundles** — user-facing or deployment-facing artifact packages.
+5. **Manifest and integrity** — inventory, stable IDs, content hashes, completeness, and dependencies.
+6. **Platform adapters** — Codex, ChatGPT, Claude, local tools, repositories, and future runtimes.
+7. **Installation and activation** — staged deployment, backup, validation, rollback, and restart requirements.
+8. **Tool and file authority** — read/write boundaries, destructive-action controls, and preservation of unrelated changes.
+9. **Environment evidence** — actual runtime observations must be captured at the correct stage.
+10. **Transport neutrality** — a zip, folder, packet, or API payload must not change state or artifact meaning.
+
+#### Packet and bundle distinction
+
+| Transport object | Primary purpose |
+|---|---|
+| Execution packet | Give an operation exact eligible inputs and read/write limits |
+| Handoff packet | Preserve sufficient state and material for a next consumer |
+| Delivery bundle | Deliver completed artifacts to a user or deployment target |
+| Evidence package | Preserve auditable run, state, packet, and scoring records |
+
+Physical packaging is a runtime capability that may be used by several operations. It is not automatically owned by `handoff-state` merely because a zip is requested.
+
+#### Boundary
+
+D7 executes and transports authorized semantics. It must not invent architectural decisions, reinterpret state, or promote evidence.
+
+#### Required sub-architect outputs
+
+- runtime adapter contract;
+- packet/bundle schemas or manifests;
+- file/tool authority rules;
+- integrity and validation procedures;
+- installation/rollback design;
+- platform compatibility matrix;
+- runtime failure and recovery tests.
+
+### 7.8 D8 — Evaluation and Evolution
+
+#### Purpose
+
+Demonstrate whether components and compositions improve the UAM, preserve regressions, and justify adoption at the claimed evidence stage.
+
+#### Required subdimensions
+
+1. **Local evaluation** — does the component perform its own function?
+2. **Spine contract evaluation** — does it preserve shared interfaces and invariants?
+3. **End-to-end evaluation** — does the whole UAM perform at least as well on representative workflows?
+4. **Routing evaluation** — does each task have one correct primary operation?
+5. **Object-integrity evaluation** — are state, artifacts, evidence, and packets kept distinct?
+6. **Authority evaluation** — does each component stay within owned decisions and writes?
+7. **Composition evaluation** — are fusion, staging, prerequisites, and transitions correct?
+8. **Reasoning uplift and ablation** — does a lens or recipe measurably improve results over baseline?
+9. **Continuity evaluation** — can a downstream consumer execute without reconstructing conversation history?
+10. **Runtime and evidence capture** — are observations, contexts, packets, and first-pass failures preserved?
+11. **Adoption and rollback** — can a candidate be promoted reversibly and deprecated safely?
+12. **Evolution governance** — repeated failures drive the smallest correct architectural change.
+
+#### Three evaluation rings
+
+Every promoted material component must pass:
+
+1. **Local ring** — component-specific success and failure cases.
+2. **Contract ring** — compatibility with the Spine and neighboring components.
+3. **System ring** — representative end-to-end tasks and regression sentinels.
+
+#### Existing foundations to inherit
+
+- AB E1-E12 goal-completeness tests and sentinel preservation logic.
+- OMR public fixtures and controlled comparison posture.
+- Evidence Capture Protocol separation of behavior correctness, trace completeness, state/packet completeness, isolation validity, evidence compliance, burden, terminal correctness, confidence, and limitations.
+- Versioned correction rule: flawed evidence is closed with limitations, not repaired in place.
+- `prediction-log` as the runtime-measurement loop closer — logs a component's claimed effect and its falsifier at adoption time, then scores the realized outcome later. Design-time evals grade the artifact; this grades reality, and is the primary path to evidence above `simulated` for an adopted component's claimed uplift.
+
+#### Boundary
+
+Evaluation may support promotion decisions. It must not rewrite failed evidence, collapse executor output into evaluator verdicts, or claim independence without actual context isolation.
+
+#### Required sub-architect outputs
+
+- UAM evaluation taxonomy;
+- cross-dimension test matrix;
+- baseline and ablation protocol;
+- scorecards with separate dimensions;
+- evidence capture contract;
+- adoption, rollback, and deprecation gates;
+- regression sentinel suite.
+
+### 7.9 Cross-Dimensional Composition Matrix
+
+Every operation uses the same dimensions differently. This matrix prevents a sub-architect from mistaking a supporting dimension for the owner of the operation.
+
+| Operation | D1 Intent | D2 Control | D3 Ownership | D4 Reasoning | D5 Domain | D6 State | D7 Runtime | D8 Evaluation |
+|---|---|---|---|---|---|---|---|---|
+| `architect-solution` | committed outcome and requirements | design authority and evidence ceiling | primary operation | candidate generation and selection lenses | domain architecture and tradeoffs | writes/updates design decision state when authorized | may materialize design artifacts only | architecture and trace validation |
+| `author-artifact` | requested artifact outcome | mutation authority and change boundary | primary operation | preservation, specification, style, compression | production grammar | consumes committed design; updates artifact refs | creates files or integrates runtime when authorized | regression and implementation checks |
+| `evaluate-artifact` | frozen evaluation question | read/write and evidence limits | primary operation | grading, adversarial, verification lenses | quality model and fixtures | reads current state; writes evaluation evidence/state only if owned | runs tests or harnesses | owns assessment result and capture |
+| `compare-options` | comparison objective and criteria | selection authority and branch rules | primary operation | ranking and reconciliation | domain comparison criteria | preserves candidate identity and dissent | may execute equivalent runs | comparative validity and confidence |
+| `diagnose-failure` | failure claim and desired explanation | diagnostic authority and causal claim limits | primary operation | premortem, root-cause, dependency analysis | failure taxonomy | records diagnosis and unknowns when authorized | may inspect runtime evidence | causal/evidence sufficiency checks |
+| `handoff-state` | next-consumer purpose | projection and transport limits | primary operation | sufficiency and compression of state only | domain continuation minimums | projects authoritative state without changing it | assembles packets/bundles through D7 | reconstruction and integrity tests |
+
+The Spine is consumed in every cell. A sub-architect may improve one cell without taking ownership of the entire row.
+
+---
+
+## 8. Canonical Operational Skill Fabric
+
+The UAM exposes six broad operation families. Modes, lenses, recipes, and domain modules remain internal or progressively loaded unless a later evaluation demonstrates that another global operation is necessary.
+
+### 8.1 `architect-solution`
+
+**Purpose:** decide what should exist.
+
+**Owns:**
+
+- required capability derivation;
+- candidate architecture generation;
+- architecture comparison and selection within granted authority;
+- boundary and interface design;
+- target specification and implementation contract;
+- design-artifact authorship;
+- explicit record of rejected alternatives and unresolved branches.
+
+**Does not own:**
+
+- unauthorized mutation of production artifacts;
+- runtime implementation;
+- evidence promotion;
+- silent selection when material disagreement requires user or owner adjudication.
+
+**Common modes:**
+
+- capability derivation;
+- open architecture;
+- candidate generation;
+- target refinement;
+- architecture reconciliation;
+- specification construction;
+- smallest-sufficient redesign.
+
+**Typical lenses:** first principles, frontier benchmark, spec builder, narrative substance, premortem, variant reconciliation.
+
+**Typical outputs:** design artifact, target specification, decision record, architecture branch set, implementation contract.
+
+**Existing AB correspondence:** primarily AB4, with goal-completeness and open-architecture behavior as donors.
+
+### 8.2 `author-artifact`
+
+**Purpose:** create or modify the substantive artifact.
+
+**Owns:**
+
+- greenfield artifact creation;
+- local corrections;
+- bounded capability additions;
+- whole-artifact reconstruction;
+- file materialization;
+- authorized runtime integration;
+- artifact compression, style, and restructuring when requested.
+
+**Does not own:**
+
+- silent material redesign of a committed architecture;
+- state projection masquerading as content rewriting;
+- changing evaluation criteria while implementing against them;
+- broader reach than the authorized preservation contract.
+
+#### Authoring axes
+
+A flat list such as `create / patch / augment / rewrite / implement` mixes different concepts. UAM authoring should instead declare four axes.
+
+| Axis | Values |
+|---|---|
+| Origin posture | `greenfield`, `existing-artifact` |
+| Transformation reach | `local-correction`, `bounded-addition`, `whole-reconstruction` |
+| Realization depth | `compose-content`, `materialize-files`, `integrate-runtime` |
+| Preservation contract | `strict-stability`, `strength-preserving`, `no-stability-guarantee` |
+
+Examples:
+
+```text
+Write a new agent specification
+origin: greenfield
+realization: compose-content
+
+Add one capability to an existing skill
+origin: existing-artifact
+reach: bounded-addition
+preservation: strength-preserving
+
+Create the full Codex skill folder
+origin: greenfield
+realization: materialize-files
+
+Rebuild and install a runtime package
+origin: existing-artifact
+reach: whole-reconstruction
+realization: integrate-runtime
+```
+
+**Typical lenses:** artifact-safe transformation, preservation mapping, dependency reach, house grammar, safe compression, consistency review.
+
+**Typical outputs:** production, evaluation, or delivery artifact; implementation record; changed-file manifest.
+
+**Existing AB correspondence:** primarily AB1; greenfield creation may map to `.implement` under the current AB vocabulary until or unless AB is revised.
+
+### 8.3 `evaluate-artifact`
+
+**Purpose:** determine whether an artifact or system satisfies its committed goals, quality criteria, readiness claim, or evidence requirements.
+
+**Owns:**
+
+- completeness and quality assessment;
+- controlled test design and execution when authorized;
+- blind grading;
+- adversarial and regression evaluation;
+- readiness assessment;
+- evidence sufficiency and claim-ceiling review;
+- evaluation artifacts and evidence records.
+
+**Does not own:**
+
+- redefining goals;
+- modifying the evaluated artifact during the same read-only evaluation stage;
+- silently selecting architecture;
+- treating a design-time conclusion as runtime evidence.
+
+**Common modes:** completeness, blind, adversarial, regression, verification, readiness, narrative substance, evidence audit.
+
+**Typical lenses:** blind grader, break-it tester, adversarial evaluation, consistency review, narrative substance, evidence-ceiling review.
+
+**Existing AB correspondence:** AB2 and AB5, with boundaries kept explicit between test design/execution and readiness gating.
+
+### 8.4 `compare-options`
+
+**Purpose:** perform relative judgment across candidates, versions, donors, models, baselines, or approaches.
+
+**Owns:**
+
+- A/B comparison;
+- option ranking;
+- version or baseline comparison;
+- donor selection;
+- benchmark comparison;
+- model-versus-consensus analysis;
+- preserving decision-relevant dissent.
+
+**Does not own:**
+
+- artifact mutation;
+- silent branch union;
+- architecture selection without selection authority;
+- claiming absolute quality from relative evidence alone.
+
+**Common modes:** pairwise, ranked set, baseline delta, donor analysis, benchmark, consensus divergence, branch comparison.
+
+**Typical lenses:** option ranker, frontier benchmark, model-versus-consensus, variant reconciliation, independent scoring.
+
+**Existing AB correspondence:** primarily AB3.
+
+### 8.5 `diagnose-failure`
+
+**Purpose:** identify why a failure occurred or is likely to occur, where the remedy belongs, and what knowledge is still required.
+
+**Owns:**
+
+- observed failure triage;
+- root-cause and contributing-cause analysis;
+- premortem;
+- correct fix-layer identification;
+- dependency and propagation diagnosis;
+- burden/interface diagnosis;
+- regression-source diagnosis;
+- block decisions when impact knowledge is insufficient.
+
+**Does not own:**
+
+- implementing the remedy;
+- rewriting architecture while diagnosing;
+- filling missing impact facts by assertion;
+- treating correlation as verified causation.
+
+**Common modes:** observed failure, premortem, root cause, fix layer, dependency reach, burden calibration, regression source.
+
+**Typical lenses:** steelman-premortem, failure triage, dependency reach, counterfactual analysis, weakest-link analysis.
+
+**Existing AB correspondence:** primarily AB6 and AB7, with their distinct failure/routing and burden/interface responsibilities preserved where useful.
+
+### 8.6 `handoff-state`
+
+**Purpose:** preserve and project sufficient authoritative state and supporting materials for another consumer.
+
+**Owns:**
+
+- conversation-to-state extraction;
+- continuation-state projection;
+- execution or handoff packet semantics;
+- exact artifact and evidence references;
+- decision, branch, stop, dependency, and next-consumer preservation;
+- continuity sufficiency checks.
+
+**Does not own:**
+
+- rewriting or improving the artifact;
+- changing committed decisions;
+- resolving branches without authority;
+- promoting evidence;
+- treating physical packaging as semantic authority.
+
+**Common modes:** continuation state, execution packet, evaluator handoff, implementation handoff, evidence handoff, compact projection, material projection.
+
+**Typical lenses:** state-projection sufficiency, provenance preservation, branch preservation, reconstruction testing.
+
+**Typical outputs:** state projection, packet specification, manifest requirements, next-consumer contract.
+
+**Existing AB correspondence:** AB8 and AB9 as donors, with semantic handoff separated from runtime packaging.
+
+---
+
+## 9. Operation Composition Policy
+
+### 9.1 Compact fused execution
+
+Operations may execute in one response when all of the following are true:
+
+- the task is low-coupling and reversible;
+- no materially different architecture branches need preservation;
+- no hard-to-reverse action is authorized implicitly;
+- the upstream design decision is lightweight and visible in the result;
+- the artifact and state boundaries remain clear;
+- self-evaluation does not claim independence;
+- the result can be validated without a separate evidence package.
+
+Example:
+
+```text
+User asks for a small extraction prompt.
+
+author-artifact
+  ├─ lightweight internal capability check
+  ├─ compose prompt
+  └─ bounded self-check
+```
+
+### 9.2 Material staged execution
+
+Operations must be staged when:
+
+- architecture choice materially changes the artifact;
+- multiple credible architectures exist;
+- authority differs across stages;
+- implementation is destructive or hard to reverse;
+- independent evaluation is required;
+- state must be committed before downstream work;
+- evidence capture or context isolation matters;
+- dependency reach is unknown or systemic;
+- branches materially disagree.
+
+Canonical material sequence:
+
+```text
+intent commitment
+      ↓
+architect-solution
+      ↓ committed design artifact / target specification
+author-artifact
+      ↓ production artifact / implementation record
+evaluate-artifact
+      ↓ evaluation artifact / evidence
+handoff-state
+      ↓ sufficient continuation projection
+runtime transport
+      ↓ packet, bundle, archive, or deployment
+```
+
+`compare-options` and `diagnose-failure` may enter wherever their owned operation is required. They do not automatically create another stage if no material comparison or diagnosis is needed.
+
+### 9.3 Composition invariants
+
+- An authoring operation may challenge a design when implementation exposes a contradiction, but it must return the contradiction to the design owner rather than silently redesigning.
+- An evaluator may recommend a remedy but may not implement it in the same read-only evaluation stage unless a separately authorized mutation stage is explicit.
+- A handoff may include the artifact unchanged or by exact reference; it may not transform it.
+- A physical package may contain a handoff packet but is not itself authoritative state.
+- A separate-context claim requires a genuinely separate context, not merely a new section or prompt inside the same conversation.
+
+---
+
+## 10. Reasoning Lens and Recipe Contract
+
+Every reasoning lens must be independently describable and testable.
+
+### 10.1 Required lens fields
+
+A lens specification MUST include:
+
+- stable identity and active filename for prose, plus pinned artifact stamp and loadable immutable content for execution;
+- problem solved;
+- applicable operations;
+- activation conditions;
+- exclusion or counterproductive conditions;
+- required inputs;
+- prohibited inputs, when independence matters;
+- reasoning contribution;
+- distinctive output or trace;
+- likely failure modes;
+- evidence limitations;
+- compatible lenses;
+- known composition conflicts;
+- local evals;
+- ablation baseline.
+
+### 10.2 Recipe contract
+
+A recipe is an approved composition of one operation, one or more lenses, and optional Domain Brain modules.
+
+A recipe MUST state:
+
+- target task class;
+- primary operation;
+- selected lenses and order;
+- domain modules loaded;
+- compact or material posture;
+- state inputs;
+- output contract;
+- expected value of each lens;
+- stop condition;
+- evaluation evidence supporting the recipe.
+
+### 10.3 Candidate design-space requirement
+
+For material `architect-solution` work, the default reasoning recipe SHOULD:
+
+1. establish invariants and required capabilities;
+2. generate at least two materially different credible candidates when the problem admits them;
+3. apply frontier, substance, specification, and adversarial pressure selectively;
+4. compare candidates against goals, coherence, executability, burden, preservation, resilience, and evidence limits;
+5. commit one target or preserve unresolved branches;
+6. label optional opportunities and rejected alternatives.
+
+The requirement is not to generate cosmetic variants. The candidate set should represent different architectural theses.
+
+---
+
+## 11. Domain Brain Contract
+
+Every Domain Brain must plug into the six operations through explicit interfaces rather than duplicating them.
+
+### 11.1 Required Domain Brain structure
+
+```text
+<domain-brain>
+├── ontology-and-capability-model
+├── design-knowledge
+├── production-grammar
+├── evaluation-model
+├── transfer-model
+├── source-authority-map
+├── operation-recipes
+├── runtime-assumptions
+├── failure-catalog
+└── domain-evals
+```
+
+### 11.2 Domain Brain integration matrix
+
+| Operation | Domain Brain contribution |
+|---|---|
+| architect-solution | domain entities, required capabilities, candidate patterns, tradeoffs, boundaries |
+| author-artifact | domain syntax, artifact grammar, templates, implementation patterns |
+| evaluate-artifact | quality model, fixtures, readiness criteria, known anti-patterns |
+| compare-options | domain-specific comparison criteria and benchmark interpretation |
+| diagnose-failure | domain failure taxonomy, dependency patterns, correct remedy layers |
+| handoff-state | domain-specific continuation minimums, artifact refs, dependencies, consumer needs |
+
+### 11.3 Agent Builder Domain Brain inheritance
+
+The Agent Builder Domain Brain should absorb or adapt strong foundations from:
+
+- AB lifecycle routing and action boundaries;
+- Goal Completeness and open-architecture procedures;
+- OMR state sequencing, ownership, and evidence discipline;
+- prompt and skill production patterns;
+- Claude-derived generative reasoning operators;
+- evaluation and deployment knowledge.
+
+It must keep AB and OMR distinguishable. OMR remains a four-operator experimental state-sequenced prototype unless explicitly revised. AB remains the current lifecycle router within its existing authority unless explicitly migrated.
+
+---
+
+## 12. Sub-Architect Assignment Contract
+
+No sub-architect should begin material design from only a broad instruction such as “design the state layer.” The assignment packet must bound ownership and supply sufficient context.
+
+### 12.0 Dispatch gate and source provisioning
+
+These two rules govern *whether* and *with what* a sub-architect may be dispatched. They are prerequisites to §12.1, not optional refinements.
+
+#### 12.0.1 Dispatch gate — adoption required
+
+This framework is a candidate (see Status and §20). **No sub-architect may be dispatched against it until the user adopts or revises it in Phase 0 (§19).** A sub-architect dispatched on an unadopted framework would treat the framework's proposed thesis (§20.1) as committed authority that the user has not granted. Until adoption, the only valid next step is user review (see Terminal Record). After adoption, every brief cites the stable `parent_framework` identity plus the exact adopted artifact stamp, adoption record, and attached or guaranteed-loadable immutable content.
+
+#### 12.0.2 Source-provisioning rule — content, not citation
+
+§1.1 forbids a sub-architect from relying on the originating conversation. Therefore the assignment packet MUST carry the **content** of every inherited source the assigned dimension depends on — either the full source text embedded in the packet, or a reference the sub-architect is **guaranteed to be able to load in its own execution context**. A bare citation, active filename, revision number, or hash without loadable content does **not** satisfy this rule: a context-isolated agent cannot read a file it was only told the name of, and must block. The dimension→source provisioning map below is the minimum attachment set per dimension; a specific assignment may require more.
+
+| Assigned dimension | Minimum source content the packet MUST attach |
+|---|---|
+| D1 Intent & Collaboration | `AB_GoalCompleteness_Procedure_and_Evals` (requirement tiers, scaling gate); OMR `O1` contract from `OMR_Operator_Prototype_Runtime`; relevant user-operating-profile material |
+| D2 Governance & Control | `AB_Runtime_Authority_Reference` (action boundaries, N+1/N+2, validation rules, evidence stages, stop discipline); OMR selector/ownership/invalidation sections; `OMR_Evidence_Capture_Protocol` relabel/repair/pool prohibitions |
+| D3 Operational Skill Fabric | `AB_Runtime_Authority_Reference` AB1-AB9 registry and routing; the Codex broad-skill consolidation analysis; the current Codex AB skill wrappers being consolidated |
+| D4 Reasoning Intelligence | The specific donor skill definitions named in the lens registry (e.g., `blind-grader`, `spec-builder`, `steelman-premortem`, `variant-reconciliation`, `gold-standard-comparison`, `narrative-substance-review`, `safe-shrink`, `consistency-review`, `break-it-tester`, `model-vs-consensus`); not their names alone |
+| D5 Domain Brains (Agent Builder) | `AB_Runtime_Authority_Reference`; `AB_GoalCompleteness_Procedure_and_Evals`; prompt/skill production patterns; Agent Builder quality model and failure catalog sources |
+| D6 State, Evidence & Continuity | `P2_State_Schemas` (exact JSON); `OMR_Operator_Prototype_Runtime` (state identity, revision, branch, freshness, invalidation); `OMR_Evidence_Capture_Protocol` (reconstruction minimums, context labels); AB8/AB9 donor behavior |
+| D7 Runtime, Transport & Delivery | `OMR_Evidence_Capture_Protocol` (packet/manifest discipline); AB9 packaging behavior; existing platform adapter material and the standing zip-handoff preference; `P5_Executor_View` transport-relevant fixtures |
+| D8 Evaluation & Evolution | `P5_Executor_View` (adversarial fixtures); `AB_GoalCompleteness_Procedure_and_Evals` (E1-E12, sentinels); `OMR_Evidence_Capture_Protocol`; `prediction-log` for runtime-uplift measurement |
+
+If a required source cannot be attached or guaranteed-loadable, the dispatcher must either resolve that before dispatch or scope the assignment so the missing source is not load-bearing — and say so explicitly in the packet. A sub-architect that detects a load-bearing source it cannot read MUST return a blocking condition naming the missing source, not proceed on inference.
+
+#### 12.0.3 Bootstrap-pair validation gate — no parallel schema-bearing dispatch until cleared
+
+The framework is design-time only; "the Spine is sufficient" is a claim until a real component is built against it. The bootstrap pair is the experiment that converts the claim to evidence and the gate that controls breadth.
+
+**Rule.** The first dimensional work dispatched MUST be the bootstrap pair — `architect-solution` and `evaluate-artifact` (§19 Phase 3) — built on the contracts already frozen at adoption (Work-Object Model §5, Spine §6 including the §6.10 shared-vocabulary contract, Component Spec §13, evidence stages §3.8). **No second schema-bearing dimension (D2, D6, D8, or any component that emits a Spine-owned shared encoding) may be dispatched in parallel until this gate clears.**
+
+**The gate clears when both hold:**
+
+1. The bootstrap pair was designed *and* validated **without reopening the framework or inventing a Spine-owned shared encoding** (§6.10.2). If it ran clean, the contract is simulated-validated and dispatch of further dimensions may proceed.
+2. Every Spine-owned shared encoding the bootstrap build surfaced as needed has been **produced and frozen at the Spine** (§6.10.2 / §19 Phase 1), so the next dimension consumes a frozen contract rather than inventing one.
+
+**If the gate does not clear** — the bootstrap build had to reopen a spine decision or invent a shared encoding — that decision is frozen at the Spine level *before* any further dispatch. This is the kill condition: if two components ever independently invent the same shared encoding and the encodings differ, stop dispatching and resolve that encoding at the Spine first.
+
+Dimension-local-only work (a component that emits no Spine-owned shared encoding) is not bound by this gate and may proceed once its own provisioning (§12.0.2) is satisfied.
+
+### 12.1 Required input packet
+
+Every material sub-architect assignment MUST include:
+
+1. component identity and class;
+2. parent UAM Framework stable identity, pinned adopted artifact stamp, adoption record, and loadable immutable content (per §12.0.1);
+3. current committed goal and success conditions;
+4. explicit and entailed requirements;
+5. optional and speculative opportunities;
+6. owned design decisions;
+7. prohibited decisions and writes;
+8. applicable dimensions and neighboring components;
+9. inherited source **content** (attached or guaranteed-loadable, per §12.0.2 — not citations), stable identities, pinned artifact stamps, and exact loadable content refs;
+10. current state and artifact references;
+11. evidence ceiling;
+12. material constraints;
+13. preservation obligations;
+14. expected outputs;
+15. local, contract, and system validation requirements;
+16. authorized action: assess, recommend, design, author, implement, test, package, or gate;
+17. stop condition;
+18. next consumer, if already known.
+
+### 12.2 Compact versus material sub-architecture
+
+Use the lightest profile capable of detecting material error.
+
+**Compact profile** is appropriate when:
+
+- the component is narrow and low-coupling;
+- interfaces are few and well understood;
+- change is local and reversible;
+- no material branch or authority ambiguity exists;
+- omission risk is low.
+
+**Material profile** is required when:
+
+- the component affects multiple dimensions or operations;
+- state, authority, evidence, tools, or runtime behavior is involved;
+- multiple plausible architectures exist;
+- cross-component interfaces are load-bearing;
+- omission or propagation risk is material;
+- replacement or system restructure is plausible.
+
+### 12.3 Required sub-architect process
+
+A material sub-architect should execute the following sequence:
+
+1. **Validate eligibility** — scope, authority, state freshness, evidence, and dependencies.
+2. **Restate the owned problem** — outcome, requirements, exclusions, and boundaries.
+3. **Inventory foundations** — classify existing components as preserve, refactor, absorb, replace, retire, or missing.
+4. **Derive required capabilities** — before anchoring on current implementation details where independence is material.
+5. **Map interfaces and ownership** — reads, writes, transitions, neighbors, and forbidden overlap.
+6. **Generate candidate architectures** — materially different candidates when useful.
+7. **Apply selected reasoning lenses** — not the entire library by default.
+8. **Compare and commit** — select, branch, block, or return no-material-change.
+9. **Author the component specification** — including machine-governed contracts when required.
+10. **Design local evaluations** — positive, negative, adversarial, and no-action cases.
+11. **Design contract evaluations** — Spine, neighboring interfaces, authority, and object integrity.
+12. **Identify system evaluations** — end-to-end workflows and regressions affected.
+13. **Record evidence ceiling and verification owed**.
+14. **Produce a complete handoff** — no reliance on hidden conversation context.
+15. **Stop** — do not implement, install, or broaden scope without authority.
+
+### 12.4 Existing-component disposition vocabulary
+
+| Disposition | Meaning |
+|---|---|
+| Preserve | Strong foundation remains substantively intact |
+| Refactor | Same responsibility retained with improved structure or interfaces |
+| Absorb | Capability moves inside another component while preserving its function |
+| Replace | Existing component is superseded by a demonstrably better owner |
+| Retire | Capability is no longer needed or is harmful/redundant |
+| Missing | Required capability has no adequate current owner |
+
+A sub-architect must not label an existing component obsolete merely because a cleaner greenfield design is imaginable.
+
+---
+
+## 13. Required Component Specification
+
+Every material UAM component must be documented with the following contract. A machine-readable schema may later formalize this structure; until then, this is the required semantic content.
+
+```yaml
+component:
+  id: <stable-versionless-id>
+  name: <stable-human-readable-name>
+  class: <spine | dimension-module | skill-family | mode | lens | recipe |
+          domain-module | state-component | runtime-adapter | evaluation-package>
+  canonical_filename: <versionless-active-filename>
+  artifact_stamp:
+    artifact_revision: <monotonic-integer>
+    revision_date: <ISO-8601-date>
+    content_sha256: <authoritative-content-sha256>
+    hash_profile: UAM-CANONICAL-TEXT-SHA256-1
+  content_ref: <attached-content-or-guaranteed-loadable-immutable-ref>
+  status: <proposed | candidate | implemented | validated | adopted | deprecated>
+  evidence_ceiling: <design-time | simulated | live-runtime |
+                     post-implementation | production-observed>
+  parent_framework:
+    artifact_id: UAM-FRAMEWORK
+    canonical_filename: UAM_Model_Framework.md
+    pinned_stamp:
+      artifact_revision: <exact-adopted-integer>
+      revision_date: <exact-adopted-ISO-date>
+      content_sha256: <exact-adopted-content-sha256>
+      hash_profile: UAM-CANONICAL-TEXT-SHA256-1
+    content_ref: <attached-content-or-guaranteed-loadable-immutable-ref>
+    adoption_ref: <record-ref>
+
+purpose:
+  problem_solved: <statement>
+  success_conditions: []
+  non_goals: []
+
+requirement_trace:
+  explicit_required: []
+  entailed_required: []
+  optional: []
+  speculative: []
+
+ownership:
+  owned_decisions: []
+  owned_writes: []
+  prohibited_decisions: []
+  prohibited_writes: []
+  escalation_conditions: []
+
+work_objects:
+  reads: []
+  writes: []
+  projects: []
+  transports: []
+  freshness_requirements: []
+
+interfaces:
+  inputs: []
+  outputs: []
+  upstream_dependencies: []
+  downstream_consumers: []
+  neighboring_components: []
+  compatibility_conditions: []
+
+activation:
+  select_when: []
+  do_not_select_when: []
+  compact_conditions: []
+  material_conditions: []
+
+composition:
+  permitted_predecessors: []
+  permitted_successors: []
+  permitted_fusions: []
+  required_stage_boundaries: []
+  recipes: []
+
+behavior:
+  required_capabilities: []
+  invariants: []
+  algorithm_or_procedure: []
+  stopping_conditions: []
+
+preservation:
+  strengths_to_preserve: []
+  change_boundary: []
+  invalidation_triggers: []
+  rollback_or_deprecation: []
+
+failure_model:
+  known_failure_modes: []
+  wrong_layer_risks: []
+  material_unknowns: []
+
+validation:
+  local_evals: []
+  spine_contract_evals: []
+  integration_evals: []
+  end_to_end_evals: []
+  ablation_or_baseline: []
+  evidence_capture: []
+
+handoff:
+  produced_artifacts: []
+  state_updates_or_projections: []
+  evidence_records: []
+  next_consumer: <none-or-owner>
+  exact_required_inputs: []
+  stop_reason: <statement>
+```
+
+A specification is invalid as a successful component handoff when required ownership, interface, traceability, evidence, or evaluation content is missing.
+
+---
+
+## 14. Traceability and Coverage Requirements
+
+### 14.1 Bidirectional trace
+
+Every required UAM component must support both directions:
+
+```text
+required goal/constraint
+        ↓
+required capability
+        ↓
+component or behavior owner
+        ↓
+evaluation proving coverage at a stated stage
+```
+
+and:
+
+```text
+component or behavior
+        ↑
+capability it supports
+        ↑
+required goal/constraint that justifies it
+```
+
+Untraced additions are optional, speculative, redundant, or unjustified until promoted.
+
+### 14.2 Coverage classes
+
+Where component coverage is assessed, use behaviorally meaningful classes such as:
+
+- full at stage;
+- partial;
+- nominal but ineffective;
+- absent;
+- duplicated;
+- misplaced;
+- unknown due to insufficient evidence.
+
+Labels, folders, headings, or declared ownership do not prove behavioral coverage.
+
+### 14.3 Gap impact requirements
+
+For material gaps, record:
+
+- affected requirement and capability;
+- consequence;
+- origin-layer candidates;
+- touched elements;
+- first-degree dependencies;
+- known broader dependencies;
+- semantic centrality;
+- change reach;
+- preservation feasibility;
+- material unknowns;
+- whether a separate impact job is required;
+- and whether an intervention decision is ready or block-only.
+
+---
+
+## 15. Connective-Tissue Integration Rules
+
+A component is not UAM-compatible merely because it performs its local function. It must preserve the following cross-system invariants.
+
+### 15.1 Unique ownership
+
+Every material decision and governed write must have one primary owner. Supporting components may advise, supply evidence, or execute authorized instructions, but they must not silently assume ownership.
+
+### 15.2 Explicit interfaces
+
+Every cross-component handoff must identify:
+
+- exact object or artifact consumed;
+- stable identity, pinned artifact stamp, state revision, branch, and freshness where relevant;
+- permitted and forbidden reads;
+- expected output;
+- evidence ceiling;
+- invalidation triggers;
+- stop or next-consumer state.
+
+### 15.3 No hidden reinterpretation
+
+A downstream component may detect inconsistency and block or reopen. It may not silently revise the upstream goal, architecture, evidence, or branch.
+
+### 15.4 Progressive context loading
+
+Sub-architects and runtime components should load the narrowest sufficient sources. The complete UAM does not require every agent to carry every domain brain, lens, schema, fixture, and historical archive at once.
+
+### 15.5 Conversation independence
+
+A governed handoff must contain enough state and references for the next consumer to proceed without reconstructing omitted conversation history.
+
+### 15.6 Compatibility before promotion
+
+A locally improved component cannot be adopted until it passes interface and end-to-end regression checks for every materially affected neighbor and workflow.
+
+### 15.7 Integration reconciliation gate
+
+When independently built dimensions are brought together, a reconciliation pass runs before the integrated set is promoted. This pass is **an eval that runs, not an agent that governs** — it is owned by the D8 contract ring (§7.8, §16), not by a new standing authority. There is deliberately no central "cohesion agent": such a thing would be the ninth competing domain the Spine is defined not to be (§4.2), and would re-centralize the cross-cutting knowledge the dimensional split exists to avoid.
+
+The gate has two steps:
+
+1. **Detect — `consistency-review`.** Audit the integrated set for the single-source-of-truth and cross-component-interface invariants (§15.1–§15.5): every shared term/encoding defined once, no contradictions across dimensions, no reintroduced superseded syntax, interfaces that tie. Because the Spine-owned shared encodings were frozen up front (§6.10.2), **interface divergence should be near-zero here**; any interface conflict that does appear is a signal that the §6.10 freeze was incomplete or a §12.0.3 gate was skipped, and is resolved at the Spine, not patched locally.
+2. **Resolve — `variant-reconciliation`.** Reconcile the residual **naming drift** (§6.10.1) — same concept, different label across dimensions — by selecting one canonical term and propagating the rename. This is the cheap, expected remainder.
+
+If step 1 surfaces true interface divergence rather than naming drift, the integrated set does not promote: the conflicting shared encoding is frozen at the Spine and the affected dimensions are revalidated against it. Naming drift alone does not block promotion once reconciled.
+
+---
+
+## 16. Evaluation Framework
+
+### 16.1 Required test classes
+
+The UAM evaluation system must include at least the following test classes.
+
+| Test class | Example failure detected |
+|---|---|
+| Intent | Method mistaken for objective; optional idea promoted to requirement |
+| Routing | “Review this” sent to authoring instead of evaluation or architecture |
+| Operation boundary | Evaluator edits artifact; author silently redesigns architecture |
+| Object integrity | Packet treated as state; handoff rewrites artifact |
+| Authority | Non-owner writes state or chooses intervention |
+| State/freshness | Stale parent or artifact reference consumed |
+| Branch | Materially different models silently merged |
+| Evidence | Design-time prose claims production validation |
+| Composition | Material workflow fused without committed design stage |
+| Reasoning quality | Baseline and lens-enhanced outputs show no meaningful difference |
+| Domain knowledge | Generic skill misses load-bearing domain concept |
+| Continuity | Next consumer must reconstruct conversation to proceed |
+| Runtime | Package paths, files, manifests, or adapters fail in target environment |
+| Stopping | Sufficient artifact triggers unnecessary new components or work |
+| Vocabulary consistency | Two dimensions define the same Spine-owned shared encoding (error code, metadata field, manifest format) incompatibly; a dimension defines a shared encoding locally instead of consuming the frozen Spine contract |
+
+### 16.2 Quality and observability dimensions
+
+Scorecards should separate:
+
+- behavioral correctness;
+- goal and requirement trace completeness;
+- architectural coherence;
+- reasoning depth and novelty where relevant;
+- object/state/packet completeness;
+- authority compliance;
+- branch/freshness correctness;
+- evidence-ceiling compliance;
+- preservation and regression behavior;
+- burden and compactness;
+- terminal decision correctness;
+- runtime success;
+- evaluator confidence;
+- limitations.
+
+A single aggregate score must not conceal a critical failure in authority, evidence, state, or terminal behavior.
+
+### 16.3 Baselines and ablations
+
+For a new lens, recipe, or component, compare where feasible:
+
+1. current baseline behavior;
+2. broad operation without the new component;
+3. broad operation with the selected component;
+4. broad operation with excessive or indiscriminate composition.
+
+This detects both missing uplift and overactivation harm.
+
+### 16.4 Evidence capture
+
+Material evaluations should preserve:
+
+- frozen input content, pinned source artifact stamps and attached or guaranteed-loadable immutable content references;
+- exact prompts or execution contracts;
+- runtime/model configuration when applicable;
+- state and packet snapshots;
+- context condition and isolation evidence;
+- raw first-pass outputs;
+- rejected selections and failures;
+- repairs and manual interventions as separate records;
+- scorecards and evaluator rationale;
+- hashes and manifests;
+- limitations.
+
+### 16.5 Adoption gate
+
+A component may be recommended for adoption only when:
+
+- required local tests pass;
+- no critical Spine contract failure remains;
+- materially affected integrations pass;
+- evidence supports the claimed maturity;
+- rollback or replacement path exists;
+- unresolved limitations are named;
+- the component produces net value above added complexity and maintenance burden.
+
+---
+
+## 17. UAM Evolution Loop
+
+The UAM should evolve through controlled failure localization rather than repeated wholesale redesign.
+
+```text
+observe a recurring failure or opportunity
+              ↓
+classify the originating layer
+              ↓
+identify the smallest sufficient change reach
+              ↓
+design candidate fix with preserved interfaces
+              ↓
+run local + contract + system evaluations
+              ↓
+adopt, retain as candidate, block, or reject
+              ↓
+monitor revisit triggers and regressions
+```
+
+### 17.1 Failure-to-layer map
+
+| Observed failure | Primary fix location |
+|---|---|
+| Wrong operation selected | D1 operation-intent classification or D3 router |
+| Correct operation, shallow result | D4 lens or recipe |
+| Missing specialized concept | D5 Domain Brain |
+| Correct reasoning, unauthorized action | D2 Governance and Control |
+| State cannot be reconstructed | D6 State, Evidence, and Continuity |
+| Correct design, failed files/tools/package | D7 Runtime, Transport, and Delivery |
+| Good conclusion, weak proof of superiority | D8 Evaluation and Evolution |
+| Widespread cross-layer mismatch | UAM Spine or system-level composition |
+
+### 17.2 Valid triggers for architectural revision
+
+Revise a component or shared contract when:
+
+- a material failure repeats across different tasks;
+- two components have irreducible ownership overlap;
+- a high-frequency operation has no natural owner;
+- a lens or recipe shows consistent uplift or consistent harm;
+- a cross-component interface creates repeated state, evidence, or authority defects;
+- new evidence invalidates a prior design assumption;
+- runtime constraints change materially;
+- a user decision changes the committed architecture.
+
+Do not revise the architecture merely because one model generated a cleaner taxonomy or a single edge case can be handled with a bounded exception.
+
+---
+
+## 18. Existing Foundation Disposition
+
+This is a preliminary design-time disposition, not a runtime verdict.
+
+| Foundation | Current UAM role | Preliminary disposition |
+|---|---|---|
+| AB Runtime Authority Reference | Lifecycle routing, actions, evidence, N+1/N+2, stop discipline | Preserve as active AB authority; adapt as donor to UAM Governance and Skill Fabric |
+| AB Goal-Completeness Procedure | Capability-before-asset, goal classes, scaling, coverage, no-change | Preserve and generalize carefully into Intent, Architecture, and Evaluation |
+| OMR Operator Prototype | State sequencing, ownership, packet discipline, branches, freshness | Preserve as distinct prototype; absorb proven concepts into UAM State design only through explicit migration |
+| P2 OMR schemas | Exact five-object OMR state contracts | Preserve byte/semantic authority for OMR; do not treat as global UAM schema automatically |
+| OMR Evidence Capture Protocol | Auditable packets, state, context, scoring, versioning | Preserve and generalize as a strong foundation for UAM Evaluation and Continuity |
+| Current Codex AB skills | Existing operation wrappers | Refactor/consolidate into six broad UAM operation families after routing validation |
+| Claude-derived skills | Generative and review methods | Absorb primarily as lenses and recipes, not one-for-one global skills |
+| Existing handoff/package behavior | State preservation and portable delivery | Refactor into semantic `handoff-state` plus runtime transport/delivery |
+| User operating profile | User-specific collaboration and preference model | Materially underdefined; requires dedicated D1/D6 architecture |
+| Cross-dimensional evaluation | Demonstrating component uplift without system regression | Materially underdefined; requires dedicated D8 architecture |
+| Runtime adapters | Platform-native execution and installation | Partial and environment-specific; requires D7 architecture |
+
+---
+
+## 19. Initial Build Sequence
+
+The UAM should not be built as eight isolated projects or as one monolithic rewrite.
+
+### Phase 0 — Adopt or revise this framework
+
+- Review the architecture and frozen/open decisions.
+- Adopt the exact active snapshot as the common sub-architect context or issue a revised active snapshot.
+- Do not install profile-wide skills merely because this document exists.
+
+### Phase 1 — Freeze the UAM Spine and Work-Object Model
+
+- intent and requirement contract;
+- state/artifact/evidence/packet semantics;
+- object-specific authority;
+- composition policy;
+- evidence and claim contract;
+- preservation and stopping;
+- compatibility, snapshot, and archive rules;
+- **the Spine-owned shared vocabulary (§6.10.2): the error-code scheme, the state-object metadata convention, the source-authority order, and the packet/manifest format — produced and frozen as artifacts, not labels, before any consuming dimension is dispatched.**
+
+Freezing the shared vocabulary here is what prevents interface divergence during parallel buildout (§6.10.1). Dimension-local vocabulary is *not* frozen here; it is created by each dimension during its own build.
+
+### Phase 2 — Design thin shells for all six operations
+
+For each operation, freeze:
+
+- purpose and ownership;
+- modes/postures;
+- inputs and outputs;
+- neighbor exclusions;
+- authority limits;
+- composition rules;
+- stop conditions;
+- routing tests.
+
+### Phase 3 — Build the bootstrap pair *(validation gate)*
+
+Fully build:
+
+```text
+architect-solution
+evaluate-artifact
+```
+
+Use the first to design candidate components and the second to attack and validate them. Keep self-evaluation claims separate from independent evidence.
+
+This phase is the **validation gate of §12.0.3**, not merely the first build. Both operations are built on the contracts frozen in Phases 1–2; nothing here should require reopening the framework or inventing a Spine-owned shared encoding. **Go/no-go:** if the pair designs and validates cleanly, the contract is simulated-validated and parallel dispatch of further dimensions may begin. If it had to reopen a spine decision or invent a shared encoding, freeze that at the Spine first and do not dispatch further until it holds. No schema-bearing dimension is dispatched in parallel before this gate clears.
+
+### Phase 4 — Build the Reasoning Library and recipes
+
+Start with high-value lenses:
+
+- first-principles capability derivation;
+- frontier/gold-standard comparison;
+- narrative substance;
+- specification construction;
+- steelman-premortem;
+- variant reconciliation;
+- artifact-safe compression;
+- blind/adversarial grading.
+
+Validate through ablation before broad activation.
+
+### Phase 5 — Build the Agent Builder Domain Brain
+
+Separate design knowledge, production grammar, evaluation model, and transfer model. Preserve AB and OMR as distinct inherited systems unless a later migration is explicitly designed and evaluated.
+
+### Phase 6 — Complete State, Runtime, and Evaluation integration
+
+- UAM state and continuity design;
+- packet and transport contracts;
+- platform adapters;
+- evidence capture;
+- end-to-end eval deck;
+- adoption and rollback procedure.
+
+### Phase 6.5 — Integration reconciliation
+
+Before staging the integrated set, run the reconciliation gate (§15.7): `consistency-review` to detect any cross-dimension vocabulary or interface conflict, then `variant-reconciliation` to resolve residual naming drift to canonical terms. Because the Spine-owned shared encodings were frozen in Phase 1, expect this to be naming drift only; a true interface conflict here means a Phase-1 freeze was incomplete or a §12.0.3 gate was skipped — resolve it at the Spine and revalidate the affected dimensions before proceeding. This is a D8 contract-ring eval, not a standing cohesion authority.
+
+### Phase 7 — Stage and install
+
+Only after architecture and evaluation gates pass:
+
+- stage candidate skills and resources;
+- validate in target profile layout;
+- back up current profile;
+- install surgically;
+- run post-install routing, regression, and runtime checks;
+- record evidence and limitations;
+- retain rollback path.
+
+---
+
+## 20. Frozen and Open Decisions
+
+### 20.1 Frozen as the framework's thesis, pending Phase-0 adoption
+
+These are the framework's **proposed** architectural thesis, not user-ratified decisions. The user has not yet adopted this framework (see Status and §12.0.1). "Frozen" means: **once the framework is adopted in Phase 0**, a sub-architect treats these as fixed unless the user reopens them. Before adoption they carry no authority over the user; they are what a dispatcher commits to when issuing briefs against the adopted snapshot. Adopting the framework (§19 Phase 0) is the act that ratifies this list.
+
+- The umbrella working name is **User Agent Model Framework**.
+- The UAM has a shared Spine and eight dimensions.
+- The global skill surface contains six operation families.
+- `change-artifact` is renamed `author-artifact`.
+- `package-state` is renamed `handoff-state`.
+- State, artifact, evidence, and packet are distinct work objects.
+- `architect-solution` owns design decisions and design artifacts.
+- `author-artifact` owns greenfield and existing-artifact production within authority.
+- `handoff-state` extracts and projects authoritative state; it does not rewrite artifacts.
+- Simple execution may fuse logical operations; material work preserves stage boundaries.
+- Reasoning methods are primarily lenses and recipes, not one-for-one global skills.
+- Agent Builder is the first Domain Brain, not the name of the whole framework.
+- AB1-AB9 and O1-O4 remain distinct systems unless explicitly migrated.
+- Evidence stages and no-silent-promotion discipline are retained.
+- Existing strong components are preserved unless a validated replacement justifies change.
+
+### 20.2 Open design questions
+
+Archived-lineage note: in the v0.21 snapshot, items that are *cross-boundary shared encodings* are no longer open — they were reclassified to Spine-owned and freeze-first (§6.10.2, §19 Phase 1). What remains open below is genuinely deferrable: dimension-local content, or decisions that depend on later evidence.
+
+The following are deliberately not frozen by this document:
+
+- exact **per-dimension** machine schemas (the dimension-local content; the *shared* metadata convention and error-code scheme are Spine-owned per §6.10.2, not open);
+- exact user operating profile representation and privacy boundaries;
+- final lens inventory and recipe combinations;
+- whether existing AB macros remain a compatibility layer long term;
+- exact mapping from OMR state objects to future UAM state (the *target* metadata convention it maps to is Spine-frozen; the mapping itself is D6 work);
+- exact runtime adapter topology across Codex, ChatGPT, Claude, and other environments;
+- production deployment and monitoring model;
+- evidence thresholds for declaring the UAM superior to current baselines;
+- final brand or external-facing name.
+
+A sub-architect may propose answers within assigned scope but must not silently treat an open question as committed.
+
+#### 20.2.1 Reclassified to Spine-owned, freeze-first (no longer open)
+
+These were open in archived v0.1–v0.2 snapshots and are now owned by the Spine and frozen in Phase 1 before any consuming dimension is built (§6.10.2). They are listed here so the change is explicit:
+
+- error-code vocabulary and scheme;
+- state-object shared metadata convention (id/revision/branch/parent/hash/status/freshness/producer shape);
+- source-authority order after UAM adoption;
+- packet/manifest format and the shared invocation surface for the six operations.
+
+A sub-architect MUST consume these as frozen Spine contracts; defining any of them locally is a §6.10 / §16.1 vocabulary-consistency failure.
+
+---
+
+## 21. Sub-Architect Completion Gate
+
+A sub-architecture is complete only when the following questions have defensible answers:
+
+1. What explicit or entailed requirement makes this component necessary?
+2. What exact decisions and work-object writes does it own?
+3. What neighboring decisions and writes are prohibited?
+4. What inputs, content hashes or archive refs, state, and evidence does it require?
+5. What outputs does it produce, and for which consumer?
+6. How is it selected, and when must it not be selected?
+7. Which operations, modes, lenses, recipes, and domain modules does it compose with?
+8. What existing strengths does it preserve?
+9. What invalidates its output?
+10. How can its state and decision be reconstructed without conversation history?
+11. What local, Spine, integration, and end-to-end evaluations apply?
+12. What evidence stage supports current claims?
+13. What limitations and unresolved branches remain?
+14. What exact stop condition ends the assignment?
+
+If any answer is materially missing, the sub-architect must return a precise blocking condition or candidate specification rather than presenting the component as complete.
+
+---
+
+## 22. Glossary
+
+| Term | Definition |
+|---|---|
+| UAM Framework | The complete user-specific cognitive operating architecture |
+| UAM Blueprint | The canonical map of UAM dimensions, components, and interfaces |
+| UAM Spine | Shared contracts preserving intent, work objects, authority, evidence, composition, provenance, and stopping |
+| Dimension | Independently refinable architectural concern connected through the Spine |
+| Skill family | Broad globally invocable operation |
+| Mode/posture | Specific kind or reach of work owned by a skill family |
+| Lens | Reusable reasoning method that improves an operation |
+| Recipe | Approved composition of operation, lenses, and optional Domain Brain modules |
+| Domain Brain | Specialized domain knowledge, production grammar, evaluation model, and transfer model |
+| State | Authoritative semantic understanding of the work |
+| Artifact | Substantive output being designed, built, evaluated, or delivered |
+| Evidence | Scoped record supporting, contradicting, or limiting claims |
+| Packet | Purpose-specific transport envelope containing projections, snapshots, refs, evidence, and instructions |
+| Projection | Recipient-specific view of authoritative state or evidence |
+| Design artifact | Architecture, specification, behavioral contract, or implementation contract |
+| Production artifact | Prompt, skill, code, schema, instructions, workflow, or documentation |
+| Evaluation artifact | Fixture, scorecard, harness, validation record, or comparison report |
+| Delivery artifact | Completed package or release for a user or deployment target |
+| Compact profile | Lightweight path for low-coupling, reversible work |
+| Material profile | Full path for coupled, consequential, branch-sensitive, or high-omission-risk work |
+| Evidence ceiling | Highest claim stage supported by available evidence |
+| Change reach | Semantic scope of a proposed mutation and its dependency propagation |
+| Continuity sufficiency | Ability of a downstream consumer to proceed without reconstructing conversation history |
+| No material change needed | Successful terminal result when required goals are already adequately supported |
+
+---
+
+## Appendix A — Sub-Architect Brief Template
+
+```markdown
+# UAM Sub-Architect Brief
+
+## Identity
+- Assignment ID:
+- Component name:
+- Component class:
+- Assigned dimension(s):
+- Parent framework: UAM Model Framework (`UAM-FRAMEWORK`)
+- Parent framework canonical filename: `UAM_Model_Framework.md`
+- Parent framework pinned stamp:
+  - Artifact revision:
+  - Revision date:
+  - Content SHA-256:
+  - Hash profile:
+- Parent framework content ref (attached or guaranteed-loadable immutable):
+- Parent framework adoption record:
+- Authorized role:
+- Evidence ceiling:
+
+## Committed outcome
+- Outcome:
+- Success conditions:
+- Material constraints:
+
+## Requirement classes
+### Explicit required
+-
+### Entailed required
+-
+### Optional
+-
+### Speculative
+-
+
+## Ownership
+- Owned decisions:
+- Owned work-object writes:
+- Prohibited decisions:
+- Prohibited writes:
+
+## Existing foundations
+- Attached source content (full text or guaranteed-loadable ref, per §12.0.2 — NOT citations), stable identities, pinned artifact stamps and exact loadable content refs:
+- Preserve:
+- Refactor candidates:
+- Absorb candidates:
+- Replace candidates:
+- Retire candidates:
+- Missing capabilities:
+
+## Interfaces
+- Upstream inputs:
+- Downstream consumers:
+- Neighboring components:
+- Freshness/branch requirements:
+- Compatibility requirements:
+
+## Required deliverables
+-
+
+## Validation
+- Local evals:
+- Spine contract evals:
+- Integration evals:
+- End-to-end evals:
+- Evidence capture:
+
+## Preservation and stopping
+- Strengths to preserve:
+- Change boundary:
+- Stop condition:
+- Revisit triggers:
+```
+
+## Appendix B — Canonical Routing Examples
+
+| Request | Primary operation | Notes |
+|---|---|---|
+| “Design the ideal architecture for this agent.” | `architect-solution` | Produces design artifact; no implementation unless separately authorized |
+| “Write the complete agent specification from this approved architecture.” | `author-artifact` | Greenfield, compose-content |
+| “Add one missing capability and preserve the rest.” | `author-artifact` | Existing artifact, bounded addition, strength-preserving |
+| “Does this artifact satisfy the committed goals?” | `evaluate-artifact` | Completeness assessment at stated evidence stage |
+| “Which of these three designs is strongest?” | `compare-options` | Selection only if selection authority is explicit |
+| “Why did this workflow fail after the patch?” | `diagnose-failure` | Diagnose cause and fix layer; no mutation |
+| “Turn this conversation into everything the next agent needs.” | `handoff-state` | Extract and project state; do not rewrite the artifact |
+| “Make this specification 40% shorter without losing behavior.” | `author-artifact` | Artifact-safe compression lens |
+| “Zip these completed files for delivery.” | Runtime transport/delivery | May consume a handoff or delivery manifest; zip request alone is not state handoff |
+| “Review and improve this.” | Intent classification required | Could route to architecture, evaluation, authoring, or diagnosis based on requested outcome |
+
+## Appendix C — Source Inheritance and Provenance
+
+This framework was synthesized from the following supplied sources and decisions:
+
+1. `Codex conversation for AB Rethink.md` — broad-skill consolidation, falsifiable architecture assessment, and generative-intelligence gap.
+2. `Branch Conversation_UAM Architecture.txt` — corrected operation names, work-object distinctions, authoring ownership, and handoff semantics.
+3. `AB_Runtime_Authority_Reference_v1.1.md` — AB lifecycle routing, authority, evidence stages, change reach, and stopping.
+4. `AB_GoalCompleteness_Procedure_and_Evals_v1.1.md` — capability-before-asset, requirement tiers, scaling, coverage, action routing, and sentinel behavior.
+5. `OMR_Operator_Prototype_Runtime_v0.2.md` — state sequencing, operator ownership, packet distinction, branch/freshness discipline, and prototype boundaries.
+6. `P2_State_Schemas_v0.1.json` — exact OMR object metadata, ownership, trace, evidence, coverage, decision, and invalidation patterns.
+7. `OMR_Evidence_Capture_Protocol_v0.1.md` — auditable state/packet capture, context isolation, compact trace minimums, scoring observability, and versioning.
+8. `P5_Executor_View_v0.1.yaml` — adversarial fixture patterns for completeness, evidence, ordering, branch, impact, and authority failures.
+9. `project-state.md`, checksum, adoption, and sentinel records — current source status, provenance, and evidence limitations.
+
+### Proposed authority relationship if this framework is adopted
+
+- User-committed decisions remain highest authority for UAM intent.
+- This document owns UAM-level topology, shared vocabulary, and cross-component contracts.
+- Component specifications own their internal design within assigned scope.
+- Existing AB and OMR sources retain authority inside their existing systems until an explicit migration changes that relationship.
+- Evaluation records govern only the claims supported at their evidence stage.
+- Examples, ideation archives, and donor skills do not override adopted contracts.
+
+---
+
+## Terminal Record
+
+**Task class:** architecture-change / design artifact generation  
+**Terminal state:** candidate UAM common framework and sub-architect design contract produced  
+**Do not do next:** do not install, migrate, merge, or retire existing AB/OMR components solely from this design-time document  
+**Only valid next step:** user review and adoption/revision of the framework before issuing component-specific sub-architect briefs  
+**Recommended context window:** current context for direct revision; new context for independent architecture evaluation  
+**Next role_class:** architecture-change or lateral-evaluation, depending on user choice  
+**Next assignee_runtime:** user-selected

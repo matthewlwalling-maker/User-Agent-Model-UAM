@@ -1,0 +1,51 @@
+run_id: blind-run-001
+run_type: blind
+status: scored_and_audited
+evidence_stage: simulated
+exportability: internal
+current_path: tests/runs/blind-run-001
+planned_v2_path: tests/runs/blind-run-001
+source_basis:
+  - tests/runs/blind-run-001/freeze-record.md
+  - tests/runs/blind-run-001/runner-packet.md
+  - tests/runs/blind-run-001/evaluator-packet.md
+  - tests/runs/blind-run-001/evaluator-result-attempt_002.md
+  - tests/runs/blind-run-001/audit-report-attempt_002.md
+roles:
+  runner: required
+  evaluator: required
+  scorer: required
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: keep mapping keys and raw outputs out of public exports
+  paths:
+    - tests/runs/blind-run-001/mapping-key.local.md
+    - tests/runs/blind-run-001/mapping-key-attempt_002.local.md
+    - tests/runs/blind-run-001/raw-outputs-attempt_001.md
+    - tests/runs/blind-run-001/raw-outputs-attempt_002.md
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/blind-run-001/evaluator-packet.md
+    - tests/runs/blind-run-001/anonymized-outputs-attempt_001.md
+    - tests/runs/blind-run-001/anonymized-outputs-attempt_002.md
+    - tests/runs/blind-run-001/evaluator-result-attempt_002.md
+    - tests/runs/blind-run-001/audit-report-attempt_002.md
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported:
+    - simulated evaluator scoring plus post-unblind aggregation for attempt_002
+    - target beats or ties baseline on locked dimensions within attempt_002
+  prohibited:
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - This manifest records current evals path only; it does not move the run folder.
+  - Keep mapping keys sealed until dimension scoring is locked in any future blind rerun.

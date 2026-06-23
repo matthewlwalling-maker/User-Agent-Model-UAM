@@ -1,0 +1,142 @@
+registry_id: uam-bridge-skills-skill-registry
+version: 0.1.0
+status: active-root-migrated
+date: 2026-06-23
+evidence_ceiling: design-time
+source_basis:
+  - skills/active/uam-bridge-skills/MANIFEST.yaml
+  - docs/cleanup/workspace-taxonomy-v2.md
+  - docs/cleanup/final-workspace-cleanup-record-2026-06-22.md
+authority:
+  manifest_is_activation_source: true
+  registry_does_not_activate_skills: true
+  current_manifest_path: skills/active/uam-bridge-skills/MANIFEST.yaml
+  active_skill_package_root: skills/active/uam-bridge-skills
+  current_skills_root: skills/active/uam-bridge-skills/commands
+  planned_active_root: skills/active/uam-bridge-skills/commands
+  candidates_default_loadable: false
+  archives_default_loadable: false
+active_package_anchors:
+  manifest: skills/active/uam-bridge-skills/MANIFEST.yaml
+  kernel: skills/active/uam-bridge-skills/KERNEL.md
+  chain_router: skills/active/uam-bridge-skills/CHAIN_ROUTER.md
+lifecycle_lanes:
+  active:
+    current_root: skills/active/uam-bridge-skills/commands
+    planned_root: skills/active/uam-bridge-skills/commands
+    loadable: true
+    controlled_by_manifest: true
+  forward_candidates:
+    planned_root: skills/candidates/forward
+    loadable: false
+    controlled_by_manifest: false
+  experimental_candidates:
+    planned_root: skills/candidates/experimental
+    loadable: false
+    controlled_by_manifest: false
+  parked_candidates:
+    planned_root: skills/candidates/parked
+    loadable: false
+    controlled_by_manifest: false
+  archived_lineage:
+    planned_root: skills/archive/backfilled-lineage
+    loadable: false
+    controlled_by_manifest: false
+skills:
+  - skill_id: uam.align-work
+    command: "/align"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/align-work/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/align-work/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - state
+    release_status: v0.1-enriched
+  - skill_id: uam.design-solution
+    command: "/design"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/design-solution/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/design-solution/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - artifact
+      - state
+    object_subtypes:
+      - design_artifact
+    release_status: v0.1-enriched
+  - skill_id: uam.build-artifact
+    command: "/build"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/build-artifact/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/build-artifact/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - artifact
+    object_subtypes:
+      - production_artifact
+      - source_artifact
+    release_status: v0.1-enriched
+  - skill_id: uam.review-work
+    command: "/review"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/review-work/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/review-work/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - evidence
+    release_status: v0.1-enriched
+  - skill_id: uam.compare-decide
+    command: "/compare"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/compare-decide/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/compare-decide/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - evidence
+      - state
+    release_status: v0.1-enriched
+  - skill_id: uam.diagnose-problem
+    command: "/diagnose"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/diagnose-problem/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/diagnose-problem/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - evidence
+      - state
+    release_status: v0.1-enriched
+  - skill_id: uam.research-evidence
+    command: "/research"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/research-evidence/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/research-evidence/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - evidence
+    release_status: v0.1-enriched
+  - skill_id: uam.handoff-state
+    command: "/handoff"
+    lifecycle_status: active
+    current_path: skills/active/uam-bridge-skills/commands/handoff-state/SKILL.md
+    planned_v2_path: skills/active/uam-bridge-skills/commands/handoff-state/SKILL.md
+    loadable: true
+    manifest_controlled: true
+    writes:
+      - packet
+    object_subtypes:
+      - transport_packet
+    release_status: v0.1-enriched
+candidates: []
+archive_entries: []
+migration_gates:
+  - active_skill_package_migration_completed_with_manifest_paths_patched
+  - do_not_allow_candidate_skills_to_become_loadable_by_scan
+  - keep_adapters_exports_and_run_packet_references_current_after_path_changes
+  - validate_current_paths_after_each_registry_change

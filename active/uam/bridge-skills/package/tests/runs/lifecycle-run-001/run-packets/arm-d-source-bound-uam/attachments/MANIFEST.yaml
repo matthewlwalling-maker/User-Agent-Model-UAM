@@ -1,0 +1,206 @@
+package_id: uam-bridge-skills
+version: 0.1.0
+status: rollout-lab-candidate
+release_channel: explicit-command-pilot-source
+evidence_ceiling: design-time
+source_authority:
+  canonical_package: true
+  manifest_is_source_of_truth: true
+  adapters_derive_from_manifest: true
+  kernel_file: KERNEL.md
+  skills_root: skills
+  lenses_root: lenses
+  evals_root: evals
+  docs_root: docs
+  prohibited_authorities:
+    - provider adapters may not redefine skill ownership
+    - donor skills may not override canonical package contracts
+    - design-time recommendations may not claim runtime validation
+release_status:
+  v0_1:
+    state: created
+    scope: source skeleton for explicit-command pilot
+    permitted_use:
+      - local design-time review
+      - adapter drafting
+      - eval fixture expansion
+    prohibited_use:
+      - global installation
+      - v1 deployment
+      - broad implicit routing
+      - production readiness claims
+  v1:
+    state: blocked_until_gates_pass
+    required_gates:
+      - routing
+      - object_integrity
+      - evidence_ceiling
+      - degradation
+      - overactivation
+      - cross_model_parity
+commands:
+  - command: /align
+    skill_id: uam.align-work
+    path: skills/align-work/SKILL.md
+    version: 0.1.0
+    writes: [state]
+    release_status: v0.1-enriched
+  - command: /design
+    skill_id: uam.design-solution
+    path: skills/design-solution/SKILL.md
+    version: 0.1.0
+    writes: [artifact, state]
+    release_status: v0.1-enriched
+  - command: /build
+    skill_id: uam.build-artifact
+    path: skills/build-artifact/SKILL.md
+    version: 0.1.0
+    writes: [artifact]
+    release_status: v0.1-enriched
+  - command: /review
+    skill_id: uam.review-work
+    path: skills/review-work/SKILL.md
+    version: 0.1.0
+    writes: [evidence]
+    release_status: v0.1-enriched
+  - command: /compare
+    skill_id: uam.compare-decide
+    path: skills/compare-decide/SKILL.md
+    version: 0.1.0
+    writes: [evidence, state]
+    release_status: v0.1-enriched
+  - command: /diagnose
+    skill_id: uam.diagnose-problem
+    path: skills/diagnose-problem/SKILL.md
+    version: 0.1.0
+    writes: [evidence, state]
+    release_status: v0.1-enriched
+  - command: /research
+    skill_id: uam.research-evidence
+    path: skills/research-evidence/SKILL.md
+    version: 0.1.0
+    writes: [evidence]
+    release_status: v0.1-enriched
+  - command: /handoff
+    skill_id: uam.handoff-state
+    path: skills/handoff-state/SKILL.md
+    version: 0.1.0
+    writes: [packet]
+    release_status: v0.1-enriched
+shared_reads:
+  - work_intent
+  - user_constraints
+  - relevant_state
+  - source_artifact
+  - evidence
+  - provider_capability_profile
+work_objects:
+  state: authoritative semantic understanding of the work and decisions
+  artifact: substantive output being designed, built, evaluated, or delivered
+  evidence: scoped record supporting, contradicting, or limiting claims
+  packet: transport envelope containing state projections, artifact refs, evidence, and next instructions
+lenses:
+  capability-first: lenses/capability-first.md
+  gold-standard: lenses/gold-standard.md
+  narrative-substance: lenses/narrative-substance.md
+  safe-compression: lenses/safe-compression.md
+  blind-grading: lenses/blind-grading.md
+  break-it-testing: lenses/break-it-testing.md
+  premortem: lenses/premortem.md
+  variant-reconciliation: lenses/variant-reconciliation.md
+  evidence-ceiling: lenses/evidence-ceiling.md
+  state-projection: lenses/state-projection.md
+provider_profiles:
+  codex:
+    adapter_path: adapters/codex
+    priority: first
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: true
+      web_retrieval: adapter-dependent
+      file_read: true
+      file_write: true
+      code_execution: true
+      durable_memory: false
+      isolated_subagents: adapter-dependent
+  claude-code:
+    adapter_path: adapters/claude-code
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: true
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: adapter-dependent
+      code_execution: adapter-dependent
+      durable_memory: false
+      isolated_subagents: adapter-dependent
+  chatgpt:
+    adapter_path: adapters/chatgpt
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: false
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: false
+      code_execution: adapter-dependent
+      durable_memory: adapter-dependent
+      isolated_subagents: false
+  gemini:
+    adapter_path: adapters/gemini
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: false
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: false
+      code_execution: adapter-dependent
+      durable_memory: adapter-dependent
+      isolated_subagents: false
+  generic:
+    adapter_path: adapters/generic
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: false
+      dynamic_skill_loading: false
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: false
+      code_execution: false
+      durable_memory: false
+      isolated_subagents: false
+eval_suites:
+  align_work: evals/align-work-cases.yaml
+  build_artifact: evals/build-artifact-cases.yaml
+  compare_decide: evals/compare-decide-cases.yaml
+  design_solution: evals/design-solution-cases.yaml
+  diagnose_problem: evals/diagnose-problem-cases.yaml
+  handoff_state: evals/handoff-state-cases.yaml
+  research_evidence: evals/research-evidence-cases.yaml
+  review_work: evals/review-work-cases.yaml
+  blind_value_proposition: evals/blind-value-proposition-cases.yaml
+  uam_bridge_behavioral: evals/uam-bridge-behavioral-suite.yaml
+  uam_bridge_behavioral_executor_only: evals/uam-bridge-behavioral-executor-only-cases.yaml
+  pressure_red_cases: evals/pressure-red-cases.yaml
+  pressure_red_executor_only: evals/pressure-red-executor-only-cases.yaml
+  routing: evals/routing-cases.yaml
+  object_integrity: evals/object-integrity-cases.yaml
+  evidence_ceiling: evals/evidence-ceiling-cases.yaml
+  degradation: evals/degradation-cases.yaml
+  overactivation: evals/overactivation-cases.yaml
+  cross_model_parity: evals/cross-model-parity.yaml
+installation:
+  global_install_authorized: false
+  activation_authorized: false
+  explicit_authorization_required_for:
+    - copying files into provider profile folders
+    - enabling implicit routing
+    - declaring v1 readiness
+    - replacing or superseding existing AB, OMR, Codex, Claude, ChatGPT, Gemini, or API artifacts

@@ -1,0 +1,92 @@
+run_id: compounding-run-001
+run_type: compounding
+status: scored
+evidence_stage: simulated
+exportability: private-local
+current_path: tests/runs/compounding-run-001
+planned_v2_path: tests/runs/compounding-run-001
+created: 2026-06-22
+source_basis:
+  - tests/runs/compounding-run-001/README.md
+  - tests/runs/compounding-run-001/prompts/operator-turns.md
+  - tests/runs/compounding-run-001/prompts/arm-a-baseline.md
+  - tests/runs/compounding-run-001/prompts/arm-b-kernel-manifest.md
+  - tests/runs/compounding-run-001/prompts/arm-c-full-source.md
+  - tests/runs/compounding-run-001/prompts/anonymizer.md
+  - tests/runs/compounding-run-001/prompts/evaluator.md
+  - tests/runs/compounding-run-001/prompts/source-aware-adjudicator.md
+  - tests/runs/compounding-run-001/run-packets
+  - tests/runs/compounding-run-001/codex-run-001
+roles:
+  runner: required
+  evaluator: required
+  scorer: required
+run_design:
+  arms:
+    - arm_id: A
+      label: baseline
+      source_scope: no UAM resources
+      replicates: 3
+    - arm_id: B
+      label: kernel_manifest
+      source_scope: KERNEL.md plus MANIFEST.yaml
+      replicates: 3
+    - arm_id: C
+      label: full_source_uam
+      source_scope: KERNEL.md, MANIFEST.yaml, chain router reference, and eight source skills
+      replicates: 3
+  no_lookahead_rule: true
+  same_provider_model_settings_required: true
+  evaluator_blinding_required: true
+executed_runs:
+  codex-run-001:
+    status: collected_anonymized_dispatched_scored
+    collected_at: "2026-06-22 14:08:26 -07:00"
+    run_count: 9
+    collection_record: tests/runs/compounding-run-001/codex-run-001/collection/collection-record.md
+    nested_manifest: tests/runs/compounding-run-001/codex-run-001/MANIFEST.md
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: keep private unless scoring is locked and a curated profile explicitly permits a derived public summary
+  paths:
+    - tests/runs/compounding-run-001/codex-run-001/raw-private
+    - tests/runs/compounding-run-001/codex-run-001/collection/private-run-map.md
+    - tests/runs/compounding-run-001/codex-run-001/collection/private-hashes.sha256
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/compounding-run-001/README.md
+    - tests/runs/compounding-run-001/codex-run-001/evaluator-packet/EVALUATOR_INSTRUCTIONS.md
+    - tests/runs/compounding-run-001/codex-run-001/evaluator-packet/ANONYMIZED_TRANSCRIPTS_FOR_EVALUATOR.md
+    - tests/runs/compounding-run-001/codex-run-001/evaluator-packet/HASHES.sha256
+    - tests/runs/compounding-run-001/codex-run-001/scoring/scoring-record.md
+    - tests/runs/compounding-run-001/codex-run-001/scoring/mapped-results.md
+integrity:
+  hash_manifest_paths:
+    - tests/runs/compounding-run-001/codex-run-001/evaluator-packet/HASHES.sha256
+    - tests/runs/compounding-run-001/codex-run-001/collection/private-hashes.sha256
+    - tests/runs/compounding-run-001/codex-run-001/integrity/pre-cleanup-manifest.sha256
+    - tests/runs/compounding-run-001/codex-run-001/integrity/post-cleanup-manifest.sha256
+  relocation_map_paths:
+    - tests/runs/compounding-run-001/codex-run-001/integrity/relocation-map.md
+  preservation_commitments:
+    - raw private transcripts are preserved as collected
+    - anonymized evaluator packet files are preserved as dispatched
+    - locked scoring is preserved separately from mapped aggregate analysis
+claims:
+  supported:
+    - simulated transcript evidence after evaluator scoring
+    - lifecycle-control signal for the compared arms within codex-run-001
+    - compounding boundary-failure signal for further targeted eval design
+  prohibited:
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - This manifest records the current evals path and the planned tests path; it does not move the run folder.
+  - Keep raw-private, private-run-map, private-hashes, and mapping material excluded from public export profiles by default.
+  - If this run migrates to tests/runs, preserve byte identity and update this manifest in the same migration batch.

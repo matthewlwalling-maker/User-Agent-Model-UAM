@@ -1,0 +1,271 @@
+package_id: uam-bridge-skills
+version: 0.1.0
+status: rollout-lab-candidate
+release_channel: explicit-command-pilot-source
+evidence_ceiling: design-time
+source_authority:
+  canonical_package: true
+  manifest_is_source_of_truth: true
+  adapters_derive_from_manifest: true
+  active_skill_package_root: skills/active/uam-bridge-skills
+  manifest_file: skills/active/uam-bridge-skills/MANIFEST.yaml
+  kernel_file: skills/active/uam-bridge-skills/KERNEL.md
+  router_reference_file: skills/active/uam-bridge-skills/CHAIN_ROUTER.md
+  skills_root: skills/active/uam-bridge-skills/commands
+  lenses_root: lenses/active
+  tests_root: tests
+  evals_root: tests
+  docs_root: docs
+  governance_change_log: docs/governance/source-authority-change-log.md
+  tools_root: tools/active
+  exports_root: exports/generated
+  prohibited_authorities:
+    - provider adapters may not redefine skill ownership
+    - donor skills may not override canonical package contracts
+    - design-time recommendations may not claim runtime validation
+release_status:
+  v0_1:
+    state: created
+    scope: source skeleton for explicit-command pilot
+    permitted_use:
+      - local design-time review
+      - adapter drafting
+      - eval fixture expansion
+    prohibited_use:
+      - global installation
+      - v1 deployment
+      - broad implicit routing
+      - production readiness claims
+  v1:
+    state: blocked_until_gates_pass
+    required_gates:
+      - routing
+      - object_integrity
+      - evidence_ceiling
+      - degradation
+      - overactivation
+      - cross_model_parity
+commands:
+  - command: /align
+    skill_id: uam.align-work
+    path: skills/active/uam-bridge-skills/commands/align-work/SKILL.md
+    version: 0.1.0
+    writes: [state]
+    release_status: v0.1-enriched
+  - command: /design
+    skill_id: uam.design-solution
+    path: skills/active/uam-bridge-skills/commands/design-solution/SKILL.md
+    version: 0.1.0
+    writes: [artifact, state]
+    object_subtypes: [design_artifact]
+    release_status: v0.1-enriched
+  - command: /build
+    skill_id: uam.build-artifact
+    path: skills/active/uam-bridge-skills/commands/build-artifact/SKILL.md
+    version: 0.1.0
+    writes: [artifact]
+    object_subtypes: [production_artifact, source_artifact]
+    release_status: v0.1-enriched
+  - command: /review
+    skill_id: uam.review-work
+    path: skills/active/uam-bridge-skills/commands/review-work/SKILL.md
+    version: 0.1.0
+    writes: [evidence]
+    release_status: v0.1-enriched
+  - command: /compare
+    skill_id: uam.compare-decide
+    path: skills/active/uam-bridge-skills/commands/compare-decide/SKILL.md
+    version: 0.1.0
+    writes: [evidence, state]
+    release_status: v0.1-enriched
+  - command: /diagnose
+    skill_id: uam.diagnose-problem
+    path: skills/active/uam-bridge-skills/commands/diagnose-problem/SKILL.md
+    version: 0.1.0
+    writes: [evidence, state]
+    release_status: v0.1-enriched
+  - command: /research
+    skill_id: uam.research-evidence
+    path: skills/active/uam-bridge-skills/commands/research-evidence/SKILL.md
+    version: 0.1.0
+    writes: [evidence]
+    release_status: v0.1-enriched
+  - command: /handoff
+    skill_id: uam.handoff-state
+    path: skills/active/uam-bridge-skills/commands/handoff-state/SKILL.md
+    version: 0.1.0
+    writes: [packet]
+    object_subtypes: [transport_packet]
+    release_status: v0.1-enriched
+shared_reads:
+  - work_intent
+  - user_constraints
+  - relevant_state
+  - source_artifact
+  - evidence
+  - provider_capability_profile
+work_objects:
+  state: authoritative semantic understanding of the work and decisions
+  artifact: substantive output being designed, built, evaluated, or delivered
+  evidence: scoped record supporting, contradicting, or limiting claims
+  packet: transport envelope containing state projections, artifact refs, evidence, and next instructions
+work_object_subtypes:
+  design_artifact: design-owned specification, plan, architecture, or decision artifact; may be written by /design and handed to /build without mutating the production or source artifact
+  production_artifact: substantive deliverable or user-facing/runtime artifact whose creation or mutation belongs to /build
+  source_artifact: package, adapter, fixture, documentation, or repository source file whose creation or mutation belongs to /build
+  transport_packet: packet-owned continuation, handoff, or evaluator envelope; it remains work_object packet and is not an artifact or authoritative state
+lenses:
+  capability-first: lenses/active/capability-first.md
+  gold-standard: lenses/active/gold-standard.md
+  narrative-substance: lenses/active/narrative-substance.md
+  safe-compression: lenses/active/safe-compression.md
+  blind-grading: lenses/active/blind-grading.md
+  break-it-testing: lenses/active/break-it-testing.md
+  premortem: lenses/active/premortem.md
+  variant-reconciliation: lenses/active/variant-reconciliation.md
+  evidence-ceiling: lenses/active/evidence-ceiling.md
+  state-projection: lenses/active/state-projection.md
+tools:
+  validate_yaml:
+    path: tools/active/validate_yaml.py
+    purpose: static YAML syntax and lightweight eval fixture validation
+  export_relevant_files:
+    path: tools/active/export_relevant_files.ps1
+    purpose: copy curated package/source packets into local exports or a target master Git repository with SHA-256 verification
+    writes: [exports]
+    prohibited_use:
+      - committing
+      - pushing
+      - installing
+      - activating
+      - deploying
+      - declaring readiness
+  publish_bridge_skills_to_master_repo:
+    path: tools/active/publish_bridge_skills_to_master_repo.ps1
+    purpose: prepare or explicitly stage/commit/push the Bridge Skills active package into the master UAM GitHub repository with package stamps and source manifests
+    writes: [external_git_repo]
+    prohibited_use:
+      - pushing without -PushConfirmation
+      - installing
+      - activating
+      - deploying
+      - declaring readiness
+  validate_workspace_governance:
+    path: tools/active/validate_workspace_governance.py
+    purpose: static QC for active package hierarchy, future file-placement governance, registry paths, and publication automation guards
+export_profiles:
+  chatgpt_architecture_audit_2026_06_22:
+    path: exports/generated/chatgpt-architecture-audit-2026-06-22
+    generated_by: tools/active/export_relevant_files.ps1
+    evidence_ceiling: design-time-plus-simulated-transcript-summary
+    status: local-export-created
+    purpose: ChatGPT architecture audit packet and source snapshot for external review
+    excludes:
+      - AGENTS.md
+      - raw private transcripts
+      - raw output folders
+      - raw-private folders
+      - private run maps
+      - private hashes
+      - mapping keys
+      - .local files
+      - private.local folders
+      - scoring-keys.local folders
+      - global installed Codex skills
+      - evaluator scoring keys
+      - scoring key files
+      - prior conversation exports
+provider_profiles:
+  codex:
+    adapter_path: adapters/codex
+    priority: first
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: true
+      web_retrieval: adapter-dependent
+      file_read: true
+      file_write: true
+      code_execution: true
+      durable_memory: false
+      isolated_subagents: adapter-dependent
+  claude-code:
+    adapter_path: adapters/claude-code
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: true
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: adapter-dependent
+      code_execution: adapter-dependent
+      durable_memory: false
+      isolated_subagents: adapter-dependent
+  chatgpt:
+    adapter_path: adapters/chatgpt
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: false
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: false
+      code_execution: adapter-dependent
+      durable_memory: adapter-dependent
+      isolated_subagents: false
+  gemini:
+    adapter_path: adapters/gemini
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: true
+      dynamic_skill_loading: false
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: false
+      code_execution: adapter-dependent
+      durable_memory: adapter-dependent
+      isolated_subagents: false
+  generic:
+    adapter_path: adapters/generic
+    priority: later
+    last_verified: null
+    capabilities:
+      persistent_instructions: false
+      dynamic_skill_loading: false
+      web_retrieval: adapter-dependent
+      file_read: adapter-dependent
+      file_write: false
+      code_execution: false
+      durable_memory: false
+      isolated_subagents: false
+eval_suites:
+  align_work: tests/suites/command-skills/align-work-cases.yaml
+  build_artifact: tests/suites/command-skills/build-artifact-cases.yaml
+  compare_decide: tests/suites/command-skills/compare-decide-cases.yaml
+  design_solution: tests/suites/command-skills/design-solution-cases.yaml
+  diagnose_problem: tests/suites/command-skills/diagnose-problem-cases.yaml
+  handoff_state: tests/suites/command-skills/handoff-state-cases.yaml
+  research_evidence: tests/suites/command-skills/research-evidence-cases.yaml
+  review_work: tests/suites/command-skills/review-work-cases.yaml
+  blind_value_proposition: tests/suites/behavioral/blind-value-proposition-cases.yaml
+  uam_bridge_behavioral: tests/suites/behavioral/uam-bridge-behavioral-suite.yaml
+  uam_bridge_behavioral_executor_only: tests/suites/behavioral/uam-bridge-behavioral-executor-only-cases.yaml
+  pressure_red_cases: tests/suites/pressure/pressure-red-cases.yaml
+  pressure_red_executor_only: tests/suites/pressure/pressure-red-executor-only-cases.yaml
+  routing: tests/suites/routing/routing-cases.yaml
+  object_integrity: tests/suites/object-integrity/object-integrity-cases.yaml
+  evidence_ceiling: tests/suites/evidence-ceiling/evidence-ceiling-cases.yaml
+  degradation: tests/suites/degradation/degradation-cases.yaml
+  overactivation: tests/suites/overactivation/overactivation-cases.yaml
+  cross_model_parity: tests/suites/cross-model-parity/cross-model-parity.yaml
+installation:
+  global_install_authorized: false
+  activation_authorized: false
+  explicit_authorization_required_for:
+    - copying files into provider profile folders
+    - enabling implicit routing
+    - declaring v1 readiness
+    - replacing or superseding existing AB, OMR, Codex, Claude, ChatGPT, Gemini, or API artifacts

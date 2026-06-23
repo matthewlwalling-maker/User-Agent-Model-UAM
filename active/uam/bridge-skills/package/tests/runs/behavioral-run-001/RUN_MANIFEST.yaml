@@ -1,0 +1,60 @@
+run_id: behavioral-run-001
+run_type: behavioral
+status: completion_integrity_diagnosed
+evidence_stage: simulated
+exportability: internal
+current_path: tests/runs/behavioral-run-001
+planned_v2_path: tests/runs/behavioral-run-001
+source_basis:
+  - tests/runs/behavioral-run-001/run-manifest.md
+  - tests/runs/behavioral-run-001/source-freeze.json
+  - tests/runs/behavioral-run-001/freeze-record.md
+  - tests/runs/behavioral-run-001/executor-packet.md
+  - tests/runs/behavioral-run-001/executor-only-fixture.yaml
+  - tests/runs/behavioral-run-001/capability-profile.md
+  - tests/runs/behavioral-run-001/scoring-record.md
+  - tests/runs/behavioral-run-001/failure-observation-summary.md
+  - tests/runs/behavioral-run-001/completion-integrity-diagnosis.md
+roles:
+  runner: required
+  evaluator: required
+  scorer: required
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: keep raw outputs and mapping key out of public exports
+  paths:
+    - tests/runs/behavioral-run-001/raw
+    - tests/runs/behavioral-run-001/mapping-key.local.md
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/behavioral-run-001/run-manifest.md
+    - tests/runs/behavioral-run-001/source-freeze.json
+    - tests/runs/behavioral-run-001/freeze-record.md
+    - tests/runs/behavioral-run-001/executor-packet.md
+    - tests/runs/behavioral-run-001/executor-only-fixture.yaml
+    - tests/runs/behavioral-run-001/capability-profile.md
+    - tests/runs/behavioral-run-001/scoring-record.md
+    - tests/runs/behavioral-run-001/failure-observation-summary.md
+    - tests/runs/behavioral-run-001/completion-integrity-diagnosis.md
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported:
+    - simulated behavioral-run scoring over preserved raw outputs
+    - value-case target wins 5 of 6 and ties 1 of 6 within this run
+    - observed failures and hard failures for diagnostic follow-up
+  prohibited:
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - This YAML manifest complements the existing run-manifest.md and does not replace it.
+  - The current scoring record says failures should route to review and diagnose before any build repair.
+  - failure-observation-summary.md records observed failures and the smallest diagnostic target set without diagnosing or patching.
+  - completion-integrity-diagnosis.md places the false file-write completion remedy primarily in build-artifact/SKILL.md.

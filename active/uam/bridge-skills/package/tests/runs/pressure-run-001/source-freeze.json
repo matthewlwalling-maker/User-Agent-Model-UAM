@@ -1,0 +1,81 @@
+{
+  "run_series_id": "pressure-run-001",
+  "created_at_utc": "2026-06-20T08:04:17.312111+00:00",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "e36e4f61034ac083a7599498fc3d79887be94abbd0c9a521f4bd17d43b3248d2",
+      "bytes": 16734
+    },
+    {
+      "path": "uam-bridge-skills\\MANIFEST.yaml",
+      "sha256": "92af8f17055f56d939ae1c9143b9bb6d920647d687ba8cf1b4dabca2a1c11760",
+      "bytes": 6545
+    },
+    {
+      "path": "uam-bridge-skills\\KERNEL.md",
+      "sha256": "b82b92b391ce34747a1c313c605f662ea4b36178f4b9123f1763935b314ceb67",
+      "bytes": 3042
+    },
+    {
+      "path": "uam-bridge-skills\\evals\\pressure-red-cases.yaml",
+      "sha256": "6d12806c463dbd80f3dfd9eb4aee39a118c9285209b8a6155fa3b20c9eff49ee",
+      "bytes": 20879
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\align-work\\SKILL.md",
+      "sha256": "f8fd0250604b1b37b2e1275e39b97c93e349c917dc1eb8fe2c1810af3d4c3b1a",
+      "bytes": 17376
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\build-artifact\\SKILL.md",
+      "sha256": "dad76ff2b2f76ec8ed6b8fa7b04b0d6db34968642d068032ebc389f20b3bba07",
+      "bytes": 17250
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\compare-decide\\SKILL.md",
+      "sha256": "8f7d83e995adc86b6b13a52158e787b54d0497fbd65ddd9d425b56323e3c3f7a",
+      "bytes": 13481
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\design-solution\\SKILL.md",
+      "sha256": "cdfb9dab75c27aacf57faba72f5d36f7b3e950d3bbe87b41e03918cbaf2c00a7",
+      "bytes": 11285
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\diagnose-problem\\SKILL.md",
+      "sha256": "745217a64b7b7e2960b3e574f7767dc0fad22ca490ec88b051cecccdce7ab82f",
+      "bytes": 20653
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\handoff-state\\SKILL.md",
+      "sha256": "f4f58aece779fbe09b9396f2357c96bc468099a8bae7deae8cccc5c714909e57",
+      "bytes": 17744
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\research-evidence\\SKILL.md",
+      "sha256": "995f9f7f330a96ade92fd4c1a2fb30396c5c61c2b0ea7fdb81e00020c6fd2d25",
+      "bytes": 16352
+    },
+    {
+      "path": "uam-bridge-skills\\skills\\review-work\\SKILL.md",
+      "sha256": "f3a56811aa900733c75686987e18db37255ea84f3da0fc05b20590389fa69bfb",
+      "bytes": 17492
+    },
+    {
+      "path": "uam-bridge-skills\\evals\\test-suite-eval-record.md",
+      "sha256": "3bd45403a9486bca2fbafd8db49aacf54e08417adc59414dd360c4de3c27f766",
+      "bytes": 11327
+    },
+    {
+      "path": "uam-bridge-skills\\evals\\blind-run-001\\audit-report-attempt_002.md",
+      "sha256": "15fd7b5c9a087f4d80d8d1b4e36b6e3cf956354b2226b6537e1da3ee1e390782",
+      "bytes": 4537
+    },
+    {
+      "path": "uam-bridge-skills\\evals\\blind-run-001\\evaluator-result-attempt_002.md",
+      "sha256": "b1f9e3965aff2bf3524feb05583ce35b28205e585225fbc87eecf2ec9909c846",
+      "bytes": 6794
+    }
+  ]
+}

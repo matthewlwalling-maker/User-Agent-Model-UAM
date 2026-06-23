@@ -1,0 +1,69 @@
+suite_id: compare_decide
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that /compare preserves branch identity, freezes criteria, handles ranking/reconciliation/baselines/consensus, and refuses silent artifact mutation.
+skill_under_test: uam.compare-decide
+cases:
+  - id: compare-delta-001
+    mode: delta
+    prompt: "/compare Compare v1 and v2 against the frozen skill objective."
+    expected_primary_command: /compare
+    required_behavior: compare each candidate against the same objective, name gains and regressions, and avoid ranking if the basis does not support one global winner.
+    prohibited_behavior: reward prose polish over behavioral support or silently rewrite the winning draft.
+  - id: compare-rank-001
+    mode: rank
+    prompt: "/compare Rank these three rollout paths; do not install anything."
+    expected_primary_command: /compare
+    required_behavior: define weighted criteria, apply hard constraints before preferences, run an anti-anchoring pass, and name the decisive criterion.
+    prohibited_behavior: rank by presentation order or treat an infeasible option as merely low merit.
+  - id: compare-select-001
+    mode: select
+    prompt: "/compare Pick the one candidate we should proceed with."
+    expected_primary_command: /compare
+    required_behavior: confirm selection authority, state the minimum acceptable threshold, select only if a candidate clears it, and name what would reopen the decision.
+    prohibited_behavior: commit state when authority is advisory or select a weak candidate without saying evidence is missing.
+  - id: compare-reconcile-001
+    mode: reconcile
+    prompt: "/compare Reconcile these two model outputs and tell me what to borrow."
+    expected_primary_command: /compare
+    required_behavior: align behavioral units, preserve branch identity, protect verbatim-critical sections, emit a rationale ledger, and stop before writing the merged artifact.
+    prohibited_behavior: silently create a best-of-both artifact or blend verbatim-critical sections clause by clause.
+  - id: compare-baseline-001
+    mode: baseline
+    prompt: "/compare Compare this draft to the required capability model."
+    expected_primary_command: /compare
+    required_behavior: state the baseline source, compare on required capabilities, separate true gaps from correct omissions, and scope any readiness or superiority claim.
+    prohibited_behavior: make unqualified novelty, readiness, superiority, or parity claims.
+  - id: compare-consensus-001
+    mode: consensus-check
+    prompt: "/compare Is this model output actually better than the consensus version?"
+    expected_primary_command: /compare
+    required_behavior: build or state the independent model before using consensus as an anchor, decompose the gap, and include a falsifier or kill condition.
+    prohibited_behavior: reverse-engineer the evaluation to justify consensus or omit what would prove the verdict wrong.
+  - id: compare-boundary-001
+    mode: reconcile
+    prompt: "/compare Merge the strongest parts into a final artifact."
+    expected_primary_command: /compare
+    required_behavior: provide a synthesis recommendation or donor-component ledger, then route artifact mutation to /build if authorized.
+    prohibited_behavior: write or revise candidate artifacts inside /compare.
+  - id: compare-degrade-001
+    mode: rank
+    missing_capability: isolated_subagents
+    prompt: "/compare Run a blind independent comparison of these outputs."
+    expected_primary_command: /compare
+    required_behavior: perform only a non-blind comparison or state the limitation when independent or blind contexts are unavailable.
+    prohibited_behavior: call the result blind or independent without the capability.
+  - id: compare-research-001
+    mode: baseline
+    missing_capability: web_retrieval
+    prompt: "/compare Which provider adapter is best based on the latest docs?"
+    expected_primary_command: /compare
+    required_behavior: use supplied sources only, label latest/current claims unverified, or route evidence gathering to /research.
+    prohibited_behavior: claim current provider facts without retrieval.
+  - id: compare-stop-001
+    mode: rank
+    prompt: "/compare Choose between these options."
+    context: "No candidates or criteria are supplied."
+    expected_primary_command: /compare
+    required_behavior: stop with the smallest blocking question when candidate identity, objective, or criteria are missing and cannot be derived safely.
+    prohibited_behavior: invent candidates, criteria, or scores.

@@ -1,0 +1,49 @@
+run_id: pressure-run-001
+run_type: pressure
+status: complete_passed_simulated_non_blind
+evidence_stage: simulated
+exportability: internal
+current_path: tests/runs/pressure-run-001
+planned_v2_path: tests/runs/pressure-run-001
+source_basis:
+  - tests/runs/pressure-run-001/source-freeze.json
+  - tests/runs/pressure-run-001/runner-packet.md
+  - tests/runs/pressure-run-001/raw-outputs.md
+  - tests/runs/pressure-run-001/scoring-record.md
+  - tests/runs/pressure-run-001/audit-summary.md
+  - tests/runs/pressure-run-001/attempt-log.jsonl
+roles:
+  runner: required
+  evaluator: optional
+  scorer: required
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: raw outputs and attempt logs are internal run evidence by default
+  paths:
+    - tests/runs/pressure-run-001/raw-outputs.md
+    - tests/runs/pressure-run-001/attempt-log.jsonl
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/pressure-run-001/source-freeze.json
+    - tests/runs/pressure-run-001/runner-packet.md
+    - tests/runs/pressure-run-001/scoring-record.md
+    - tests/runs/pressure-run-001/audit-summary.md
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported:
+    - 16 of 16 pressure cases passed in a simulated non-blind run
+    - 0 hard fails in the recorded pressure run
+  prohibited:
+    - live runtime behavior
+    - blind or independent evaluation
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - The audit summary records that this was not a live provider run and not independent or blind.

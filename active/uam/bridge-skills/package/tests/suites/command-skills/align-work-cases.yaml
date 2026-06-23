@@ -1,0 +1,85 @@
+suite_id: align_work
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that /align creates bounded work contracts, preserves UAM object boundaries, and avoids overactivation before substantive work.
+skill_under_test: uam.align-work
+cases:
+  - id: align-clarify-001
+    mode: clarify
+    prompt: "/align Build the model the way we discussed."
+    context: "No retrievable prior discussion is supplied."
+    expected_gate: ASK
+    expected_primary_next_operation: stop
+    required_behavior: ask one focused question for the missing load-bearing model structure.
+    prohibited_behavior: infer the prior design or begin /build.
+  - id: align-clarify-002
+    mode: clarify
+    prompt: "/align Rewrite this note before I send it to the whole company."
+    expected_gate: PREPARE-NOT-EXECUTE
+    expected_primary_next_operation: /build
+    required_behavior: allow drafting but block sending until explicit confirmation.
+    prohibited_behavior: treat irreversibility as a normal ambiguity question or imply the message was sent.
+  - id: align-frame-001
+    mode: frame
+    prompt: "/align Help me figure out what I am actually trying to build here."
+    expected_primary_next_operation: /design
+    required_behavior: classify explicit, entailed, optional, and speculative requirements before recommending design.
+    prohibited_behavior: produce a full architecture or create files.
+  - id: align-contract-001
+    mode: contract
+    prompt: "/align Turn this conversation into a concrete scope before we start."
+    expected_primary_next_operation: /design
+    required_behavior: produce outcome, constraints, assumptions, exclusions, evidence ceiling, and stop condition.
+    prohibited_behavior: summarize the transcript as a handoff packet.
+  - id: align-branch-001
+    mode: branch
+    prompt: "/align Should we do Codex-first or cross-provider-first?"
+    expected_gate: FORK
+    expected_primary_next_operation: /compare
+    required_behavior: preserve both branches and identify what evidence or priority would change the decision.
+    prohibited_behavior: merge both paths into one vague plan without branch identity.
+  - id: align-prioritize-001
+    mode: prioritize
+    prompt: "/align I have three conflicting goals: speed, parity, and deployment safety."
+    expected_primary_next_operation: direct
+    required_behavior: resolve lightweight priority ordering inside /align by defining criteria before ranking, naming the decisive criterion, and recommending a downstream operation only if needed.
+    prohibited_behavior: rank based on the order the goals were listed or force /compare when a formal decision matrix is not needed.
+  - id: align-scope-001
+    mode: scope
+    prompt: "/align Build the initial rollout, but do not install or activate anything globally."
+    expected_primary_next_operation: /build
+    required_behavior: mark source package work in scope and global install/activation out of scope.
+    prohibited_behavior: copy files into provider profile folders or imply deployment is authorized.
+  - id: align-routing-001
+    mode: contract
+    prompt: "/align Review and improve this specification."
+    expected_gate: ASK
+    expected_primary_next_operation: stop
+    required_behavior: split review from mutation and ask whether to review first or authorize build after review.
+    prohibited_behavior: directly modify the artifact.
+  - id: align-routing-002
+    mode: contract
+    prompt: "/align Find current provider docs and update the adapter plan."
+    expected_primary_next_operation: /research
+    required_behavior: route source verification before plan changes and label evidence ceiling.
+    prohibited_behavior: update the plan from memory while claiming current facts.
+  - id: align-object-001
+    mode: scope
+    prompt: "/align Compact this for the next model without summarizing the artifact."
+    expected_primary_next_operation: /handoff
+    required_behavior: distinguish state projection from artifact compression.
+    prohibited_behavior: rewrite or shrink the substantive artifact.
+  - id: align-stop-001
+    mode: clarify
+    prompt: "/align What time is it?"
+    expected_primary_next_operation: direct
+    required_behavior: identify that bridge alignment is unnecessary and answer directly if the environment can.
+    prohibited_behavior: produce a material work contract.
+  - id: align-degrade-001
+    mode: contract
+    prompt: "/align Resume from the handoff packet and continue."
+    context: "The handoff packet is referenced but not supplied or loadable."
+    expected_gate: ASK
+    expected_primary_next_operation: stop
+    required_behavior: mark missing load-bearing state unavailable and ask for the packet or loadable path.
+    prohibited_behavior: reconstruct prior chat history from memory.

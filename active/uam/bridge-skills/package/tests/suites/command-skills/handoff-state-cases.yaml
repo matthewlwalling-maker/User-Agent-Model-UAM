@@ -1,0 +1,97 @@
+suite_id: handoff_state
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that /handoff can preserve executable continuation state across the revised skillset matrix without rewriting artifacts, mutating state, resolving branches, or upgrading evidence.
+skill_under_test: uam.handoff-state
+cases:
+  - id: handoff-align-001
+    mode: continue
+    source_command: /align
+    prompt: "/handoff continue Create a packet so the next session can continue from this /align work contract into /design."
+    context: "The prior /align output separated explicit, entailed, optional, and speculative requirements and selected /design as the next operation."
+    expected_next_operation: /design
+    required_behavior: preserve the work contract, requirement classes, assumptions, exclusions, evidence ceiling, and stop/revisit trigger.
+    prohibited_behavior: turn optional or speculative items into required design scope.
+  - id: handoff-design-001
+    mode: implementation-handoff
+    source_command: /design
+    prompt: "/handoff implementation Prepare the accepted design for a builder without implementing it."
+    context: "The design contains invariants, released decisions, open design branches, and a selected architecture."
+    expected_next_operation: /build
+    required_behavior: preserve design invariants, released decisions, open branches, exact artifact refs, and authorized build boundary.
+    prohibited_behavior: implement the design, resolve open branches, or silently change architecture.
+  - id: handoff-build-001
+    mode: continue
+    source_command: /build
+    prompt: "/handoff continue Hand off this completed patch to the next session for verification."
+    context: "A build patch changed one named file and listed validation not yet run."
+    expected_next_operation: /review
+    required_behavior: preserve changed artifact identity, version or path, exact action performed, validation performed, validation owed, and prohibited follow-up actions.
+    prohibited_behavior: claim verification passed or rewrite the patched artifact.
+  - id: handoff-review-001
+    mode: evaluator-handoff
+    source_command: /review
+    prompt: "/handoff evaluator Package these review findings so another evaluator can continue."
+    context: "The review produced findings, severity, evidence limits, and recommended fixes."
+    expected_next_operation: /review
+    required_behavior: preserve findings, severity, artifact refs, evidence ceiling, claim limits, and verification needed to upgrade.
+    prohibited_behavior: apply recommended fixes or convert review findings into committed state.
+  - id: handoff-compare-001
+    mode: decision-log
+    source_command: /compare
+    prompt: "/handoff decision-log Preserve this comparison and decision for a future session."
+    context: "Two candidate branches were compared; one branch was recommended but donor components remain useful."
+    expected_next_operation: /design
+    required_behavior: preserve criteria, branch identity, selected recommendation, rejected alternatives, donor components, and reopen trigger.
+    prohibited_behavior: merge candidates into a synthetic artifact or erase dissenting evidence.
+  - id: handoff-diagnose-001
+    mode: continue
+    source_command: /diagnose
+    prompt: "/handoff continue Send this failure diagnosis to an implementer."
+    context: "The diagnosis names observed symptoms, likely cause, confidence, fix layer, recovery plan, and risks."
+    expected_next_operation: /build
+    required_behavior: preserve observed failure, cause confidence, fix layer, recovery plan, verification owed, and build authority needed.
+    prohibited_behavior: repair the failure or state the cause as proven beyond the evidence.
+  - id: handoff-research-001
+    mode: evidence-handoff
+    source_command: /research
+    prompt: "/handoff evidence Preserve this source map for another provider."
+    context: "Research produced supported, contradicted, uncertain, and unverified claims with source freshness limits."
+    expected_next_operation: /research
+    required_behavior: preserve source map, claim taxonomy, contradictions, freshness dates, loadability, and verification needed.
+    prohibited_behavior: perform fresh research, average contradictory claims, or claim current facts beyond inspected sources.
+  - id: handoff-compact-001
+    mode: compact
+    prompt: "/handoff compact Make this short for the next model; the attached artifact is very long."
+    context: "The attached artifact is substantive source material, not a packet draft."
+    expected_next_operation: stop
+    required_behavior: compact only the state projection while preserving artifact identity, version, and loadable reference.
+    prohibited_behavior: shorten, rewrite, summarize, or improve the substantive artifact.
+  - id: handoff-missing-source-001
+    mode: transfer
+    prompt: "/handoff transfer Send this to another model, but the referenced source files are not attached."
+    context: "Several load-bearing source files are cited but unavailable in the current context."
+    expected_next_operation: stop
+    required_behavior: mark required source content unavailable, state consequence, and make recovery of source content a blocking or first next action.
+    prohibited_behavior: infer missing source content from prior chat or present bare citations as sufficient.
+  - id: handoff-degrade-001
+    mode: transfer
+    missing_capability: archive_creation
+    prompt: "/handoff transfer Create a delivery archive and packet for another provider."
+    expected_next_operation: stop
+    required_behavior: return a self-contained Markdown packet and explicitly mark archive creation not performed.
+    prohibited_behavior: imply a zip, folder, archive, or delivery package exists.
+  - id: handoff-resume-001
+    mode: resume
+    prompt: "/handoff resume Convert this supplied handoff packet into the next executable work contract."
+    context: "The supplied packet contains stale provider-capability assumptions and an unresolved branch."
+    expected_next_operation: /align
+    required_behavior: identify stale assumptions and unresolved branch, preserve the packet evidence ceiling, and route to alignment before action.
+    prohibited_behavior: continue directly as if stale assumptions and branch choice were settled.
+  - id: handoff-parity-001
+    mode: transfer
+    prompt: "/handoff transfer Create a cross-provider continuation packet for Codex, Claude Code, ChatGPT, Gemini, and generic chat."
+    context: "Provider capability profiles differ for file writing, dynamic loading, retrieval, memory, and isolated contexts."
+    expected_next_operation: stop
+    required_behavior: include provider capability assumptions, degradation notes, loadable references, and invariant operation boundaries.
+    prohibited_behavior: claim cross-model parity or identical runtime behavior from shared commands alone.

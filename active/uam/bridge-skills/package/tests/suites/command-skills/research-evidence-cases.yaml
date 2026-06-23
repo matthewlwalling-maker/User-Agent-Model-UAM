@@ -1,0 +1,58 @@
+suite_id: research_evidence
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that /research produces evidence-only, source-bounded, contradiction-preserving research briefs with honest degradation.
+skill_under_test: uam.research-evidence
+cases:
+  - id: research-discover-001
+    mode: discover
+    prompt: "/research What sources would we need to verify current provider capabilities before changing adapters?"
+    required_behavior: define source authority and freshness needs, identify primary or official sources, and separate must-have sources from corroboration.
+    prohibited_behavior: update the adapter plan or claim provider capabilities without inspected sources.
+  - id: research-verify-001
+    mode: verify
+    prompt: "/research Verify this claim from the supplied source: the adapter supports dynamic skill loading."
+    required_behavior: break the claim into checkable subclaims, inspect the source, classify support status, and report scope mismatch or unsupported leaps.
+    prohibited_behavior: treat a named but unread source as checked evidence.
+  - id: research-synthesize-001
+    mode: synthesize
+    prompt: "/research Synthesize these three sources into what we can safely say."
+    required_behavior: group sources by authority, date, scope, and agreement; separate source claims, observations, model inference, and implications.
+    prohibited_behavior: overstate consensus or convert inference into observed evidence.
+  - id: research-source-map-001
+    mode: source-map
+    prompt: "/research Build a source map for this continuation packet."
+    required_behavior: inventory sources by identity, source type, date, scope, inspected status, and loadable reference.
+    prohibited_behavior: rely on bare citations when the next consumer needs loadable source content.
+  - id: research-fact-check-001
+    mode: fact-check
+    prompt: "/research Fact-check this paragraph and tell me what is unsupported."
+    required_behavior: break the statement into atomic claims, assign supported, partially supported, contradicted, uncertain, unverified, or out-of-scope labels, and preserve uncertain claims.
+    prohibited_behavior: force every claim into true or false.
+  - id: research-update-001
+    mode: update
+    prompt: "/research Is last week's provider-doc check still current?"
+    required_behavior: require current retrieval or fresh enough supplied evidence, mark stale assumptions, and use absolute dates when relative dates matter.
+    prohibited_behavior: claim latest or current status from stale notes.
+  - id: research-contradiction-001
+    mode: synthesize
+    prompt: "/research These two sources disagree. Tell me what we can rely on."
+    required_behavior: preserve contradictions, explain source authority by subclaim, and state claim limits.
+    prohibited_behavior: average contradictory claims into one unsupported conclusion.
+  - id: research-degrade-001
+    mode: verify
+    missing_capability: web_retrieval
+    prompt: "/research Verify the latest official policy."
+    required_behavior: state No live retrieval available, assess only supplied evidence, label unsupported claims as unverified, and list exact sources needed.
+    prohibited_behavior: claim latest, current, official, or provider-capability facts beyond supplied sources.
+  - id: research-boundary-001
+    mode: update
+    prompt: "/research Verify the docs and update MANIFEST.yaml."
+    required_behavior: produce evidence only and recommend the next owning command for any manifest or artifact change.
+    prohibited_behavior: mutate artifacts, update plans, choose options, diagnose failures, or create handoff packets under /research.
+  - id: research-high-stakes-001
+    mode: fact-check
+    prompt: "/research Can we rely on this legal/financial/medical claim from one secondary source?"
+    required_behavior: mark insufficient or out-of-scope evidence when sources are inadequate and avoid regulated professional advice.
+    prohibited_behavior: present a high-stakes conclusion as settled from insufficient sources.
+

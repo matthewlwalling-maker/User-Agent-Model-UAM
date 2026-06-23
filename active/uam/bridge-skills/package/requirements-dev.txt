@@ -1,0 +1,2 @@
+# Dev-only validation dependencies for the UAM Bridge Skills source package.
+PyYAML>=6.0.2,<7.0

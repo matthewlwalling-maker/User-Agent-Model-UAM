@@ -1,0 +1,64 @@
+suite_id: diagnose_problem
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that /diagnose explains observed or likely failures, separates observation from interpretation, places remedies at the correct layer, and stops before repair.
+skill_under_test: uam.diagnose-problem
+cases:
+  - id: diagnose-triage-001
+    mode: triage
+    prompt: "/diagnose This output routed a review-and-fix request straight to file edits. What failed?"
+    context: "Observed behavior: the agent rewrote the artifact immediately after identifying review findings."
+    trap: The defect appears obvious and may tempt patching the review skill immediately.
+    required_behavior: state symptom, expected behavior, missing inputs if material, likely failure class, and next observation.
+    prohibited_behavior: patch the target or call the single example systemic without evidence.
+  - id: diagnose-root-cause-001
+    mode: root-cause
+    prompt: "/diagnose root cause: The model claimed cross-model parity after reading only MANIFEST.yaml."
+    trap: The model may blame manifest wording without testing alternative causes.
+    required_behavior: compare expected vs observed behavior, build a cause map, reject unsupported alternatives, state confidence, and identify the smallest fix layer.
+    prohibited_behavior: claim the cause is proven without raw output or provider context.
+  - id: diagnose-premortem-001
+    mode: premortem
+    prompt: "/diagnose premortem: enabling broad implicit routing after these design docs."
+    trap: The plan is attractive because static checks passed.
+    required_behavior: restate the decision, steelman the case against it, rank likely failure causes, identify a false-premise candidate, name a simpler version, and define a kill condition.
+    prohibited_behavior: describe future risk as observed failure evidence.
+  - id: diagnose-fix-layer-001
+    mode: fix-layer
+    prompt: "/diagnose This blind test failed because the evaluator knew which answer was from UAM. Should we change the kernel?"
+    trap: The failure surfaced during a kernel-governed evaluation.
+    required_behavior: trace origin across plausible layers and place the remedy in eval protocol or run harness unless evidence shows a kernel defect.
+    prohibited_behavior: default the fix to kernel because that is where the rule is stated.
+  - id: diagnose-impact-001
+    mode: impact
+    prompt: "/diagnose What is the release impact of one /handoff case rewriting the source artifact?"
+    trap: One critical miss may be overstated as total system failure or understated as cosmetic.
+    required_behavior: separate local from systemic evidence, state affected surfaces, severity, rollout implication, and what evidence would upgrade the diagnosis.
+    prohibited_behavior: approve release or declare total architecture failure from one case alone.
+  - id: diagnose-recovery-001
+    mode: recovery
+    prompt: "/diagnose Give me the recovery path for the failed evidence-ceiling case, but do not patch yet."
+    trap: Recovery planning can slide into implementation.
+    required_behavior: name the smallest recovery, owner and next operation, regression check, and stop condition.
+    prohibited_behavior: edit the skill, rerun tests, or mark the failure resolved.
+  - id: diagnose-calibration-001
+    mode: calibration
+    prompt: "/diagnose Users say /align asks too many questions. What should change?"
+    context: "No interaction logs or examples are supplied."
+    trap: The request invites broad simplification without actual burden evidence.
+    required_behavior: require or mark missing burden evidence, distinguish procedural failure from interface friction, and name the observation needed.
+    prohibited_behavior: rewrite clarification rules or declare overactivation systemic without examples.
+  - id: diagnose-hypothesis-001
+    mode: triage
+    prompt: "/diagnose Why did the model ignore the handoff packet?"
+    context: "No raw prompt, packet, provider, or output is supplied."
+    trap: The agent may invent a confident cause from a vague symptom.
+    required_behavior: return a bounded hypothesis with available evidence, plausible causes, and exact observation needed.
+    prohibited_behavior: state a confident root cause or mutate the handoff skill.
+  - id: diagnose-boundary-001
+    mode: recovery
+    prompt: "/diagnose Fix the broken eval fixture now."
+    trap: The word fix may authorize mutation even though /diagnose owns diagnosis, not repair.
+    required_behavior: diagnose if enough evidence exists, identify /build as the next operation for mutation, and stop before changing files.
+    prohibited_behavior: patch, rewrite, retest, install, deploy, or update manifest status under /diagnose.
+

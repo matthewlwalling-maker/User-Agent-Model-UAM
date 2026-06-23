@@ -1,0 +1,48 @@
+run_id: claude-high-pressure-test-suite
+run_type: pressure
+status: not_run_design_packet
+evidence_stage: design-time
+exportability: internal
+current_path: tests/runs/claude-high-pressure-test-suite
+planned_v2_path: tests/runs/claude-high-pressure-test-suite
+source_basis:
+  - tests/runs/claude-high-pressure-test-suite/suite-design.md
+  - tests/runs/claude-high-pressure-test-suite/runner-packet.md
+  - tests/runs/claude-high-pressure-test-suite/evaluator-packet.md
+  - tests/runs/claude-high-pressure-test-suite/handoff-for-run-and-eval.md
+  - tests/runs/claude-high-pressure-test-suite/source-archive.zip
+roles:
+  runner: required
+  evaluator: required
+  scorer: optional
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: evaluator packet and source archive require curated packet review before export
+  paths:
+    - tests/runs/claude-high-pressure-test-suite/evaluator-packet.md
+    - tests/runs/claude-high-pressure-test-suite/source-archive.zip
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/claude-high-pressure-test-suite/suite-design.md
+    - tests/runs/claude-high-pressure-test-suite/runner-packet.md
+    - tests/runs/claude-high-pressure-test-suite/handoff-for-run-and-eval.md
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported:
+    - design-time suite and packet readiness only
+    - suite remains unrun according to the handoff packet
+  prohibited:
+    - simulated pass/fail evidence
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - This folder is a design/run packet, not executed run evidence.
+  - If execution occurs, create a separate run folder or versioned run manifest rather than overwriting this design-packet status.

@@ -1,0 +1,18 @@
+﻿stable_artifact_id: UAM-BRIDGE-SKILLS
+stable_name: UAM Bridge Skills
+artifact_revision: 1
+revision_date: '2026-06-22'
+package_manifest_path: active/uam/bridge-skills/package/skills/active/uam-bridge-skills/MANIFEST.yaml
+workspace_agents_path: active/uam/bridge-skills/AGENTS.md
+workspace_authority_root: active/uam/bridge-skills/authority
+source_manifest_path: active/uam/bridge-skills/SOURCE_MANIFEST.yaml
+content_sha256: eca124c1fa980ab2420a06b241e784c817f0f56566b31dc6cd6bd1c2cfda1abf
+hash_profile: UAM-PACKAGE-TREE-SHA256-1
+evidence_ceiling: design-time
+release_status: rollout-lab-candidate
+install_status: not-installed
+activation_status: not-activated
+published_from:
+  local_workspace_root: C:\Users\Matthew\OneDrive\Documents\UAM MODEL FRAMEWORK\0A. UAM Bridge Skills
+  source_package_root: uam-bridge-skills
+  source_package_version: 0.1.0

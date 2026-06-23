@@ -1,0 +1,44 @@
+suite_id: cross-model-parity
+version: 0.1.0
+evidence_stage: design-time
+purpose: Define parity expectations before running provider adapters.
+providers:
+  - codex
+  - claude-code
+  - chatgpt
+  - gemini
+  - generic
+cases:
+  - id: parity-001
+    command: /align
+    prompt: "/align I have conflicting goals for a bridge skill pilot. Frame the work contract."
+    invariant_outputs:
+      - outcome
+      - required_constraints
+      - bounded_assumptions_or_questions
+      - primary_next_operation
+  - id: parity-002
+    command: /build
+    prompt: "/build compress Shorten this skill contract without changing behavior."
+    invariant_outputs:
+      - compressed_artifact_or_change
+      - preservation_note
+      - validation_performed
+      - unresolved_risks
+  - id: parity-003
+    command: /review
+    prompt: "/review evidence What can we claim from design-time docs only?"
+    invariant_outputs:
+      - verdict
+      - evidence_limits
+      - verification_needed
+  - id: parity-004
+    command: /handoff
+    prompt: "/handoff Create a continuation packet for another provider."
+    invariant_outputs:
+      - committed_objective
+      - artifact_identities
+      - evidence_ceiling
+      - authorized_next_action
+parity_rule: Outputs must preserve the same operation boundary and claim ceiling even when wording, tool access, and packaging differ.
+

@@ -1,0 +1,12 @@
+source_path	target_path	class	rollback
+uam-bridge-skills/KERNEL.md	uam-bridge-skills/skills/active/uam-bridge-skills/KERNEL.md	preserve-authority	move back to package root and restore manifest/registry references
+uam-bridge-skills/MANIFEST.yaml	uam-bridge-skills/skills/active/uam-bridge-skills/MANIFEST.yaml	preserve-authority	move back to package root and restore manifest/registry references
+uam-bridge-skills/CHAIN_ROUTER.md	uam-bridge-skills/skills/active/uam-bridge-skills/CHAIN_ROUTER.md	preserve-authority	move back to package root and restore manifest/registry references
+uam-bridge-skills/skills/active/align-work	uam-bridge-skills/skills/active/uam-bridge-skills/commands/align-work	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/build-artifact	uam-bridge-skills/skills/active/uam-bridge-skills/commands/build-artifact	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/compare-decide	uam-bridge-skills/skills/active/uam-bridge-skills/commands/compare-decide	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/design-solution	uam-bridge-skills/skills/active/uam-bridge-skills/commands/design-solution	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/diagnose-problem	uam-bridge-skills/skills/active/uam-bridge-skills/commands/diagnose-problem	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/handoff-state	uam-bridge-skills/skills/active/uam-bridge-skills/commands/handoff-state	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/research-evidence	uam-bridge-skills/skills/active/uam-bridge-skills/commands/research-evidence	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references
+uam-bridge-skills/skills/active/review-work	uam-bridge-skills/skills/active/uam-bridge-skills/commands/review-work	preserve-authority	move command directory back to skills/active/ and restore manifest/registry references

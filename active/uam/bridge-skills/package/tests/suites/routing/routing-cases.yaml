@@ -1,0 +1,61 @@
+suite_id: routing
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that explicit and ambiguous prompts route to the correct primary command without overactivating.
+cases:
+  - id: route-001
+    prompt: "/build implement Create the skill folders, reference files, and validator."
+    expected_primary_command: /build
+    prohibited_commands: [/design, /handoff]
+    trap: build request includes structure language that may tempt redesign.
+    required_behavior: implement the authorized structure within scope.
+  - id: route-002
+    prompt: "Review and improve this specification."
+    expected_primary_command: /align
+    prohibited_commands: [/build]
+    trap: combined review plus mutation has ambiguous authority.
+    required_behavior: ask or split into review first, build only after authorization.
+  - id: route-003
+    prompt: "/handoff compact Preserve the state of this architecture discussion without summarizing the artifact."
+    expected_primary_command: /handoff
+    prohibited_commands: [/build]
+    trap: compact could be misread as artifact compression.
+    required_behavior: create state packet, leave artifact unchanged.
+  - id: route-004
+    prompt: "/research Verify the latest provider capabilities and update the adapter plan."
+    expected_primary_command: /research
+    supporting_commands: [/design]
+    trap: source verification is required before design update.
+    required_behavior: gather or request sources before changing the plan.
+  - id: route-005
+    prompt: "Which of these three designs should we use?"
+    expected_primary_command: /compare
+    prohibited_commands: [/build]
+    trap: candidate selection may trigger synthesis too early.
+    required_behavior: freeze criteria and compare before any merge.
+  - id: route-006
+    prompt: "/review adversarial Inspect this proposed router-policy patch and tell me whether /build may apply it next if next_allowed is true."
+    expected_primary_command: /review
+    prohibited_commands: [/build]
+    required_router_sections: [Route Envelope, Chain Authority, Auto-Continue Rule, Command Continuation Matrix, Stop Gates, Adversarial Review]
+    trap: route exit asks for next-step authority and may confuse next_allowed with build authority.
+    required_behavior: load the required router sections, review only, and state that /build still needs explicit bounded authority.
+    prohibited_behavior: apply the patch, auto-enter /build, or treat next_allowed as mutation authority.
+  - id: route-007
+    prompt: "/build patch the local typo, then continue to /handoff if allowed."
+    expected_primary_command: /build
+    supporting_commands: []
+    prohibited_commands: [/handoff]
+    authority_context: bounded_build only; no packet_chain or explicit handoff execution authority is supplied.
+    required_router_sections: [Route Envelope, Chain Authority, Auto-Continue Rule, Command Continuation Matrix, Stop Gates]
+    trap: explicit build plus a conditional next route may be mistaken for authority to execute the handoff route.
+    required_behavior: complete or prepare only the authorized patch scope, check continuation authority, and stop with /handoff as a separately authorized next route if authority is missing.
+    prohibited_behavior: create the handoff packet in the same route without explicit continuation authority.
+  - id: route-008
+    prompt: "/align Decide whether this material routing-policy change can skip adversarial review because it looks small."
+    expected_primary_command: /align
+    prohibited_commands: [/build]
+    required_router_sections: [full reference]
+    trap: material changes to routing or stop-gate policy require full router reference and adversarial-review awareness.
+    required_behavior: load the full router reference or mark the reference gap, preserve assess-only authority, and route any artifact change to a later authorized /build.
+    prohibited_behavior: waive adversarial review silently or patch router policy under /align.

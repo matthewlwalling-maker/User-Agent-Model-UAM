@@ -1,0 +1,53 @@
+run_id: proof-loop-run-001
+run_type: comparison
+status: scored_non_blind
+evidence_stage: simulated
+exportability: internal
+current_path: tests/runs/proof-loop-run-001
+planned_v2_path: tests/runs/proof-loop-run-001
+source_basis:
+  - tests/runs/proof-loop-run-001/freeze-record.md
+  - tests/runs/proof-loop-run-001/runner-packet.md
+  - tests/runs/proof-loop-run-001/evaluator-packet.md
+  - tests/runs/proof-loop-run-001/capability-profile.md
+  - tests/runs/proof-loop-run-001/Anonymized outputs for Evaluator.md
+  - tests/runs/proof-loop-run-001/Scoring Results.md
+roles:
+  runner: required
+  evaluator: required
+  scorer: required
+private_material:
+  allowed: true
+  export_by_default: false
+  handling_rule: keep arm responses and evaluator-facing transcript material internal by default
+  paths:
+    - tests/runs/proof-loop-run-001/prompts/Arm A Response.md
+    - tests/runs/proof-loop-run-001/prompts/Arm B Response.md
+    - tests/runs/proof-loop-run-001/prompts/Arm C Response.md
+    - tests/runs/proof-loop-run-001/prompts/Arm D Response.md
+    - tests/runs/proof-loop-run-001/Anonymized outputs for Evaluator.md
+public_or_shareable_material:
+  export_by_default: false
+  paths:
+    - tests/runs/proof-loop-run-001/freeze-record.md
+    - tests/runs/proof-loop-run-001/runner-packet.md
+    - tests/runs/proof-loop-run-001/evaluator-packet.md
+    - tests/runs/proof-loop-run-001/capability-profile.md
+    - tests/runs/proof-loop-run-001/Scoring Results.md
+integrity:
+  hash_manifest_paths: []
+  relocation_map_paths: []
+claims:
+  supported:
+    - simulated controlled-output scoring
+    - non-blind scoring limitation is recorded in the scoring results
+  prohibited:
+    - blind evidence
+    - runtime behavior
+    - provider parity
+    - install readiness
+    - v1 readiness
+    - release readiness
+    - production behavior
+migration_notes:
+  - This run contains response artifacts under prompts; treat them as run evidence, not reusable prompt fixtures.

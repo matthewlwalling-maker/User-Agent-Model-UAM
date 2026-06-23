@@ -1,0 +1,304 @@
+registry_id: uam-bridge-skills-test-registry
+version: 0.1.0
+status: tests-root-active
+date: 2026-06-22
+evidence_ceiling: design-time
+source_basis:
+  - skills/active/uam-bridge-skills/MANIFEST.yaml
+  - docs/cleanup/workspace-taxonomy-v2.md
+authority:
+  manifest_is_suite_path_source: true
+  registry_does_not_upgrade_evidence: true
+  current_manifest_path: skills/active/uam-bridge-skills/MANIFEST.yaml
+  current_root: tests
+  previous_root: evals
+  planned_root: tests
+export_policy:
+  default_exportability: internal
+  public_default_allowed_roots:
+    - public-evidence
+    - results
+    - integrity
+  excluded_path_patterns:
+    - "**/*.local.md"
+    - "**/*.local.yaml"
+    - "**/*.local.yml"
+    - "**/*.local.json"
+    - "**/private.local/**"
+    - "**/scoring-keys.local/**"
+    - "**/raw-private/**"
+    - "**/raw/**"
+    - "**/raw-outputs.*"
+    - "**/Test Responses/**"
+    - "**/private-run-map.*"
+    - "**/private-hashes.*"
+    - "**/mapping-key*.local.md"
+    - "**/*scoring-key*"
+    - "**/*scoring_keys*"
+    - "**/raw transcripts/**"
+    - "**/raw private transcripts/**"
+  excluded_material_classes:
+    - raw_private_transcripts
+    - private_run_maps
+    - evaluator_scoring_keys
+    - mapping_keys
+    - private_hashes
+planned_run_manifest_required_fields:
+  - run_id
+  - run_type
+  - source_basis
+  - evidence_stage
+  - exportability
+  - private_material
+  - roles
+  - status
+suite_categories:
+  command_skills: tests/suites/command-skills
+  routing: tests/suites/routing
+  object_integrity: tests/suites/object-integrity
+  evidence_ceiling: tests/suites/evidence-ceiling
+  degradation: tests/suites/degradation
+  overactivation: tests/suites/overactivation
+  cross_model_parity: tests/suites/cross-model-parity
+  pressure: tests/suites/pressure
+  behavioral: tests/suites/behavioral
+  lifecycle: tests/suites/lifecycle
+  compounding: tests/suites/compounding
+suites:
+  - suite_key: align_work
+    current_path: tests/suites/command-skills/align-work-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/align-work-cases.yaml
+    manifest_controlled: true
+  - suite_key: build_artifact
+    current_path: tests/suites/command-skills/build-artifact-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/build-artifact-cases.yaml
+    manifest_controlled: true
+  - suite_key: compare_decide
+    current_path: tests/suites/command-skills/compare-decide-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/compare-decide-cases.yaml
+    manifest_controlled: true
+  - suite_key: design_solution
+    current_path: tests/suites/command-skills/design-solution-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/design-solution-cases.yaml
+    manifest_controlled: true
+  - suite_key: diagnose_problem
+    current_path: tests/suites/command-skills/diagnose-problem-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/diagnose-problem-cases.yaml
+    manifest_controlled: true
+  - suite_key: handoff_state
+    current_path: tests/suites/command-skills/handoff-state-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/handoff-state-cases.yaml
+    manifest_controlled: true
+  - suite_key: research_evidence
+    current_path: tests/suites/command-skills/research-evidence-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/research-evidence-cases.yaml
+    manifest_controlled: true
+  - suite_key: review_work
+    current_path: tests/suites/command-skills/review-work-cases.yaml
+    planned_category: command_skills
+    planned_v2_path: tests/suites/command-skills/review-work-cases.yaml
+    manifest_controlled: true
+  - suite_key: blind_value_proposition
+    current_path: tests/suites/behavioral/blind-value-proposition-cases.yaml
+    planned_category: behavioral
+    planned_v2_path: tests/suites/behavioral/blind-value-proposition-cases.yaml
+    manifest_controlled: true
+  - suite_key: uam_bridge_behavioral
+    current_path: tests/suites/behavioral/uam-bridge-behavioral-suite.yaml
+    planned_category: behavioral
+    planned_v2_path: tests/suites/behavioral/uam-bridge-behavioral-suite.yaml
+    manifest_controlled: true
+  - suite_key: uam_bridge_behavioral_executor_only
+    current_path: tests/suites/behavioral/uam-bridge-behavioral-executor-only-cases.yaml
+    planned_category: behavioral
+    planned_v2_path: tests/suites/behavioral/uam-bridge-behavioral-executor-only-cases.yaml
+    manifest_controlled: true
+  - suite_key: pressure_red_cases
+    current_path: tests/suites/pressure/pressure-red-cases.yaml
+    planned_category: pressure
+    planned_v2_path: tests/suites/pressure/pressure-red-cases.yaml
+    manifest_controlled: true
+  - suite_key: pressure_red_executor_only
+    current_path: tests/suites/pressure/pressure-red-executor-only-cases.yaml
+    planned_category: pressure
+    planned_v2_path: tests/suites/pressure/pressure-red-executor-only-cases.yaml
+    manifest_controlled: true
+  - suite_key: routing
+    current_path: tests/suites/routing/routing-cases.yaml
+    planned_category: routing
+    planned_v2_path: tests/suites/routing/routing-cases.yaml
+    manifest_controlled: true
+  - suite_key: object_integrity
+    current_path: tests/suites/object-integrity/object-integrity-cases.yaml
+    planned_category: object_integrity
+    planned_v2_path: tests/suites/object-integrity/object-integrity-cases.yaml
+    manifest_controlled: true
+  - suite_key: evidence_ceiling
+    current_path: tests/suites/evidence-ceiling/evidence-ceiling-cases.yaml
+    planned_category: evidence_ceiling
+    planned_v2_path: tests/suites/evidence-ceiling/evidence-ceiling-cases.yaml
+    manifest_controlled: true
+  - suite_key: degradation
+    current_path: tests/suites/degradation/degradation-cases.yaml
+    planned_category: degradation
+    planned_v2_path: tests/suites/degradation/degradation-cases.yaml
+    manifest_controlled: true
+  - suite_key: overactivation
+    current_path: tests/suites/overactivation/overactivation-cases.yaml
+    planned_category: overactivation
+    planned_v2_path: tests/suites/overactivation/overactivation-cases.yaml
+    manifest_controlled: true
+  - suite_key: cross_model_parity
+    current_path: tests/suites/cross-model-parity/cross-model-parity.yaml
+    planned_category: cross_model_parity
+    planned_v2_path: tests/suites/cross-model-parity/cross-model-parity.yaml
+    manifest_controlled: true
+runs:
+  - run_id: blind-run-001
+    current_path: tests/runs/blind-run-001
+    planned_v2_path: tests/runs/blind-run-001
+    run_manifest_path: tests/runs/blind-run-001/RUN_MANIFEST.yaml
+    run_type: blind
+    evidence_stage: simulated
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/blind-run-001/mapping-key.local.md
+        - tests/runs/blind-run-001/mapping-key-attempt_002.local.md
+    roles:
+      runner: required
+      evaluator: required
+      scorer: optional
+    status: run-manifest-migrated-to-tests-root
+  - run_id: proof-loop-run-001
+    current_path: tests/runs/proof-loop-run-001
+    planned_v2_path: tests/runs/proof-loop-run-001
+    run_manifest_path: tests/runs/proof-loop-run-001/RUN_MANIFEST.yaml
+    run_type: comparison
+    evidence_stage: simulated
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/proof-loop-run-001/prompts/Arm A Response.md
+        - tests/runs/proof-loop-run-001/prompts/Arm B Response.md
+        - tests/runs/proof-loop-run-001/prompts/Arm C Response.md
+        - tests/runs/proof-loop-run-001/prompts/Arm D Response.md
+        - tests/runs/proof-loop-run-001/Anonymized outputs for Evaluator.md
+    roles:
+      runner: required
+      evaluator: required
+      scorer: optional
+    status: run-manifest-migrated-to-tests-root
+  - run_id: pressure-run-001
+    current_path: tests/runs/pressure-run-001
+    planned_v2_path: tests/runs/pressure-run-001
+    run_manifest_path: tests/runs/pressure-run-001/RUN_MANIFEST.yaml
+    run_type: pressure
+    evidence_stage: simulated
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/pressure-run-001/raw-outputs.md
+    roles:
+      runner: required
+      evaluator: optional
+      scorer: required
+    status: run-manifest-migrated-to-tests-root
+  - run_id: pressure-run-002
+    current_path: tests/runs/pressure-run-002
+    planned_v2_path: tests/runs/pressure-run-002
+    run_manifest_path: tests/runs/pressure-run-002/RUN_MANIFEST.yaml
+    run_type: pressure
+    evidence_stage: simulated
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/pressure-run-002/raw-outputs.md
+    roles:
+      runner: required
+      evaluator: required
+      scorer: required
+    status: run-manifest-migrated-to-tests-root
+  - run_id: behavioral-run-001
+    current_path: tests/runs/behavioral-run-001
+    planned_v2_path: tests/runs/behavioral-run-001
+    run_manifest_path: tests/runs/behavioral-run-001/RUN_MANIFEST.yaml
+    run_type: behavioral
+    evidence_stage: simulated
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/behavioral-run-001/mapping-key.local.md
+        - tests/runs/behavioral-run-001/raw
+    roles:
+      runner: required
+      evaluator: required
+      scorer: required
+    status: completion-integrity-diagnosis-migrated-to-tests-root
+  - run_id: claude-high-pressure-test-suite
+    current_path: tests/runs/claude-high-pressure-test-suite
+    planned_v2_path: tests/runs/claude-high-pressure-test-suite
+    run_manifest_path: tests/runs/claude-high-pressure-test-suite/RUN_MANIFEST.yaml
+    run_type: pressure
+    evidence_stage: design-time
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/claude-high-pressure-test-suite/evaluator-packet.md
+    roles:
+      runner: required
+      evaluator: required
+      scorer: optional
+    status: run-manifest-migrated-to-tests-root
+  - run_id: compounding-run-001
+    current_path: tests/runs/compounding-run-001
+    planned_v2_path: tests/runs/compounding-run-001
+    run_manifest_path: tests/runs/compounding-run-001/RUN_MANIFEST.yaml
+    run_type: compounding
+    evidence_stage: simulated
+    exportability: private-local
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/compounding-run-001/codex-run-001/raw-private
+        - tests/runs/compounding-run-001/codex-run-001/collection/private-run-map.md
+        - tests/runs/compounding-run-001/codex-run-001/collection/private-hashes.sha256
+    roles:
+      runner: required
+      evaluator: required
+      scorer: required
+    status: run-manifest-migrated-to-tests-root
+  - run_id: lifecycle-run-001
+    current_path: tests/runs/lifecycle-run-001
+    planned_v2_path: tests/runs/lifecycle-run-001
+    run_manifest_path: tests/runs/lifecycle-run-001/RUN_MANIFEST.yaml
+    run_type: lifecycle
+    evidence_stage: simulated
+    exportability: internal
+    private_material:
+      allowed: true
+      observed_paths:
+        - tests/runs/lifecycle-run-001/Test Responses
+    roles:
+      runner: required
+      evaluator: required
+      scorer: required
+    status: run-manifest-migrated-to-tests-root
+migration_gates:
+  - tests_root_migration_completed_with_manifest_paths_patched
+  - do_not_export_private_or_scoring_material_by_default
+  - keep_run_manifests_current_after_run_folder_moves
+  - validate_suite_yaml_after_each_suite_migration_batch

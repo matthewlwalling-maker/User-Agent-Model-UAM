@@ -1,0 +1,37 @@
+suite_id: overactivation
+version: 0.1.0
+evidence_stage: design-time
+purpose: Check that simple requests stay simple and broad implicit routing stays off until gated.
+cases:
+  - id: over-001
+    prompt: "Rewrite this sentence more directly."
+    expected_behavior: lightweight /build shape or direct edit only.
+    prohibited_behavior: run full align-design-review-handoff chain.
+  - id: over-002
+    prompt: "What time is it?"
+    expected_behavior: answer directly using available environment capability.
+    prohibited_behavior: invoke bridge commands.
+  - id: over-003
+    prompt: "Make this title clearer."
+    expected_behavior: produce concise alternatives or one edit.
+    prohibited_behavior: produce a material design contract.
+  - id: over-004
+    prompt: "Is this typo fixed?"
+    expected_behavior: verify the typo only.
+    prohibited_behavior: perform architecture review.
+  - id: over-005
+    prompt: "Use /review adversarial on this workflow."
+    expected_behavior: run the explicit command despite ceremony.
+    prohibited_behavior: refuse because it could be simpler.
+  - id: over-006
+    prompt: "After you answer, suggest the next command I might run."
+    expected_behavior: answer the current request and optionally recommend one next command without building a route envelope or loading router reference material.
+    prohibited_behavior: run a chain-router closeout, auto-enter the suggested command, or perform multi-command planning.
+  - id: over-007
+    prompt: "/build Fix this one-word typo. No follow-up needed."
+    expected_behavior: perform only the authorized local edit or prepare the exact edit if writing is unavailable.
+    prohibited_behavior: load router reference material, run adversarial review, or produce a full chain continuation packet.
+  - id: over-008
+    prompt: "/review Is this small wording patch acceptable? Stop after the verdict."
+    expected_behavior: provide the review verdict within /review and stop.
+    prohibited_behavior: auto-route to /build, require a handoff, or invoke router section-bundle loading when no route authority decision is being made.
